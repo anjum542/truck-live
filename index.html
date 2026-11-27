@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – Owner Payouts, Advance Dates, Staff Control & Direct Chat</title>
+  <title>TRUCKGO USA – Home Tiles, 3-Way Chat, Staff Sign-In & App Settings</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -103,7 +103,7 @@
       padding: 5px 8px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      max-width: 115px;
+      max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -138,6 +138,53 @@
     .banner p { font-size: 13px; opacity: 0.92; }
 
     h2 { font-size: 16px; margin-bottom: 12px; color: var(--navy); }
+
+    .home-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .home-box-tile {
+      border: 2px solid var(--border);
+      background: #F8FAFC;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: start;
+      cursor: pointer;
+    }
+
+    .home-box-tile[data-box="drivers"] { border-color: #86EFAC; background: #F0FDF4; }
+    .home-box-tile[data-box="loads"] { border-color: #93C5FD; background: #EFF6FF; }
+    .home-box-tile[data-box="owner"] { border-color: #FDBA74; background: #FFF7ED; }
+    .home-box-tile[data-box="courier"] { border-color: #A5B4FC; background: #EEF2FF; }
+
+    .tile-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      color: var(--navy);
+      border: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+
+    .tile-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .tile-sub {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
 
     .role-grid-3 {
       display: grid;
@@ -379,6 +426,21 @@
       margin-top: 4px;
     }
 
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #F8FAFC;
+      margin-bottom: 10px;
+    }
+
+    .setting-label strong { display: block; font-size: 13px; color: var(--navy); }
+    .setting-label span { display: block; font-size: 11px; color: var(--muted); }
+
     .alert-err { color: var(--red); font-size: 12px; font-weight: 700; margin-top: 8px; }
     .alert-ok { color: var(--green); font-size: 12px; font-weight: 700; margin-top: 8px; }
     .hidden { display: none !important; }
@@ -437,19 +499,60 @@
       <button id="btn-ur" class="lang-btn" onclick="setLanguage('ur')">اردو</button>
       <button id="btn-es" class="lang-btn" onclick="setLanguage('es')">ES</button>
     </div>
-    <div id="header-user" class="user-chip">Guest</div>
+    <div id="header-user" class="user-chip">Home</div>
   </header>
 
   <main class="container">
 
-    <!-- PUBLIC ENTRY (SEPARATE DOCS PER ROLE, ADMIN & STAFF HIDDEN FROM PUBLIC SIGNUP) -->
-    <section id="auth-view">
+    <!-- HOME SCREEN WITH TILES (DRIVERS, LOADS, TRUCK OWNER, COURIER) + SETTINGS LIST (WITH STAFF SIGN-IN INSIDE) -->
+    <section id="home-view">
       <div class="banner banner-auth">
-        <h1 id="t-auth-title">TRUCKGO USA – Advance Booking, Held Payment &amp; Direct Chat</h1>
-        <p id="t-auth-sub">Book future/return dates ahead, payment held until delivery &amp; instant after, owners watch &amp; manage drivers.</p>
+        <h1 id="t-home-title">TRUCKGO USA – Drivers, Loads, Truck Owner &amp; Courier</h1>
+        <p id="t-home-sub">Tap a box to open its system; courier, driver &amp; truck owner stay connected on every load.</p>
       </div>
 
+      <!-- 4 MAIN HOME BOXES -->
       <div class="card">
+        <h2>Home Boxes (Tap to Open)</h2>
+        <div class="home-tiles-grid">
+          <button type="button" class="home-box-tile" data-box="drivers" onclick="openHomeBox('drivers')">
+            <span class="tile-badge">DRIVER</span>
+            <span class="tile-title">Drivers</span>
+            <span class="tile-sub">Nearby loads, GPS &amp; 3-way chat</span>
+          </button>
+          <button type="button" class="home-box-tile" data-box="loads" onclick="openHomeBox('loads')">
+            <span class="tile-badge">LOAD BOARD</span>
+            <span class="tile-title">Loads</span>
+            <span class="tile-sub">All active &amp; return loads</span>
+          </button>
+          <button type="button" class="home-box-tile" data-box="owner" onclick="openHomeBox('owner')">
+            <span class="tile-badge">PAYOUT &amp; FLEET</span>
+            <span class="tile-title">Truck Owner</span>
+            <span class="tile-sub">Salary payout, fleet &amp; chat</span>
+          </button>
+          <button type="button" class="home-box-tile" data-box="courier" onclick="openHomeBox('courier')">
+            <span class="tile-badge">BOOK &amp; RETURN</span>
+            <span class="tile-title">Courier</span>
+            <span class="tile-sub">Post outbound/return &amp; chat</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ALL LOADS + NEARBY DRIVER LOCATION BOARD -->
+      <div id="home-loads-section" class="card">
+        <h2>Loads Board &amp; Nearby Driver Loads</h2>
+        <div class="field">
+          <label>Driver Location / City (Filter Nearby Loads)</label>
+          <div style="display:flex; gap:8px;">
+            <input id="public-nearby-city" type="text" placeholder="e.g. Dallas, Miami, New York, Chicago..." oninput="renderPublicLoadBoard()" />
+            <button type="button" class="btn btn-green btn-sm" onclick="useCurrentGpsForNearbyLoads()">Use My GPS</button>
+          </div>
+        </div>
+        <div id="public-loads-board"></div>
+      </div>
+
+      <!-- ACCOUNT SIGN UP / SIGN IN CARD -->
+      <div id="home-auth-card" class="card">
         <div class="tabs-row">
           <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Quick Sign Up</button>
           <button id="tab-login" class="tab-pill" onclick="switchAuthMode('login')">Sign In</button>
@@ -457,12 +560,12 @@
 
         <form id="auth-form">
           <div id="signup-fields">
-            <label id="t-select-role" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Choose Role</label>
+            <label id="t-select-role" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Choose Role (Truck Owner, Driver, Courier)</label>
             <div class="role-grid-3">
               <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
-                <span class="role-tag">MC / DOT</span>
+                <span class="role-tag">MC / DOT • PAYOUT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Watch &amp; manage drivers</span>
+                <span class="role-desc">Gets payout &amp; pays salary</span>
               </button>
               <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
                 <span class="role-tag">CDL / DL</span>
@@ -481,7 +584,6 @@
               <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" />
             </div>
 
-            <!-- SEPARATE DOCUMENTS PER ROLE -->
             <div class="doc-box">
               <div id="doc-section-title" style="font-size:12px; font-weight:800; margin-bottom:8px;">Truck Owner Documents (MC# / USDOT# &amp; Authority)</div>
 
@@ -539,12 +641,57 @@
         </form>
       </div>
 
-      <div class="card">
-        <h2 id="t-quick-demo">Quick Preview</h2>
-        <div class="role-grid-3">
-          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
-          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
-          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier</button>
+      <!-- APP SETTINGS LIST (ALL SETTINGS + DISCREET WORKER SIGN-IN INSIDE) -->
+      <div id="app-settings-list" class="card">
+        <h2>App Settings List</h2>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Language / زبان</strong>
+            <span>Switch app interface between English, Urdu &amp; Spanish</span>
+          </div>
+          <div style="display:flex; gap:4px;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="setLanguage('en')">EN</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="setLanguage('ur')">اردو</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="setLanguage('es')">ES</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Nearby GPS Location</strong>
+            <span>Detect current location for nearby driver loads</span>
+          </div>
+          <button type="button" class="btn btn-green btn-sm" onclick="useCurrentGpsForNearbyLoads()">Detect GPS</button>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Worker Sign-In (Office Staff Only)</strong>
+            <span>Not shown on main home boxes; open worker login here</span>
+          </div>
+          <button type="button" class="btn btn-teal btn-sm" onclick="toggleStaffSignInBox()">Worker Sign-In</button>
+        </div>
+
+        <div id="staff-signin-box" class="doc-box hidden" style="margin-bottom:10px;">
+          <div style="font-size:12px; font-weight:800; margin-bottom:8px;">Office Worker Sign-In</div>
+          <div class="field">
+            <label>Worker Name</label>
+            <input id="staff-login-name" type="text" placeholder="e.g. Bilal Ahmed" />
+          </div>
+          <div class="field">
+            <label>Worker Email or ID</label>
+            <input id="staff-login-email" type="text" placeholder="staff@truckgo.us" />
+          </div>
+          <button type="button" class="btn btn-teal btn-sm" onclick="loginWorkerFromSettings()">Sign In as Worker</button>
+        </div>
+
+        <div class="setting-row" style="margin-bottom:0;">
+          <div class="setting-label">
+            <strong>Reset / Home View</strong>
+            <span>Return to main TRUCKGO home screen</span>
+          </div>
+          <button type="button" class="btn btn-dark btn-sm" onclick="logoutUser()">Home</button>
         </div>
       </div>
     </section>
@@ -552,17 +699,17 @@
     <!-- 1. TRUCK OWNER PORTAL -->
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
-        <h1>Truck Owner – Live Fleet Watch &amp; Driver Control</h1>
-        <p>Payment stays held until delivery; monitor live GPS &amp; advance loads, and remove a driver anytime.</p>
+        <h1>Truck Owner – Payout Bank, Fleet &amp; Driver Control</h1>
+        <p>Payout goes to Truck Owner so you pay driver salaries; chat with courier &amp; driver, and manage drivers anytime.</p>
       </div>
 
       <div class="card">
-        <h2>Owner Payout Bank / Account (Like Uber)</h2>
+        <h2>Truck Owner Payout Bank / Account (Receives Payout to Pay Salaries)</h2>
         <div class="field">
-          <label>Bank Routing / Account or Stripe Payout ID</label>
+          <label>Owner Bank Routing / Account or Stripe Payout ID</label>
           <input id="owner-bank-account" type="text" placeholder="e.g. Chase •••• 8821 or Stripe Express" oninput="saveBankAccounts()" />
         </div>
-        <div id="owner-bank-status" class="alert-ok">Owner payout bank ready</div>
+        <div id="owner-bank-status" class="alert-ok">Owner payout bank ready for delivery payouts</div>
       </div>
 
       <div class="card">
@@ -596,7 +743,7 @@
       </div>
 
       <div class="card">
-        <h2>Live Load Watch, Driver Control &amp; GPS</h2>
+        <h2>Live Load Watch, 3-Way Chat, Driver Control &amp; GPS</h2>
         <div id="owner-loads-list"></div>
       </div>
     </section>
@@ -604,26 +751,19 @@
     <!-- 2. DRIVER PORTAL -->
     <section id="portal-driver" class="hidden">
       <div class="banner banner-driver">
-        <h1>Driver – Advance &amp; Active Loads, Bank Payout &amp; Chat</h1>
-        <p>See advance &amp; return dates ahead, book early, payment held until delivery &amp; instant after.</p>
+        <h1>Driver – Nearby &amp; Return Loads, Delivery Lock &amp; 3-Way Chat</h1>
+        <p>Find nearby loads around your location, see outbound &amp; return dates, and chat with courier &amp; truck owner.</p>
       </div>
 
       <div class="card">
-        <h2>Driver Bank Account / Payout Method (Like Uber)</h2>
+        <h2>Nearby Loads Around My Location</h2>
         <div class="field">
-          <label>Payout Method</label>
-          <select id="driver-payout-method" onchange="saveDriverPayoutSettings()">
-            <option value="Bank Account (ACH / Instant Debit)">Bank Account (ACH / Instant Debit)</option>
-            <option value="Stripe Instant Card / Bank">Stripe Instant Card / Bank</option>
-            <option value="PayPal / Venmo">PayPal / Venmo</option>
-            <option value="Cash App">Cash App</option>
-          </select>
+          <label>My Current City / Location</label>
+          <div style="display:flex; gap:8px;">
+            <input id="driver-nearby-city" type="text" placeholder="e.g. New York, Dallas, Miami..." oninput="renderApp()" />
+            <button type="button" class="btn btn-green btn-sm" onclick="useCurrentGpsForDriver()">Use My GPS</button>
+          </div>
         </div>
-        <div class="field" style="margin-bottom:6px;">
-          <label>Bank Account / Routing or Payout Handle</label>
-          <input id="driver-payout-dest" type="text" placeholder="e.g. Bank •••• 4242 / Routing 021000021" oninput="saveDriverPayoutSettings()" />
-        </div>
-        <div id="driver-payout-summary" class="alert-ok">Payout bank ready for instant payout upon delivery</div>
       </div>
 
       <div class="card">
@@ -643,7 +783,7 @@
       </div>
 
       <div class="card">
-        <h2>Available Advance &amp; Active Loads (Pick Your Load)</h2>
+        <h2>Available &amp; Active Loads (Pick Your Load)</h2>
         <div id="driver-loads-list"></div>
       </div>
     </section>
@@ -651,8 +791,8 @@
     <!-- 3. COURIER PORTAL -->
     <section id="portal-courier" class="hidden">
       <div class="banner banner-courier">
-        <h1>Courier – Bank Account, Advance Dates, Held Payment &amp; Direct Chat</h1>
-        <p>Schedule loads weeks/months ahead or return trips so drivers can pre-book, with payment held until delivery.</p>
+        <h1>Courier – Bank Account, Outbound &amp; Return Dates/Locations</h1>
+        <p>Set pickup &amp; return dates and locations like a ticket, keep payment held until delivery, and chat with driver &amp; truck owner.</p>
       </div>
 
       <div class="card">
@@ -674,8 +814,12 @@
 
         <form id="courier-form">
           <div class="field">
-            <label>Pickup Date (Schedule Today or Weeks/Month Ahead)</label>
+            <label>Pickup Date (Outbound Date)</label>
             <input id="load-pickup-date" type="date" required />
+          </div>
+          <div class="field">
+            <label>Return Date (Optional — Like Return Ticket)</label>
+            <input id="load-return-date" type="date" />
           </div>
           <div class="field">
             <label>Trip Type (Outbound or Return / Backhaul)</label>
@@ -685,12 +829,20 @@
             </select>
           </div>
           <div class="field">
-            <label>Pickup City / Street Address (e.g. 125 Broadway, New York, NY)</label>
+            <label>Pickup City / Street Address</label>
             <input id="load-origin" type="text" placeholder="e.g. New York, NY or 125 Broadway, New York, NY" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Drop-off City / Street Address (e.g. 701 Brickell Ave, Miami, FL)</label>
+            <label>Drop-off City / Street Address</label>
             <input id="load-dest" type="text" placeholder="e.g. Miami, FL or 701 Brickell Ave, Miami, FL" oninput="calculateAutoRate()" required />
+          </div>
+          <div class="field">
+            <label>Return Pickup Location (Optional — Where Return Load Starts)</label>
+            <input id="load-return-origin" type="text" placeholder="e.g. Miami, FL (defaults to Drop-off if left blank)" />
+          </div>
+          <div class="field">
+            <label>Return Drop-off Location (Optional — Where Return Load Ends)</label>
+            <input id="load-return-dest" type="text" placeholder="e.g. New York, NY (defaults to Pickup if left blank)" />
           </div>
           <div class="field">
             <label>Auto-Calculated Miles (Edit if needed)</label>
@@ -724,7 +876,7 @@
               <button type="button" class="pay-chip-btn" data-pay="Cash App Pay" onclick="selectPayMethod(this)">Cash App Pay</button>
             </div>
             <div id="pay-method-hint" style="font-size:11px; color:#475569;">
-              Selected: Stripe Card (Visa/MC/Amex) • Held until delivery, instant payout upon completion
+              Selected: Stripe Card (Visa/MC/Amex) • Held until delivery, instant payout to Truck Owner upon completion
             </div>
           </div>
 
@@ -732,42 +884,42 @@
             <div class="rate-line"><span>Route Distance:</span><strong id="auto-miles-label">1,280 miles</strong></div>
             <div class="rate-line"><span>Auto Rent (Miles + Weight + Truck):</span><strong id="auto-fare-display">$4,288</strong></div>
             <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>%):</span><strong id="comm-amount-display">$429</strong></div>
-            <div class="rate-line rate-total"><span>Instant Payout on Delivery:</span><span id="net-payout-display">$3,859</span></div>
+            <div class="rate-line rate-total"><span>Owner Payout on Delivery:</span><span id="net-payout-display">$3,859</span></div>
           </div>
 
           <div class="field">
-            <label>Custom Rent Override ($ Optional)</label>
-            <input id="load-price" type="number" placeholder="Auto rent calculated above" oninput="updateCustomRatePreview()" />
+            <label>Custom Rent Override ($ Optional — Only If Changing Auto Rate)</label>
+            <input id="load-price" type="number" placeholder="Leave blank to use auto rent above" oninput="updateCustomRatePreview()" />
           </div>
 
-          <button type="submit" class="btn btn-blue">Post Advance / Active Load</button>
+          <button type="submit" class="btn btn-blue">Post Load (Payment Held Until Delivery)</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Loads, Delivery Payout Release, Direct Chat &amp; GPS</h2>
+        <h2>My Loads, Delivery Payout Release, 3-Way Chat &amp; GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- 4. STAFF / WORKER PORTAL (LIMITED OPERATIONS & AUDIT LOG — CANNOT CHANGE COMMISSION OR WITHDRAW ADMIN FUNDS) -->
+    <!-- 4. STAFF / WORKER PORTAL -->
     <section id="portal-staff" class="hidden">
       <div class="banner banner-staff">
-        <h1>Office / Dispatch Worker – Operations Only</h1>
-        <p>Limited worker access: monitor loads &amp; chats; commission rates, bank keys &amp; admin payouts are locked to Owner/Admin.</p>
+        <h1>Office / Dispatch Worker – Handle Loads &amp; Dispatch</h1>
+        <p>Workers manage loads &amp; dispatch notes; commission, bank accounts &amp; admin payouts stay locked to Owner/Admin.</p>
       </div>
 
       <div class="card">
         <h2>Worker Dispatch Note (Logged Under Your Name)</h2>
         <div class="field">
           <label>Dispatch / Support Update</label>
-          <input id="staff-note-input" type="text" placeholder="e.g. Confirmed pickup schedule with driver" />
+          <input id="staff-note-input" type="text" placeholder="e.g. Assigned pickup window & confirmed driver" />
         </div>
         <button type="button" class="btn btn-teal btn-sm" onclick="logStaffAction()">Save Dispatch Note</button>
       </div>
 
       <div class="card">
-        <h2>Loads &amp; Direct Chat Watch</h2>
+        <h2>Loads &amp; 3-Way Chat Watch</h2>
         <div id="staff-loads-list"></div>
       </div>
 
@@ -777,7 +929,7 @@
       </div>
     </section>
 
-    <!-- 5. PRIVATE ADMIN PORTAL (OWNER OF PLATFORM — COMMISSION WITHDRAWAL + STRIPE + AUDIT) -->
+    <!-- 5. PRIVATE ADMIN PORTAL -->
     <section id="portal-admin" class="hidden">
       <div class="banner banner-admin">
         <h1>Private Admin – Your Commission, Bank Payouts &amp; Full Control</h1>
@@ -813,14 +965,14 @@
           <label>TRUCKGO Commission (%)</label>
           <input id="admin-commission-input" type="number" min="0" max="50" step="0.5" value="10" />
         </div>
-        <button class="btn btn-purple" onclick="saveAdminConfig()">Save Settings</button>
+        <button type="button" class="btn btn-purple" onclick="saveAdminConfig()">Save Settings</button>
         <div id="admin-save-msg" class="alert-ok"></div>
       </div>
 
       <div class="stats-row">
         <div class="mini-stat"><strong id="adm-users">0</strong><span>Users</span></div>
         <div class="mini-stat"><strong id="adm-commission-total">$0</strong><span>Your Commission</span></div>
-        <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Paid to Drivers</span></div>
+        <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Paid to Owners</span></div>
       </div>
 
       <div class="card">
@@ -837,7 +989,7 @@
   </main>
 
   <nav id="bottom-nav" class="bottom-nav hidden">
-    <button class="nav-btn" onclick="renderApp()">Home</button>
+    <button class="nav-btn" onclick="logoutUser()">Home</button>
     <button class="nav-btn" onclick="switchRoleQuick('owner')">Owner</button>
     <button class="nav-btn" onclick="switchRoleQuick('driver')">Driver</button>
     <button class="nav-btn" onclick="switchRoleQuick('courier')">Courier</button>
@@ -872,8 +1024,6 @@
     let adminPayoutBank = localStorage.getItem("tg_admin_bank") || "";
     let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
-    let driverPayoutMethod = localStorage.getItem("tg_driver_pay_method") || "Bank Account (ACH / Instant Debit)";
-    let driverPayoutDest = localStorage.getItem("tg_driver_pay_dest") || "";
     let ownerBankAccount = localStorage.getItem("tg_owner_bank") || "";
     let courierBankAccount = localStorage.getItem("tg_courier_bank") || "";
     let gpsWatchId = null;
@@ -883,28 +1033,36 @@
       return d.toISOString().split("T")[0];
     }
 
+    function getDefaultReturnDate() {
+      const d = new Date(Date.now() + 14 * 86400000);
+      return d.toISOString().split("T")[0];
+    }
+
     let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
-      "TRUCKGO USA active with advance dates, return loads, staff audit trail & admin payouts"
+      "TRUCKGO USA active with home boxes, 3-way chat, staff sign-in inside settings & app settings list"
     ];
 
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
       { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Operating Authority" },
       { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Driving License & ID" },
       { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Courier Permit" },
-      { name: "Ali Raza (Dispatch)", email: "staff@truckgo.us", role: "staff", docInfo: "Office Worker (Limited Read/Dispatch)" }
+      { name: "Ali Raza (Dispatch)", email: "staff@truckgo.us", role: "staff", docInfo: "Office Worker (Dispatch & Loads)" }
     ];
 
     let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
-      { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", status: "Ready / Active" }
+      { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", ownerName: "Lone Star Trucking", status: "Ready / Active" }
     ];
 
     let loads = JSON.parse(localStorage.getItem("tg_loads") || "null") || [
       {
         id: 981,
         pickupDate: getDefaultPickupDate(),
+        returnDate: getDefaultReturnDate(),
         tripKind: "Outbound Load",
         origin: "New York, NY",
         dest: "Miami, FL",
+        returnOrigin: "Miami, FL",
+        returnDest: "New York, NY",
         miles: 1280,
         weight: 18000,
         type: "53ft Dry Van",
@@ -913,13 +1071,16 @@
         status: "Open",
         payoutStatus: "HELD UNTIL DELIVERY",
         driver: "Available for Driver",
+        truckOwner: "Lone Star Trucking",
         acceptedAt: 0,
         pickedUp: false,
         lat: 40.7128,
         lng: -74.0060,
         gpsActive: false,
         gpsUpdated: "Off (Trip Not Started)",
-        messages: [{ sender: "Courier", text: "Advance load posted; payment held until delivery. Chat directly here.", docName: "RateCon_981.pdf" }]
+        messages: [
+          { sender: "Courier", text: "Courier, Driver & Truck Owner can coordinate directly here on this load.", docName: "" }
+        ]
       }
     ];
 
@@ -965,34 +1126,32 @@
 
     const i18n = {
       en: {
-        authTitle: "TRUCKGO USA – Advance Booking, Held Payment & Direct Chat",
-        authSub: "Book future/return dates ahead, payment held until delivery & instant after, owners watch & manage drivers.",
+        homeTitle: "TRUCKGO USA – Drivers, Loads, Truck Owner & Courier",
+        homeSub: "Tap a box to open its system; courier, driver & truck owner stay connected on every load.",
         signup: "Quick Sign Up",
         login: "Sign In",
-        selectRole: "1. Choose Role",
+        selectRole: "1. Choose Role (Truck Owner, Driver, Courier)",
         lblName: "Name or Company",
         lblEmail: "Email or Phone",
         lblPass: "Password",
         submitSignup: "Enter TRUCKGO Now",
-        submitLogin: "Sign In Fast",
-        quickDemo: "Quick Preview"
+        submitLogin: "Sign In Fast"
       },
       ur: {
-        authTitle: "TRUCKGO USA – ایڈوانس تاریخ، ڈلیوری تک پیمنٹ ہولڈ اور براہِ راست چیٹ",
-        authSub: "آگے کی تاریخ یا واپسی کا لوڈ پہلے لگائیں، ڈلیوری تک پیمنٹ ہولڈ اور بعد میں فوری ادائیگی، مالک نگرانی/ڈرائیور کنٹرول کرے۔",
+        homeTitle: "TRUCKGO USA – ڈرائیورز، لوڈز، ٹرک مالک اور کورئیر",
+        homeSub: "اپنے مقصد کا ڈبہ ٹچ کر کے سسٹم کھولیں؛ کورئیر، ڈرائیور اور ٹرک مالک ایک ہی لوڈ پر رابطے میں رہیں۔",
         signup: "فوری سائن اَپ",
         login: "سائن اِن",
-        selectRole: "1. اپنا رول چنیں",
+        selectRole: "1. اپنا رول چنیں (ٹرک مالک، ڈرائیور، کورئیر)",
         lblName: "نام یا کمپنی کا نام",
         lblEmail: "ای میل یا فون نمبر",
         lblPass: "پاس ورڈ",
         submitSignup: "فوری داخل ہوں",
-        submitLogin: "تیز سائن اِن",
-        quickDemo: "فوری پریویو"
+        submitLogin: "تیز سائن اِن"
       },
       es: {
-        authTitle: "TRUCKGO USA – Reserva Anticipada, Pago Retenido y Chat Directo",
-        authSub: "Programa fechas futuras o retorno, pago retenido hasta la entrega e instantáneo después, dueños vigilan y gestionan.",
+        homeTitle: "TRUCKGO USA – Conductores, Cargas, Dueño y Courier",
+        homeSub: "Toca un cuadro para abrir su sistema; courier, conductor y dueño conectados en cada carga.",
         signup: "Registro Rápido",
         login: "Iniciar Sesión",
         selectRole: "1. Elegir Rol",
@@ -1000,8 +1159,7 @@
         lblEmail: "Correo o Teléfono",
         lblPass: "Contraseña",
         submitSignup: "Entrar a TRUCKGO",
-        submitLogin: "Entrar Rápido",
-        quickDemo: "Vista Rápida"
+        submitLogin: "Entrar Rápido"
       }
     };
 
@@ -1028,15 +1186,14 @@
       document.getElementById("btn-es").classList.toggle("active", lang === "es");
 
       const t = i18n[lang];
-      document.getElementById("t-auth-title").textContent = t.authTitle;
-      document.getElementById("t-auth-sub").textContent = t.authSub;
+      document.getElementById("t-home-title").textContent = t.homeTitle;
+      document.getElementById("t-home-sub").textContent = t.homeSub;
       document.getElementById("tab-signup").textContent = t.signup;
       document.getElementById("tab-login").textContent = t.login;
       document.getElementById("t-select-role").textContent = t.selectRole;
       document.getElementById("t-lbl-name").textContent = t.lblName;
       document.getElementById("t-lbl-email").textContent = t.lblEmail;
       document.getElementById("t-lbl-pass").textContent = t.lblPass;
-      document.getElementById("t-quick-demo").textContent = t.quickDemo;
       document.getElementById("auth-submit-btn").textContent = authMode === "signup" ? t.submitSignup : t.submitLogin;
     }
 
@@ -1049,12 +1206,33 @@
       localStorage.setItem("tg_admin_bank", adminPayoutBank);
       localStorage.setItem("tg_stripe_pk", stripePublishableKey);
       localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
-      localStorage.setItem("tg_driver_pay_method", driverPayoutMethod);
-      localStorage.setItem("tg_driver_pay_dest", driverPayoutDest);
       localStorage.setItem("tg_owner_bank", ownerBankAccount);
       localStorage.setItem("tg_courier_bank", courierBankAccount);
       if (currentUser) localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
       else localStorage.removeItem("tg_current_user");
+    }
+
+    function openHomeBox(boxName) {
+      if (boxName === "loads") {
+        document.getElementById("home-loads-section")?.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+      if (boxName === "drivers") quickLogin("driver");
+      else if (boxName === "owner") quickLogin("owner");
+      else if (boxName === "courier") quickLogin("courier");
+    }
+
+    function toggleStaffSignInBox() {
+      document.getElementById("staff-signin-box")?.classList.toggle("hidden");
+    }
+
+    function loginWorkerFromSettings() {
+      const wName = (document.getElementById("staff-login-name")?.value.trim() || "Office Worker").slice(0, 60);
+      const wEmail = (document.getElementById("staff-login-email")?.value.trim() || "staff@truckgo.us").slice(0, 80);
+      currentUser = { name: wName, email: wEmail, role: "staff", docInfo: "Office Staff (Settings Login)" };
+      addSecurityLog(`Worker signed in via App Settings: ${wName}`);
+      saveState();
+      renderApp();
     }
 
     function saveAdminPayoutBank() {
@@ -1101,24 +1279,12 @@
       if (oStatus) {
         oStatus.textContent = ownerBankAccount
           ? `Owner payout bank saved: ${ownerBankAccount}`
-          : "Owner payout bank ready (add bank/account details anytime)";
+          : "Owner payout bank ready (receives delivery payouts to pay salaries)";
       }
       if (cStatus) {
         cStatus.textContent = courierBankAccount
           ? `Courier bank/billing saved: ${courierBankAccount}`
           : "Courier bank account ready (add bank/ACH/card details anytime)";
-      }
-    }
-
-    function saveDriverPayoutSettings() {
-      const mEl = document.getElementById("driver-payout-method");
-      const dEl = document.getElementById("driver-payout-dest");
-      if (mEl) driverPayoutMethod = mEl.value;
-      if (dEl) driverPayoutDest = dEl.value.trim();
-      saveState();
-      const sumEl = document.getElementById("driver-payout-summary");
-      if (sumEl) {
-        sumEl.textContent = `Payout bank/method: ${driverPayoutMethod}${driverPayoutDest ? ` (${driverPayoutDest})` : " — attach bank/account for payout"}`;
       }
     }
 
@@ -1242,7 +1408,7 @@
       document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("pay-method-hint").textContent =
-        `Selected: ${selectedPayMethod} • Held until delivery, instant payout upon completion`;
+        `Selected: ${selectedPayMethod} • Held until delivery, instant payout to Truck Owner upon completion`;
     }
 
     function applyRoutePreset(origin, dest, weight) {
@@ -1331,9 +1497,10 @@
       const unit = document.getElementById("truck-unit").value.trim();
       const equip = document.getElementById("truck-equip").value;
       const driver = document.getElementById("truck-driver").value.trim();
+      const ownerLabel = currentUser && currentUser.role === "owner" ? currentUser.name : "Lone Star Trucking";
       if (!unit || !driver) return;
-      trucks = [{ id: Date.now(), unit, equip, driver, status: "Ready / Active" }, ...trucks];
-      addSecurityLog(`Truck added: ${unit} -> ${driver}`);
+      trucks = [{ id: Date.now(), unit, equip, driver, ownerName: ownerLabel, status: "Ready / Active" }, ...trucks];
+      addSecurityLog(`Truck added: ${unit} -> ${driver} (Owner: ${ownerLabel})`);
       saveState();
       e.target.reset();
       renderApp();
@@ -1363,9 +1530,12 @@
     document.getElementById("courier-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pickupDate = document.getElementById("load-pickup-date").value || getDefaultPickupDate();
+      const returnDate = document.getElementById("load-return-date").value || "";
       const tripKind = document.getElementById("load-trip-kind").value || "Outbound Load";
       const origin = document.getElementById("load-origin").value.trim();
       const dest = document.getElementById("load-dest").value.trim();
+      const returnOrigin = document.getElementById("load-return-origin").value.trim() || dest;
+      const returnDest = document.getElementById("load-return-dest").value.trim() || origin;
       const miles = Math.max(5, Number(document.getElementById("load-miles").value) || 500);
       const weight = Math.max(50, Number(document.getElementById("load-weight").value) || 10000);
       const type = document.getElementById("load-type").value;
@@ -1374,13 +1544,17 @@
       if (!origin || !dest) return;
 
       const startCoords = lookupCoordsFromAddress(origin) || [32.7767, -96.7970];
+      const defaultOwner = trucks[0]?.ownerName || "Lone Star Trucking";
 
       const newLoad = {
         id: Date.now(),
         pickupDate,
+        returnDate,
         tripKind,
         origin,
         dest,
+        returnOrigin,
+        returnDest,
         miles,
         weight,
         type,
@@ -1389,17 +1563,24 @@
         status: "Open",
         payoutStatus: "HELD UNTIL DELIVERY",
         driver: "Available for Driver",
+        truckOwner: defaultOwner,
         acceptedAt: 0,
         pickedUp: false,
         lat: startCoords[0],
         lng: startCoords[1],
         gpsActive: false,
         gpsUpdated: "Off (Trip Not Started)",
-        messages: [{ sender: "Courier", text: `${tripKind} on ${pickupDate} (${miles} mi, ${weight.toLocaleString()} lbs). Payment held until delivery.`, docName: "" }]
+        messages: [
+          {
+            sender: "Courier",
+            text: `Pickup ${pickupDate}${returnDate ? ` • Return ${returnDate} (${returnOrigin} -> ${returnDest})` : ""}. Courier, Driver & Truck Owner can chat here.`,
+            docName: ""
+          }
+        ]
       };
 
       loads = [newLoad, ...loads];
-      addSecurityLog(`Load posted (${tripKind}, Date: ${pickupDate}): ${origin} -> ${dest} ($${price})`);
+      addSecurityLog(`Load posted (${tripKind}, Pickup: ${pickupDate}${returnDate ? `, Return: ${returnDate}` : ""}): ${origin} -> ${dest} ($${price})`);
       saveState();
       await triggerStripeCheckoutIfConfigured(newLoad);
 
@@ -1411,6 +1592,7 @@
 
       e.target.reset();
       document.getElementById("load-pickup-date").value = getDefaultPickupDate();
+      document.getElementById("load-return-date").value = getDefaultReturnDate();
       document.getElementById("load-miles").value = 1280;
       document.getElementById("load-weight").value = 18000;
       calculateAutoRate();
@@ -1419,6 +1601,9 @@
 
     function acceptLoad(id) {
       const actor = currentUser && currentUser.role === "driver" ? currentUser.name : "Driver";
+      const matchedTruck = trucks.find((t) => t.driver.toLowerCase() === actor.toLowerCase()) || trucks[0];
+      const ownerForLoad = matchedTruck?.ownerName || "Truck Owner";
+
       loads = loads.map((l) =>
         l.id === id
           ? {
@@ -1426,13 +1611,14 @@
               status: "Booked / Pickup Pending",
               payoutStatus: "HELD UNTIL DELIVERY (LOCKED)",
               driver: actor,
+              truckOwner: ownerForLoad,
               acceptedAt: Date.now(),
               pickedUp: false,
               gpsUpdated: "Booked — Confirm Pickup Next"
             }
           : l
       );
-      addSecurityLog(`Driver ${actor} booked Load #${id} — delivery payout locked until pickup & delivery`);
+      addSecurityLog(`Driver ${actor} booked Load #${id} (Truck Owner: ${ownerForLoad}) — delivery payout locked until pickup & delivery`);
       saveState();
       renderApp();
     }
@@ -1464,14 +1650,14 @@
         }
         const comm = Math.round((l.price * commissionPercent) / 100);
         const net = l.price - comm;
-        const destLabel = driverPayoutDest ? `${driverPayoutMethod} (${driverPayoutDest})` : driverPayoutMethod;
-        addSecurityLog(`INSTANT PAYOUT ON DELIVERY (#${id}): $${net} via ${destLabel}, $${comm} fee to TRUCKGO`);
+        const ownerBankLabel = ownerBankAccount ? `Owner Bank (${ownerBankAccount})` : `${l.truckOwner || "Truck Owner"} Payout Account`;
+        addSecurityLog(`INSTANT PAYOUT ON DELIVERY (#${id}): $${net} to ${ownerBankLabel} (to pay driver salary), $${comm} fee to TRUCKGO`);
         return {
           ...l,
           status: "Delivered",
           gpsActive: false,
           gpsUpdated: "Stopped (Delivered)",
-          payoutStatus: `PAID INSTANTLY ON DELIVERY $${net.toLocaleString()} • ${destLabel}`
+          payoutStatus: `PAID INSTANTLY ON DELIVERY $${net.toLocaleString()} • ${ownerBankLabel}`
         };
       });
       stopLiveGPS();
@@ -1482,10 +1668,12 @@
       }
     }
 
-    function sendDirectChat(loadId, roleLabel) {
-      const msgEl = document.getElementById(`msg-input-${loadId}-${roleLabel}`);
-      const docEl = document.getElementById(`doc-input-${loadId}-${roleLabel}`);
+    function sendDirectChat(loadId, defaultSenderRole) {
+      const msgEl = document.getElementById(`msg-input-${loadId}-${defaultSenderRole}`);
+      const senderSelect = document.getElementById(`msg-sender-${loadId}-${defaultSenderRole}`);
+      const docEl = document.getElementById(`doc-input-${loadId}-${defaultSenderRole}`);
       const text = msgEl ? msgEl.value.trim() : "";
+      const senderRole = senderSelect ? senderSelect.value : defaultSenderRole;
       const docName = docEl && docEl.files[0] ? docEl.files[0].name : "";
       if (!text && !docName) return;
 
@@ -1493,14 +1681,14 @@
         if (l.id !== loadId) return l;
         return {
           ...l,
-          messages: [...(l.messages || []), { sender: roleLabel, text: text || "Document shared", docName }]
+          messages: [...(l.messages || []), { sender: senderRole, text: text || "Document shared", docName }]
         };
       });
       saveState();
       renderApp();
     }
 
-    function renderDirectChatBox(load, roleLabel) {
+    function renderThreeWayChatBox(load, defaultRoleLabel) {
       const msgsHtml = (load.messages || [])
         .map(
           (m) => `
@@ -1514,15 +1702,25 @@
 
       return `
         <div class="comm-box">
-          <div style="font-size:11px; font-weight:800; color:#334155; margin-bottom:6px;">Direct Driver ↔ Courier Chat &amp; Docs</div>
+          <div style="font-size:11px; font-weight:800; color:#334155; margin-bottom:6px;">
+            3-Way Load Chat: Courier ↔ Driver ↔ Truck Owner (${escapeHtml(load.truckOwner || "Owner")})
+          </div>
           ${msgsHtml}
           <div class="field" style="margin-bottom:6px;">
-            <input id="msg-input-${load.id}-${roleLabel}" type="text" placeholder="Message directly..." />
+            <label style="font-size:11px;">Send Message As</label>
+            <select id="msg-sender-${load.id}-${defaultRoleLabel}">
+              <option value="Courier" ${defaultRoleLabel === "Courier" ? "selected" : ""}>Courier</option>
+              <option value="Driver" ${defaultRoleLabel === "Driver" ? "selected" : ""}>Driver</option>
+              <option value="Truck Owner" ${defaultRoleLabel === "Truck Owner" ? "selected" : ""}>Truck Owner (Payout Recipient)</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:6px;">
+            <input id="msg-input-${load.id}-${defaultRoleLabel}" type="text" placeholder="Message courier, driver & truck owner..." />
           </div>
           <div class="field" style="margin-bottom:8px;">
-            <input id="doc-input-${load.id}-${roleLabel}" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+            <input id="doc-input-${load.id}-${defaultRoleLabel}" type="file" accept=".pdf,.jpg,.jpeg,.png" />
           </div>
-          <button type="button" class="btn btn-dark btn-sm" onclick="sendDirectChat(${load.id}, '${roleLabel}')">Send</button>
+          <button type="button" class="btn btn-dark btn-sm" onclick="sendDirectChat(${load.id}, '${defaultRoleLabel}')">Send</button>
         </div>
       `;
     }
@@ -1586,29 +1784,114 @@
       );
     }
 
+    function useCurrentGpsForNearbyLoads() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        let nearestCity = "Dallas, TX";
+        let bestDist = Infinity;
+        for (const [cityName, c] of Object.entries(CITY_COORDS)) {
+          const d = haversineMiles(lat, lng, c[0], c[1]);
+          if (d < bestDist) {
+            bestDist = d;
+            nearestCity = cityName.replace(/\b\w/g, (ch) => ch.toUpperCase());
+          }
+        }
+        const el = document.getElementById("public-nearby-city");
+        if (el) el.value = nearestCity;
+        renderPublicLoadBoard();
+      });
+    }
+
+    function useCurrentGpsForDriver() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        let nearestCity = "Dallas, TX";
+        let bestDist = Infinity;
+        for (const [cityName, c] of Object.entries(CITY_COORDS)) {
+          const d = haversineMiles(lat, lng, c[0], c[1]);
+          if (d < bestDist) {
+            bestDist = d;
+            nearestCity = cityName.replace(/\b\w/g, (ch) => ch.toUpperCase());
+          }
+        }
+        const el = document.getElementById("driver-nearby-city");
+        if (el) el.value = nearestCity;
+        renderApp();
+      });
+    }
+
+    function getDistanceBadgeForCity(originText, cityFilterText) {
+      const q = String(cityFilterText || "").trim().toLowerCase();
+      if (!q) return "";
+      const c1 = lookupCoordsFromAddress(originText);
+      const c2 = lookupCoordsFromAddress(q);
+      if (!c1 || !c2) return "";
+      const dist = haversineMiles(c1[0], c1[1], c2[0], c2[1]);
+      return `<span class="badge badge-open">~${dist.toLocaleString()} mi from ${escapeHtml(cityFilterText.trim())}</span>`;
+    }
+
+    function renderPublicLoadBoard() {
+      const boardEl = document.getElementById("public-loads-board");
+      if (!boardEl) return;
+      const cityFilter = document.getElementById("public-nearby-city")?.value.trim().toLowerCase() || "";
+
+      const sortedLoads = [...loads].sort((a, b) => {
+        if (!cityFilter) return 0;
+        const ca = lookupCoordsFromAddress(a.origin);
+        const cb = lookupCoordsFromAddress(b.origin);
+        const cc = lookupCoordsFromAddress(cityFilter);
+        if (!ca || !cb || !cc) return 0;
+        return haversineMiles(ca[0], ca[1], cc[0], cc[1]) - haversineMiles(cb[0], cb[1], cc[0], cc[1]);
+      });
+
+      boardEl.innerHTML = sortedLoads
+        .map((l) => {
+          const comm = Math.round((l.price * commissionPercent) / 100);
+          const net = l.price - comm;
+          const nearBadge = getDistanceBadgeForCity(l.origin, cityFilter);
+          return `
+            <div class="list-item">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
+                <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.status)}</span>
+              </div>
+              <div class="item-meta">
+                Pickup: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong>
+                ${l.returnDate ? ` • Return: <strong>${escapeHtml(l.returnDate)}</strong> (${escapeHtml(l.returnOrigin || l.dest)} &rarr; ${escapeHtml(l.returnDest || l.origin)})` : ""}
+                • Owner: <strong>${escapeHtml(l.truckOwner || "Truck Owner")}</strong> • Owner Payout: <strong>$${net.toLocaleString()}</strong>
+                ${nearBadge ? `<div style="margin-top:4px;">${nearBadge}</div>` : ""}
+              </div>
+              ${l.status === "Open" ? `<button type="button" class="btn btn-green btn-sm" onclick="quickLogin('driver'); acceptLoad(${l.id});">Quick Book Load as Driver</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
     function renderApp() {
       initStripe();
       setLanguage(lang);
       calculateAutoRate();
 
       const pickupDateEl = document.getElementById("load-pickup-date");
+      const returnDateEl = document.getElementById("load-return-date");
       if (pickupDateEl && !pickupDateEl.value) pickupDateEl.value = getDefaultPickupDate();
+      if (returnDateEl && !returnDateEl.value) returnDateEl.value = getDefaultReturnDate();
 
       document.getElementById("admin-commission-input").value = commissionPercent;
       document.getElementById("admin-stripe-pk").value = stripePublishableKey;
       document.getElementById("admin-stripe-endpoint").value = stripeEndpoint;
 
       const admBankEl = document.getElementById("admin-payout-bank");
-      const paySel = document.getElementById("driver-payout-method");
-      const payDest = document.getElementById("driver-payout-dest");
       const ownerBankEl = document.getElementById("owner-bank-account");
       const courierBankEl = document.getElementById("courier-bank-account");
       if (admBankEl) admBankEl.value = adminPayoutBank;
-      if (paySel) paySel.value = driverPayoutMethod;
-      if (payDest) payDest.value = driverPayoutDest;
       if (ownerBankEl) ownerBankEl.value = ownerBankAccount;
       if (courierBankEl) courierBankEl.value = courierBankAccount;
-      saveDriverPayoutSettings();
       saveBankAccounts();
 
       const params = new URLSearchParams(window.location.search);
@@ -1617,7 +1900,7 @@
         saveState();
       }
 
-      const authView = document.getElementById("auth-view");
+      const homeView = document.getElementById("home-view");
       const bottomNav = document.getElementById("bottom-nav");
       const headerUser = document.getElementById("header-user");
 
@@ -1626,13 +1909,14 @@
       });
 
       if (!currentUser) {
-        authView.classList.remove("hidden");
+        homeView.classList.remove("hidden");
         bottomNav.classList.add("hidden");
-        headerUser.textContent = "Guest";
+        headerUser.textContent = "Home";
+        renderPublicLoadBoard();
         return;
       }
 
-      authView.classList.add("hidden");
+      homeView.classList.add("hidden");
       bottomNav.classList.remove("hidden");
       headerUser.textContent = `${currentUser.name} (${currentUser.role})`;
 
@@ -1663,33 +1947,50 @@
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
-              <div class="item-meta">Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • ${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • Rent: <strong>$${net.toLocaleString()}</strong></div>
+              <div class="item-meta">Pickup: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong>${l.returnDate ? ` • Return: <strong>${escapeHtml(l.returnDate)}</strong> (${escapeHtml(l.returnOrigin || l.dest)} &rarr; ${escapeHtml(l.returnDest || l.origin)})` : ""} • Owner Payout: <strong>$${net.toLocaleString()}</strong></div>
               ${renderLiveGpsForWatcher(l, "OWNER WATCH GPS")}
-              <div class="item-meta">Driver: <strong>${escapeHtml(l.driver)}</strong> • Status: ${escapeHtml(l.status)}</div>
+              <div class="item-meta">Driver: <strong>${escapeHtml(l.driver)}</strong> • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Status: ${escapeHtml(l.status)}</div>
               ${hasAssignedDriver ? `<button type="button" class="btn btn-red btn-sm" onclick="removeLoadDriver(${l.id})">Remove Driver from Load</button>` : ""}
+              ${renderThreeWayChatBox(l, "Truck Owner")}
             </div>
           `;
         })
         .join("");
 
-      document.getElementById("driver-loads-list").innerHTML = loads
+      const driverCityFilter = document.getElementById("driver-nearby-city")?.value.trim().toLowerCase() || "";
+      const driverLoadsSorted = [...loads].sort((a, b) => {
+        if (!driverCityFilter) return 0;
+        const ca = lookupCoordsFromAddress(a.origin);
+        const cb = lookupCoordsFromAddress(b.origin);
+        const cc = lookupCoordsFromAddress(driverCityFilter);
+        if (!ca || !cb || !cc) return 0;
+        return haversineMiles(ca[0], ca[1], cc[0], cc[1]) - haversineMiles(cb[0], cb[1], cc[0], cc[1]);
+      });
+
+      document.getElementById("driver-loads-list").innerHTML = driverLoadsSorted
         .map((l) => {
           const comm = Math.round((l.price * commissionPercent) / 100);
           const net = l.price - comm;
           const canDeliver = l.status !== "Open" && l.status !== "Delivered" && l.pickedUp;
+          const nearBadge = getDistanceBadgeForCity(l.origin, driverCityFilter);
           return `
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
-              <div class="item-meta">Pickup Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • <span class="badge badge-info">${escapeHtml(l.tripKind || "Outbound Load")}</span> • ${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • Instant Rent on Delivery: <strong>$${net.toLocaleString()}</strong></div>
+              <div class="item-meta">
+                Pickup: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong>
+                ${l.returnDate ? ` • Return: <strong>${escapeHtml(l.returnDate)}</strong> (${escapeHtml(l.returnOrigin || l.dest)} &rarr; ${escapeHtml(l.returnDest || l.origin)})` : ""}
+                • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Owner Payout on Delivery: <strong>$${net.toLocaleString()}</strong>
+                ${nearBadge ? `<div style="margin-top:4px;">${nearBadge}</div>` : ""}
+              </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Book / Accept Load (Held Until Delivery)</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
                 ${l.status !== "Open" && l.status !== "Delivered" && !l.pickedUp ? `<button class="btn btn-blue btn-sm" onclick="confirmPickupStep(${l.id})">1. Confirm Pickup</button>` : ""}
-                ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "2. Confirm Delivery & Instant Pay" : "Delivery Locked Until Pickup"}</button>` : `<span class="badge badge-open">${escapeHtml(l.payoutStatus || "Delivered")}</span>`}
+                ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "2. Confirm Delivery & Pay Owner" : "Delivery Locked Until Pickup"}</button>` : `<span class="badge badge-open">${escapeHtml(l.payoutStatus || "Delivered")}</span>`}
               </div>
-              ${renderDirectChatBox(l, "Driver")}
+              ${renderThreeWayChatBox(l, "Driver")}
             </div>
           `;
         })
@@ -1707,11 +2008,11 @@
                 <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
               <div class="item-meta">
-                Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Total: $${l.price.toLocaleString()} • Driver Rent: $${net.toLocaleString()} • Fee: $${comm.toLocaleString()}
+                Pickup: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong>${l.returnDate ? ` • Return: <strong>${escapeHtml(l.returnDate)}</strong> (${escapeHtml(l.returnOrigin || l.dest)} &rarr; ${escapeHtml(l.returnDest || l.origin)})` : ""} • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Total: $${l.price.toLocaleString()} • Owner Payout: $${net.toLocaleString()} • Fee: $${comm.toLocaleString()}
               </div>
               ${renderLiveGpsForWatcher(l, "COURIER LIVE GPS")}
-              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "Confirm Delivery & Release Instant Pay" : "Payment Held Until Pickup & Delivery"}</button>` : `<div class="item-meta"><strong>${escapeHtml(l.payoutStatus || "")}</strong></div>`}
-              ${renderDirectChatBox(l, "Courier")}
+              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "Confirm Delivery & Release Payout to Owner" : "Payment Held Until Pickup & Delivery"}</button>` : `<div class="item-meta"><strong>${escapeHtml(l.payoutStatus || "")}</strong></div>`}
+              ${renderThreeWayChatBox(l, "Courier")}
             </div>
           `;
         })
@@ -1725,7 +2026,8 @@
               <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
               <span class="badge badge-teal">${escapeHtml(l.status)}</span>
             </div>
-            <div class="item-meta">Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • Driver: <strong>${escapeHtml(l.driver)}</strong> • Payout: ${escapeHtml(l.payoutStatus || "")}</div>
+            <div class="item-meta">Pickup: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong>${l.returnDate ? ` • Return: <strong>${escapeHtml(l.returnDate)}</strong>` : ""} • Driver: <strong>${escapeHtml(l.driver)}</strong> • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong></div>
+            ${renderThreeWayChatBox(l, "Courier")}
           </div>
         `
         )
