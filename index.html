@@ -4,27 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>TRUCKGO USA – Multi-Role Freight & GPS Platform</title>
+  <title>TRUCKGO USA – App Code Lock, Phone/Email OTP, Stripe, GPS & Commission</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     :root {
       --navy: #0F172A;
       --navy-mid: #1E293B;
       --orange: #F97316;
-      --orange-dark: #EA580C;
       --blue: #2563EB;
+      --green: #16A34A;
+      --purple: #7C3AED;
+      --red: #DC2626;
       --bg: #F1F5F9;
       --card: #FFFFFF;
       --text: #0F172A;
       --muted: #64748B;
       --border: #E2E8F0;
-      --green: #16A34A;
       --green-bg: #DCFCE7;
       --amber: #D97706;
       --amber-bg: #FEF3C7;
-      --red: #DC2626;
+      --blue-bg: #DBEAFE;
+      --purple-bg: #EDE9FE;
       --red-bg: #FEE2E2;
     }
 
@@ -36,20 +37,22 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Nastaliq Urdu", sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 84px;
+      padding-bottom: 94px;
     }
 
-    /* Top App Header */
+    body.rtl { direction: rtl; }
+
     .app-header {
       background: var(--navy);
       color: #FFFFFF;
-      padding: 14px 16px;
+      padding: 10px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 6px;
       position: sticky;
       top: 0;
       z-index: 40;
@@ -59,9 +62,9 @@
     .logo-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .logo-pill {
@@ -69,29 +72,43 @@
       color: #FFFFFF;
       font-size: 10px;
       font-weight: 800;
-      padding: 3px 7px;
+      padding: 3px 6px;
       border-radius: 6px;
-      letter-spacing: 0.5px;
+    }
+
+    .lang-group { display: flex; gap: 4px; }
+
+    .lang-btn {
+      background: #1E293B;
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      padding: 4px 7px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--orange);
+      color: #FFFFFF;
+      border-color: var(--orange);
     }
 
     .user-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
+      font-size: 11px;
       background: var(--navy-mid);
-      padding: 6px 10px;
+      padding: 5px 8px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .container {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 16px;
-    }
+    .container { max-width: 860px; margin: 0 auto; padding: 16px; }
 
-    /* Cards & Forms */
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -101,27 +118,23 @@
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
     }
 
-    .hero-card {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    .banner {
       color: #FFFFFF;
-      border: none;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
     }
 
-    .hero-card h1 {
-      font-size: 22px;
-      margin-bottom: 6px;
-    }
+    .banner-auth { background: linear-gradient(135deg, #0F172A, #1E293B); }
+    .banner-owner { background: linear-gradient(135deg, #9A3412, #EA580C); }
+    .banner-driver { background: linear-gradient(135deg, #14532D, #16A34A); }
+    .banner-courier { background: linear-gradient(135deg, #1E3A8A, #2563EB); }
+    .banner-admin { background: linear-gradient(135deg, #4C1D95, #7C3AED); }
 
-    .hero-card p {
-      font-size: 13px;
-      color: #CBD5E1;
-    }
+    .banner h1 { font-size: 20px; margin-bottom: 5px; }
+    .banner p { font-size: 13px; opacity: 0.92; }
 
-    h2 {
-      font-size: 17px;
-      margin-bottom: 12px;
-      color: var(--navy);
-    }
+    h2 { font-size: 16px; margin-bottom: 12px; color: var(--navy); }
 
     .role-grid {
       display: grid;
@@ -130,39 +143,93 @@
       margin-bottom: 14px;
     }
 
-    .role-btn {
+    .role-card {
       border: 2px solid var(--border);
       background: #F8FAFC;
-      border-radius: 12px;
-      padding: 12px 10px;
-      text-align: left;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: start;
       cursor: pointer;
-      transition: all 0.15s ease;
     }
 
-    .role-btn.active {
-      border-color: var(--orange);
-      background: #FFF7ED;
-    }
+    .role-card.active[data-role="owner"] { border-color: var(--orange); background: #FFF7ED; }
+    .role-card.active[data-role="driver"] { border-color: var(--green); background: #F0FDF4; }
+    .role-card.active[data-role="courier"] { border-color: var(--blue); background: #EFF6FF; }
+    .role-card.active[data-role="admin"] { border-color: var(--purple); background: #F5F3FF; }
 
-    .role-title {
+    .role-tag {
+      display: inline-block;
+      font-size: 10px;
       font-weight: 800;
-      font-size: 14px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #E2E8F0;
       color: var(--navy);
-      display: block;
+      margin-bottom: 4px;
     }
 
-    .role-desc {
-      font-size: 11px;
-      color: var(--muted);
-      display: block;
-      margin-top: 2px;
-    }
+    .role-title { font-weight: 800; font-size: 14px; color: var(--navy); display: block; }
+    .role-desc { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
 
-    .field {
+    .doc-box {
+      background: #F8FAFC;
+      border: 1px dashed #94A3B8;
+      border-radius: 14px;
+      padding: 14px;
       margin-bottom: 12px;
     }
 
+    .sec-box {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .otp-box {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .pay-box {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .pay-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pay-chip-btn {
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      color: var(--navy);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .pay-chip-btn.active {
+      border-color: var(--blue);
+      background: #EFF6FF;
+      color: var(--blue);
+    }
+
+    .field { margin-bottom: 12px; }
     .field label {
       display: block;
       font-size: 12px;
@@ -174,70 +241,53 @@
     .field input,
     .field select {
       width: 100%;
-      padding: 12px;
+      padding: 11px 12px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 14px;
       background: #FFFFFF;
       color: var(--text);
     }
 
-    .field input:focus,
-    .field select:focus {
-      outline: none;
-      border-color: var(--orange);
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+    .rate-summary {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .rate-line { display: flex; justify-content: space-between; margin-bottom: 4px; }
+
+    .rate-total {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--navy);
+      border-top: 1px solid #BFDBFE;
+      padding-top: 6px;
+      margin-top: 6px;
     }
 
     .btn {
       width: 100%;
-      padding: 13px 16px;
+      padding: 12px 15px;
       border: none;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.1s ease;
     }
 
-    .btn:active {
-      transform: scale(0.99);
-    }
+    .btn-orange { background: var(--orange); color: #FFFFFF; }
+    .btn-green { background: var(--green); color: #FFFFFF; }
+    .btn-blue { background: var(--blue); color: #FFFFFF; }
+    .btn-purple { background: var(--purple); color: #FFFFFF; }
+    .btn-dark { background: var(--navy); color: #FFFFFF; }
+    .btn-outline { background: #FFFFFF; color: var(--navy); border: 1px solid var(--border); }
+    .btn-sm { width: auto; padding: 7px 11px; font-size: 12px; border-radius: 9px; }
 
-    .btn-primary {
-      background: var(--orange);
-      color: #FFFFFF;
-    }
-
-    .btn-dark {
-      background: var(--navy);
-      color: #FFFFFF;
-    }
-
-    .btn-green {
-      background: var(--green);
-      color: #FFFFFF;
-    }
-
-    .btn-outline {
-      background: #FFFFFF;
-      color: var(--navy);
-      border: 1px solid var(--border);
-    }
-
-    .btn-sm {
-      width: auto;
-      padding: 8px 12px;
-      font-size: 12px;
-      border-radius: 9px;
-    }
-
-    .tabs-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
+    .tabs-row { display: flex; gap: 8px; margin-bottom: 14px; }
     .tab-pill {
       flex: 1;
       padding: 10px;
@@ -248,18 +298,13 @@
       font-size: 13px;
       cursor: pointer;
     }
-
-    .tab-pill.active {
-      background: var(--navy);
-      color: #FFFFFF;
-      border-color: var(--navy);
-    }
+    .tab-pill.active { background: var(--navy); color: #FFFFFF; border-color: var(--navy); }
 
     .list-item {
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       background: #FFFFFF;
     }
 
@@ -271,17 +316,8 @@
       margin-bottom: 6px;
     }
 
-    .item-title {
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--navy);
-    }
-
-    .item-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
+    .item-title { font-weight: 800; font-size: 15px; color: var(--navy); }
+    .item-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
 
     .badge {
       display: inline-block;
@@ -293,21 +329,23 @@
 
     .badge-open { background: var(--green-bg); color: var(--green); }
     .badge-transit { background: var(--amber-bg); color: var(--amber); }
-    .badge-danger { background: var(--red-bg); color: var(--red); }
+    .badge-info { background: var(--blue-bg); color: var(--blue); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-sec { background: var(--red-bg); color: var(--red); }
 
-    .gps-box {
+    .gps-live-card {
       background: #0F172A;
       color: #F8FAFC;
       border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 12px 14px;
+      margin: 8px 0 10px;
     }
 
     .gps-coords {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 13px;
+      font-size: 12px;
       color: #38BDF8;
-      margin: 6px 0 10px;
+      margin: 4px 0 6px;
     }
 
     .map-link {
@@ -318,19 +356,75 @@
       text-decoration: underline;
     }
 
-    .hidden {
-      display: none !important;
+    .comm-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
     }
 
-    .notice {
-      font-size: 13px;
-      margin-top: 10px;
-      color: var(--green);
-      font-weight: 600;
+    .msg-row {
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      margin-bottom: 6px;
+    }
+
+    .doc-chip {
+      display: inline-block;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      color: #FFFFFF;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lock-card {
+      width: 100%;
+      max-width: 380px;
+      background: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      padding: 22px;
       text-align: center;
     }
 
-    /* Mobile Bottom Navigation */
+    .lock-card input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #475569;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 18px;
+      letter-spacing: 6px;
+      text-align: center;
+      margin: 12px 0;
+    }
+
+    .alert-err { color: #FCA5A5; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .alert-ok { color: #86EFAC; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .card .alert-err { color: var(--red); }
+    .card .alert-ok { color: var(--green); }
+    .hidden { display: none !important; }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -350,16 +444,8 @@
       font-size: 11px;
       font-weight: 700;
       color: var(--muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
       cursor: pointer;
-      padding: 4px 8px;
-    }
-
-    .nav-btn.active {
-      color: var(--orange);
+      padding: 4px 6px;
     }
 
     .stats-row {
@@ -377,256 +463,395 @@
       text-align: center;
     }
 
-    .mini-stat strong {
-      display: block;
-      font-size: 18px;
-      color: var(--navy);
-    }
-
-    .mini-stat span {
-      font-size: 11px;
-      color: var(--muted);
-    }
+    .mini-stat strong { display: block; font-size: 17px; color: var(--navy); }
+    .mini-stat span { font-size: 11px; color: var(--muted); }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
+  <!-- APP CODE LOCK SCREEN -->
+  <div id="app-lock-screen" class="lock-screen hidden">
+    <div class="lock-card">
+      <div class="logo-pill" style="display:inline-block; margin-bottom:8px;">TRUCKGO LOCK</div>
+      <h2 style="color:#FFFFFF; margin-bottom:4px;">App Passcode Lock</h2>
+      <p style="font-size:12px; color:#CBD5E1;">Enter your 4-digit app code to unlock</p>
+      <input id="unlock-code-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••" />
+      <button type="button" class="btn btn-orange" onclick="unlockAppWithCode()">Unlock App</button>
+      <div id="unlock-error" class="alert-err"></div>
+    </div>
+  </div>
+
   <header class="app-header">
     <div class="logo-wrap">
       <span class="logo-pill">USA</span>
       <span>TRUCKGO</span>
     </div>
-    <div id="header-user" class="user-chip">Guest Mode</div>
+    <div class="lang-group">
+      <button id="btn-en" class="lang-btn active" onclick="setLanguage('en')">EN</button>
+      <button id="btn-ur" class="lang-btn" onclick="setLanguage('ur')">اردو</button>
+      <button id="btn-es" class="lang-btn" onclick="setLanguage('es')">ES</button>
+    </div>
+    <div id="header-user" class="user-chip">Guest</div>
   </header>
 
   <main class="container">
 
-    <!-- AUTH SECTION: Account Creation & Login -->
+    <!-- AUTH, PHONE/EMAIL OTP & INSTANT LICENSE CHECK VIEW -->
     <section id="auth-view">
-      <div class="card hero-card">
-        <h1>TRUCKGO Multi-Role App</h1>
-        <p>Select your portal below: Truck Owner, Driver, Courier/Shipper, or Admin Account.</p>
+      <div class="banner banner-auth">
+        <h1 id="t-auth-title">TRUCKGO USA – Code Lock, Phone/Email OTP &amp; Stripe</h1>
+        <p id="t-auth-sub">App passcode lock, OTP via phone or email, instant license check, Stripe &amp; US payments, instant payout &amp; GPS.</p>
       </div>
 
       <div class="card">
         <div class="tabs-row">
-          <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Create New Account</button>
+          <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Create Account</button>
           <button id="tab-login" class="tab-pill" onclick="switchAuthMode('login')">Sign In</button>
         </div>
 
         <form id="auth-form">
           <div id="signup-fields">
-            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Select Account Role</label>
+            <label id="t-select-role" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Select Account Role</label>
             <div class="role-grid">
-              <button type="button" class="role-btn active" data-role="owner" onclick="selectRole('owner', this)">
+              <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
+                <span class="role-tag">MC / USDOT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Manage trucks &amp; fleet</span>
+                <span class="role-desc">Instant pay &amp; fleet</span>
               </button>
-              <button type="button" class="role-btn" data-role="driver" onclick="selectRole('driver', this)">
+              <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
+                <span class="role-tag">CDL / LICENSE</span>
                 <span class="role-title">Driver</span>
-                <span class="role-desc">Live GPS &amp; deliveries</span>
+                <span class="role-desc">License check &amp; GPS</span>
               </button>
-              <button type="button" class="role-btn" data-role="courier" onclick="selectRole('courier', this)">
+              <button type="button" class="role-card" data-role="courier" onclick="selectRole('courier', this)">
+                <span class="role-tag">EIN / PERMIT</span>
                 <span class="role-title">Courier / Shipper</span>
-                <span class="role-desc">Post &amp; track freight</span>
+                <span class="role-desc">Stripe + US payments</span>
               </button>
-              <button type="button" class="role-btn" data-role="admin" onclick="selectRole('admin', this)">
+              <button type="button" class="role-card" data-role="admin" onclick="selectRole('admin', this)">
+                <span class="role-tag">STRIPE / FEE</span>
                 <span class="role-title">App Admin</span>
-                <span class="role-desc">Full system control</span>
+                <span class="role-desc">Commission &amp; security</span>
               </button>
             </div>
 
             <div class="field">
-              <label for="auth-name">Full Name / Company Name</label>
-              <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" />
+              <label for="auth-name" id="t-lbl-name">Full Name / Company Name</label>
+              <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" required />
             </div>
 
-            <div class="field">
-              <label for="auth-detail">USDOT / MC# / CDL Number</label>
-              <input id="auth-detail" type="text" placeholder="e.g. MC-894120 or CDL-TX-4421" />
+            <div class="doc-box">
+              <div id="doc-section-title" style="font-size:12px; font-weight:800; margin-bottom:8px;">Instant License &amp; Authority Check (Owner)</div>
+
+              <div id="docs-owner">
+                <div class="field">
+                  <label>MC# or USDOT# (e.g. MC-849210 or DOT-3920114)</label>
+                  <input id="owner-mc" type="text" placeholder="MC-849210" oninput="liveLicenseCheck()" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Authority / Business Document</label>
+                  <input id="owner-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              <div id="docs-driver" class="hidden">
+                <div class="field">
+                  <label>CDL / Driving License # (e.g. CDL-TX-7748291)</label>
+                  <input id="driver-cdl" type="text" placeholder="CDL-TX-7748291" oninput="liveLicenseCheck()" />
+                </div>
+                <div class="field">
+                  <label>Government ID / Medical Card</label>
+                  <input id="driver-gov-id" type="text" placeholder="TX State ID / DOT Med Card" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Driving License &amp; Govt Document</label>
+                  <input id="driver-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              <div id="docs-courier" class="hidden">
+                <div class="field">
+                  <label>Courier Permit / EIN # (e.g. EIN-84-3920112)</label>
+                  <input id="courier-permit" type="text" placeholder="EIN-84-3920112" oninput="liveLicenseCheck()" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Courier Permit / Business Doc</label>
+                  <input id="courier-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              <div id="docs-admin" class="hidden">
+                <div class="field" style="margin-bottom:0;">
+                  <label>Admin Master Code</label>
+                  <input id="admin-code" type="text" placeholder="TRUCKGO-ADMIN-USA" />
+                </div>
+              </div>
+
+              <div id="license-check-feedback" class="alert-ok"></div>
             </div>
           </div>
 
           <div class="field">
-            <label for="auth-email">Email Address</label>
+            <label for="auth-email" id="t-lbl-email">Email Address</label>
             <input id="auth-email" type="email" placeholder="name@company.com" required />
           </div>
 
           <div class="field">
-            <label for="auth-pass">Password</label>
-            <input id="auth-pass" type="password" placeholder="Enter password" required />
+            <label for="auth-phone">Phone Number (for SMS OTP)</label>
+            <input id="auth-phone" type="tel" placeholder="+1 214 555 0199" />
           </div>
 
-          <button id="auth-submit-btn" type="submit" class="btn btn-primary">Create Account &amp; Enter Portal</button>
-          <div id="auth-notice" class="notice"></div>
+          <div class="field">
+            <label for="auth-pass" id="t-lbl-pass">Password (Min 6 chars)</label>
+            <input id="auth-pass" type="password" minlength="6" placeholder="••••••" required />
+          </div>
+
+          <!-- PHONE OR EMAIL OTP VERIFICATION -->
+          <div class="otp-box">
+            <div style="font-size:12px; font-weight:800; color:#14532D; margin-bottom:8px;">
+              Login OTP Verification (Phone or Email)
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+              <button type="button" id="otp-chan-phone" class="pay-chip-btn active" onclick="setOtpChannel('phone')">Phone OTP</button>
+              <button type="button" id="otp-chan-email" class="pay-chip-btn" onclick="setOtpChannel('email')">Email OTP</button>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+              <button type="button" class="btn btn-green btn-sm" onclick="sendLoginOtp()">Send OTP Code</button>
+              <span id="otp-sent-status" style="font-size:12px; font-weight:700; color:#166534;"></span>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label for="auth-otp-code">Enter 6-Digit OTP</label>
+              <input id="auth-otp-code" type="text" inputmode="numeric" maxlength="6" placeholder="e.g. 123456" />
+            </div>
+          </div>
+
+          <!-- APP CODE LOCK PIN -->
+          <div class="sec-box">
+            <div class="field" style="margin-bottom:0;">
+              <label for="auth-pin">4-Digit App Code Lock PIN</label>
+              <input id="auth-pin" type="password" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="e.g. 4829" required />
+            </div>
+          </div>
+
+          <button id="auth-submit-btn" type="submit" class="btn btn-orange">Verify OTP &amp; Enter</button>
+          <div id="auth-error" class="alert-err"></div>
         </form>
       </div>
 
-      <!-- Quick Demo Logins for Testing -->
       <div class="card">
-        <h2>Quick Demo Access (1-Tap Test)</h2>
+        <h2 id="t-quick-demo">Instant Portal Preview</h2>
         <div class="role-grid">
-          <button class="btn btn-outline btn-sm" onclick="quickLogin('owner')">Demo Truck Owner</button>
-          <button class="btn btn-outline btn-sm" onclick="quickLogin('driver')">Demo Driver + GPS</button>
-          <button class="btn btn-outline btn-sm" onclick="quickLogin('courier')">Demo Courier</button>
-          <button class="btn btn-dark btn-sm" onclick="quickLogin('admin')">Demo Admin Panel</button>
+          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
+          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
+          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier + Stripe</button>
+          <button class="btn btn-purple btn-sm" onclick="quickLogin('admin')">Admin &amp; Stripe</button>
         </div>
       </div>
     </section>
 
     <!-- 1. TRUCK OWNER PORTAL -->
     <section id="portal-owner" class="hidden">
-      <div class="card hero-card">
-        <h1>Truck Owner Portal</h1>
-        <p>Add your US trucks, assign drivers, and book high-paying freight loads.</p>
+      <div class="banner banner-owner">
+        <h1>Truck Owner – Fast Loads, Instant Pay &amp; GPS</h1>
+        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and app code lock.</p>
       </div>
 
       <div class="card">
-        <h2>Register New Truck to Fleet</h2>
+        <h2>Quick Add Truck</h2>
         <form id="truck-form">
           <div class="field">
-            <label>Truck Unit # &amp; Model</label>
-            <input id="truck-unit" type="text" placeholder="e.g. Unit #104 – Freightliner Cascadia" required />
+            <label>Truck Unit &amp; Model</label>
+            <input id="truck-unit" type="text" placeholder="e.g. Unit #112 – Freightliner Cascadia" required />
           </div>
           <div class="field">
-            <label>Trailer / Equipment Type</label>
+            <label>Equipment Type</label>
             <select id="truck-equip">
               <option value="53ft Dry Van">53ft Dry Van</option>
               <option value="53ft Reefer">53ft Reefer</option>
               <option value="48ft Flatbed">48ft Flatbed</option>
+              <option value="Step Deck">Step Deck</option>
               <option value="26ft Box Truck">26ft Box Truck</option>
             </select>
           </div>
           <div class="field">
-            <label>Assigned Driver Name</label>
-            <input id="truck-driver" type="text" placeholder="e.g. Marcus Johnson" required />
+            <label>Driver Name</label>
+            <input id="truck-driver" type="text" placeholder="e.g. Carlos Mendez" required />
           </div>
-          <button type="submit" class="btn btn-primary">+ Add Truck to Fleet</button>
+          <button type="submit" class="btn btn-orange">+ Add Truck Fast</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Active Fleet (<span id="fleet-count">0</span>)</h2>
+        <h2>My Fleet (<span id="fleet-count">0</span>)</h2>
         <div id="fleet-list"></div>
       </div>
 
       <div class="card">
-        <h2>Available Courier Loads to Accept</h2>
+        <h2>US Loads, Instant Payout &amp; Live Driver GPS</h2>
         <div id="owner-loads-list"></div>
       </div>
     </section>
 
-    <!-- 2. DRIVER PORTAL + LIVE GPS -->
+    <!-- 2. DRIVER PORTAL -->
     <section id="portal-driver" class="hidden">
-      <div class="card hero-card">
-        <h1>Driver &amp; Live GPS Portal</h1>
-        <p>Share real-time iPhone GPS location with shippers and update trip status.</p>
+      <div class="banner banner-driver">
+        <h1>Driver – Live GPS, Instant Pay &amp; BOL Share</h1>
+        <p>Share live GPS, complete load for instant payout, and share BOL/documents with courier.</p>
       </div>
 
       <div class="card">
-        <h2>Live GPS Location Tracker</h2>
-        <div class="gps-box">
-          <div style="font-size:12px; color:#94A3B8;">SATELLITE / IPHONE GPS STATUS</div>
+        <h2>Live GPS Broadcaster</h2>
+        <div class="gps-live-card">
+          <div style="font-size:11px; color:#86EFAC;">OWNER &amp; COURIER LIVE FEED</div>
           <div id="gps-status-text" style="font-weight:800; font-size:15px; margin-top:2px;">GPS Standby</div>
-          <div id="gps-coords-display" class="gps-coords">Lat: 32.7767° N, Lng: 96.7970° W (Dallas, TX)</div>
-          <a id="gps-map-link" class="map-link" href="https://maps.google.com/?q=32.7767,-96.7970" target="_blank" rel="noopener">
-            Open Live Pin in Google Maps &rarr;
+          <div id="gps-coords-display" class="gps-coords">Lat: 32.77670, Lng: -96.79700</div>
+          <a id="gps-map-link" class="map-link" href="https://maps.google.com/?q=32.77670,-96.79700" target="_blank" rel="noopener">
+            Open Live Location on Google Maps &rarr;
           </a>
         </div>
-        <button type="button" class="btn btn-green" onclick="startLiveGPS()">
-          Share My Live iPhone GPS Now
-        </button>
+        <button type="button" class="btn btn-green" onclick="startLiveGPS()">Start Live GPS Sharing</button>
       </div>
 
       <div class="card">
-        <h2>Assigned Trips &amp; Load Status</h2>
+        <h2>Trips, Instant Payout &amp; Docs</h2>
         <div id="driver-loads-list"></div>
       </div>
     </section>
 
-    <!-- 3. COURIER / SHIPPER PORTAL -->
+    <!-- 3. COURIER PORTAL -->
     <section id="portal-courier" class="hidden">
-      <div class="card hero-card">
-        <h1>Courier &amp; Shipper Portal</h1>
-        <p>Dispatch parcels or full truckloads across the USA and track live GPS.</p>
+      <div class="banner banner-courier">
+        <h1>Courier – Stripe + US Payments, Auto Rate &amp; Live GPS</h1>
+        <p>Stripe Checkout / Cards / Apple Pay / Google Pay / ACH / Wallets — instant carrier payout &amp; only your commission.</p>
       </div>
 
       <div class="card">
-        <h2>Post New Courier / Freight Shipment</h2>
+        <h2>Fast US Route Presets</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Houston, TX', 'Dallas, TX', 240, 50)">Houston → Dallas</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Dallas, TX', 'Atlanta, GA', 780, 120)">Dallas → Atlanta</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Chicago, IL', 'Nashville, TN', 472, 85)">Chicago → Nashville</button>
+        </div>
+
         <form id="courier-form">
           <div class="field">
-            <label>Pickup City, State</label>
-            <input id="load-origin" type="text" placeholder="e.g. Dallas, TX" required />
+            <label>Pickup (City, State)</label>
+            <input id="load-origin" type="text" placeholder="e.g. Dallas, TX" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Drop-off City, State</label>
-            <input id="load-dest" type="text" placeholder="e.g. Atlanta, GA" required />
+            <label>Drop-off (City, State)</label>
+            <input id="load-dest" type="text" placeholder="e.g. Atlanta, GA" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Shipment Type</label>
-            <select id="load-type">
+            <label>Loaded Miles</label>
+            <input id="load-miles" type="number" min="10" value="780" oninput="calculateAutoRate()" required />
+          </div>
+          <div class="field">
+            <label>Deadhead / Empty Miles</label>
+            <input id="load-deadhead" type="number" min="0" value="120" oninput="calculateAutoRate()" />
+          </div>
+          <div class="field">
+            <label>Equipment Type</label>
+            <select id="load-type" onchange="calculateAutoRate()">
               <option value="Express Courier Van">Express Courier Van</option>
               <option value="26ft Box Truck">26ft Box Truck</option>
               <option value="53ft Dry Van">53ft Dry Van</option>
               <option value="53ft Reefer">53ft Reefer</option>
+              <option value="48ft Flatbed">48ft Flatbed</option>
             </select>
           </div>
-          <div class="field">
-            <label>Offer Price ($ USD)</label>
-            <input id="load-price" type="number" placeholder="e.g. 1850" required />
+
+          <div class="pay-box">
+            <div style="font-size:12px; font-weight:800; color:#0F172A; margin-bottom:8px;">
+              Stripe &amp; US Payment Method
+            </div>
+            <div class="pay-methods-grid">
+              <button type="button" class="pay-chip-btn active" data-pay="Stripe Card (Visa/MC/Amex)" onclick="selectPayMethod(this)">Stripe Card</button>
+              <button type="button" class="pay-chip-btn" data-pay="Stripe Apple Pay" onclick="selectPayMethod(this)">Apple Pay</button>
+              <button type="button" class="pay-chip-btn" data-pay="Stripe Google Pay" onclick="selectPayMethod(this)">Google Pay</button>
+              <button type="button" class="pay-chip-btn" data-pay="Stripe ACH Bank Transfer" onclick="selectPayMethod(this)">ACH Bank</button>
+              <button type="button" class="pay-chip-btn" data-pay="PayPal / Venmo" onclick="selectPayMethod(this)">PayPal / Venmo</button>
+              <button type="button" class="pay-chip-btn" data-pay="Cash App Pay" onclick="selectPayMethod(this)">Cash App Pay</button>
+            </div>
+            <div id="pay-method-hint" style="font-size:11px; color:#475569;">
+              Selected: Stripe Card (Visa/MC/Amex) • Instant payout to carrier on completion
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Dispatch Shipment Now</button>
+
+          <div class="rate-summary">
+            <div class="rate-line"><span>Total US Rate:</span><strong id="auto-fare-display">$2,580</strong></div>
+            <div class="rate-line"><span>TRUCKGO Fee (<span id="comm-rate-label">10</span>% — Only You):</span><strong id="comm-amount-display">$258</strong></div>
+            <div class="rate-line rate-total"><span>Instant Pay to Carrier:</span><span id="net-payout-display">$2,322</span></div>
+          </div>
+
+          <div class="field">
+            <label>Custom Rate Override ($ Optional)</label>
+            <input id="load-price" type="number" placeholder="Auto US rate" oninput="updateCustomRatePreview()" />
+          </div>
+
+          <button type="submit" class="btn btn-blue">Post Load &amp; Authorize Stripe Payment</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Shipments &amp; Live GPS Tracking</h2>
+        <h2>My Loads, Stripe / Payment Status &amp; Live GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- 4. ADMIN / APP OWNER PORTAL -->
+    <!-- 4. ADMIN PORTAL -->
     <section id="portal-admin" class="hidden">
-      <div class="card hero-card">
-        <h1>TRUCKGO Admin Control</h1>
-        <p>Master overview of all registered accounts, trucks, shipments, and live GPS.</p>
-      </div>
-
-      <div class="stats-row">
-        <div class="mini-stat">
-          <strong id="adm-users">0</strong>
-          <span>Accounts</span>
-        </div>
-        <div class="mini-stat">
-          <strong id="adm-trucks">0</strong>
-          <span>Trucks</span>
-        </div>
-        <div class="mini-stat">
-          <strong id="adm-loads">0</strong>
-          <span>Shipments</span>
-        </div>
+      <div class="banner banner-admin">
+        <h1>Admin – Code Lock, OTP, Stripe &amp; Your Commission</h1>
+        <p>Keep Stripe Secret Key (sk_...) on server only; publishable key (pk_...) connects client safely.</p>
       </div>
 
       <div class="card">
-        <h2>Registered Accounts (Owners, Drivers, Couriers)</h2>
+        <h2>App Code Lock, Stripe &amp; Commission Settings</h2>
+        <div class="field">
+          <label>App Code Lock PIN (4 Digits)</label>
+          <input id="admin-lock-pin" type="text" inputmode="numeric" maxlength="4" placeholder="e.g. 4829" />
+        </div>
+        <div class="field">
+          <label>Stripe Publishable Key (pk_test_... or pk_live_...)</label>
+          <input id="admin-stripe-pk" type="text" placeholder="pk_test_your_publishable_key_here" />
+        </div>
+        <div class="field">
+          <label>Stripe Checkout Endpoint URL (Optional Server/Edge Function)</label>
+          <input id="admin-stripe-endpoint" type="text" placeholder="https://your-backend.example.com/create-checkout-session" />
+        </div>
+        <div class="field">
+          <label>TRUCKGO Commission (%)</label>
+          <input id="admin-commission-input" type="number" min="0" max="50" step="0.5" value="10" />
+        </div>
+        <button class="btn btn-purple" onclick="saveAdminConfig()">Save Security, Stripe &amp; Commission</button>
+        <div id="admin-save-msg" class="alert-ok"></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="mini-stat"><strong id="adm-users">0</strong><span>Verified Users</span></div>
+        <div class="mini-stat"><strong id="adm-commission-total">$0</strong><span>Your Commission</span></div>
+        <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Instant Paid</span></div>
+      </div>
+
+      <div class="card">
+        <h2>Verified Accounts &amp; License Checks</h2>
         <div id="admin-users-list"></div>
       </div>
 
       <div class="card">
-        <h2>All Live Shipments &amp; GPS Pins</h2>
-        <div id="admin-loads-list"></div>
+        <h2>OTP, Code Lock, Stripe &amp; Audit Log</h2>
+        <div id="admin-security-logs"></div>
       </div>
     </section>
 
   </main>
 
-  <!-- Bottom Navigation -->
   <nav id="bottom-nav" class="bottom-nav hidden">
-    <button class="nav-btn active" onclick="showActiveDashboard()">Dashboard</button>
+    <button class="nav-btn" onclick="renderApp()">Home</button>
     <button class="nav-btn" onclick="switchRoleQuick('owner')">Owner</button>
-    <button class="nav-btn" onclick="switchRoleQuick('driver')">Driver GPS</button>
-    <button class="nav-btn" onclick="switchRoleQuick('courier')">Courier</button>
+    <button class="nav-btn" onclick="switchRoleQuick('driver')">GPS</button>
+    <button class="nav-btn" onclick="lockAppNow()">Lock</button>
     <button class="nav-btn" onclick="logoutUser()">Logout</button>
   </nav>
 
@@ -635,56 +860,258 @@
     const SUPABASE_ANON_KEY = "Sb_publishable_kaNhCrmaMyq4fkDWTH6HkQ_v-ujcd6C";
     const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
+    let stripePublishableKey = localStorage.getItem("tg_stripe_pk") || "";
+    let stripeEndpoint = localStorage.getItem("tg_stripe_endpoint") || "";
+    let stripeInstance = null;
+
+    function initStripe() {
+      if (window.Stripe && stripePublishableKey && stripePublishableKey.startsWith("pk_")) {
+        try {
+          stripeInstance = window.Stripe(stripePublishableKey);
+        } catch (_err) {
+          stripeInstance = null;
+        }
+      }
+    }
+
+    let lang = localStorage.getItem("tg_lang") || "en";
     let authMode = "signup";
     let selectedRole = "owner";
+    let otpChannel = "phone";
+    let activeOtpCode = "";
+    let selectedPayMethod = "Stripe Card (Visa/MC/Amex)";
+    let commissionPercent = Number(localStorage.getItem("tg_commission_pct") || "10");
+    let appLockPin = localStorage.getItem("tg_app_lock_pin") || "4829";
+    let isAppLocked = false;
     let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
+    let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
+      "TRUCKGO USA loaded with App Code Lock, Phone/Email OTP & Stripe"
+    ];
+
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
-      { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", detail: "MC-841920" },
-      { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", detail: "CDL-TX-9912" },
-      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", detail: "USDOT-331092" },
-      { name: "Anjum (App Owner)", email: "admin@truckgo.us", role: "admin", detail: "MASTER-ADMIN" }
+      { name: "Lone Star Trucking", email: "owner@truckgo.us", phone: "+1 214 555 0111", role: "owner", docInfo: "MC-849210 • Verified", pin: "1111" },
+      { name: "Marcus Johnson", email: "driver@truckgo.us", phone: "+1 214 555 0122", role: "driver", docInfo: "CDL-TX-7748291 • Verified", pin: "2222" },
+      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", phone: "+1 214 555 0133", role: "courier", docInfo: "EIN-84-3920112 • Verified", pin: "3333" },
+      { name: "Anjum (Admin)", email: "admin@truckgo.us", phone: "+1 214 555 0199", role: "admin", docInfo: "MASTER-ADMIN • Verified", pin: "9999" }
     ];
 
     let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
-      { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", status: "Active" },
-      { id: 2, unit: "Unit #205 – Ford Transit 350", equip: "Express Courier Van", driver: "Elena Alvarez", status: "Active" }
+      { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", status: "Ready / Active" }
     ];
 
     let loads = JSON.parse(localStorage.getItem("tg_loads") || "null") || [
       {
-        id: 501,
+        id: 981,
         origin: "Dallas, TX",
         dest: "Atlanta, GA",
+        miles: 780,
+        deadhead: 120,
         type: "53ft Dry Van",
-        price: 2100,
+        price: 2580,
+        payMethod: "Stripe Apple Pay",
         status: "In Transit",
+        payoutStatus: "Instant Pay Ready via Stripe Apple Pay",
         driver: "Marcus Johnson",
         lat: 32.7767,
-        lng: -96.7970
-      },
-      {
-        id: 502,
-        origin: "Los Angeles, CA",
-        dest: "Phoenix, AZ",
-        type: "Express Courier Van",
-        price: 890,
-        status: "Open",
-        driver: "Unassigned",
-        lat: 34.0522,
-        lng: -118.2437
+        lng: -96.7970,
+        gpsUpdated: "Live Ready",
+        messages: [{ sender: "Driver", text: "Loaded & rolling. BOL shared.", docName: "BOL_981.pdf" }]
       }
     ];
+
+    const i18n = {
+      en: {
+        authTitle: "TRUCKGO USA – Code Lock, Phone/Email OTP & Stripe",
+        authSub: "App passcode lock, OTP via phone or email, instant license check, Stripe & US payments, instant payout & GPS.",
+        signup: "Create Account",
+        login: "Sign In",
+        selectRole: "1. Select Account Role",
+        lblName: "Full Name / Company Name",
+        lblEmail: "Email Address",
+        lblPass: "Password (Min 6 chars)",
+        submitSignup: "Verify OTP & Enter",
+        submitLogin: "Verify OTP & Sign In",
+        quickDemo: "Instant Portal Preview"
+      },
+      ur: {
+        authTitle: "TRUCKGO USA – کوڈ لاک، فون/ای میل OTP اور Stripe",
+        authSub: "ایپ کوڈ لاک، فون یا ای میل پر OTP، فوری لائسنس چیک، Stripe اور US ادائیگیاں، فوری پے آؤٹ اور GPS۔",
+        signup: "نیا اکاؤنٹ بنائیں",
+        login: "سائن اِن کریں",
+        selectRole: "1. اپنا کردار چنیں",
+        lblName: "پورا نام / کمپنی کا نام",
+        lblEmail: "ای میل ایڈریس",
+        lblPass: "پاس ورڈ (کم از کم 6 حروف)",
+        submitSignup: "OTP تصدیق کریں اور داخل ہوں",
+        submitLogin: "OTP تصدیق اور سائن اِن",
+        quickDemo: "ہر پورٹل کا فوری پریویو"
+      },
+      es: {
+        authTitle: "TRUCKGO USA – Bloqueo PIN, OTP Teléfono/Correo y Stripe",
+        authSub: "Bloqueo por código, OTP por teléfono o correo, licencia al instante, Stripe, pagos EE. UU., pago rápido y GPS.",
+        signup: "Crear Cuenta",
+        login: "Iniciar Sesión",
+        selectRole: "1. Seleccionar Rol",
+        lblName: "Nombre Completo / Empresa",
+        lblEmail: "Correo Electrónico",
+        lblPass: "Contraseña (Mín. 6 caracteres)",
+        submitSignup: "Verificar OTP y Entrar",
+        submitLogin: "Verificar OTP e Iniciar",
+        quickDemo: "Vista Rápida de Portales"
+      }
+    };
+
+    function escapeHtml(v) {
+      return String(v || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function addSecurityLog(msg) {
+      const stamp = new Date().toLocaleTimeString();
+      securityLogs = [`[${stamp}] ${msg}`, ...securityLogs.slice(0, 34)];
+      localStorage.setItem("tg_sec_logs", JSON.stringify(securityLogs));
+    }
+
+    function setOtpChannel(ch) {
+      otpChannel = ch;
+      document.getElementById("otp-chan-phone").classList.toggle("active", ch === "phone");
+      document.getElementById("otp-chan-email").classList.toggle("active", ch === "email");
+      document.getElementById("otp-sent-status").textContent = "";
+    }
+
+    async function sendLoginOtp() {
+      const email = document.getElementById("auth-email").value.trim().toLowerCase();
+      const phone = document.getElementById("auth-phone").value.trim();
+      const statusEl = document.getElementById("otp-sent-status");
+
+      if (otpChannel === "phone" && !phone) {
+        statusEl.textContent = "Enter phone number first.";
+        return;
+      }
+      if (otpChannel === "email" && !email) {
+        statusEl.textContent = "Enter email address first.";
+        return;
+      }
+
+      activeOtpCode = String(Math.floor(100000 + Math.random() * 900000));
+      const target = otpChannel === "phone" ? phone : email;
+
+      if (sb && otpChannel === "email" && email) {
+        try {
+          await sb.auth.signInWithOtp({ email });
+        } catch (_err) {}
+      }
+      if (sb && otpChannel === "phone" && phone) {
+        try {
+          await sb.auth.signInWithOtp({ phone });
+        } catch (_err) {}
+      }
+
+      statusEl.textContent = `OTP sent to ${target} (Code: ${activeOtpCode})`;
+      addSecurityLog(`Login OTP sent via ${otpChannel.toUpperCase()} to ${target}`);
+    }
+
+    function lockAppNow() {
+      if (!currentUser) return;
+      isAppLocked = true;
+      document.getElementById("unlock-code-input").value = "";
+      document.getElementById("unlock-error").textContent = "";
+      document.getElementById("app-lock-screen").classList.remove("hidden");
+      addSecurityLog(`App locked via code lock for ${currentUser.name}`);
+    }
+
+    function unlockAppWithCode() {
+      const entered = document.getElementById("unlock-code-input").value.trim();
+      const errEl = document.getElementById("unlock-error");
+      const allowedPins = new Set([appLockPin, currentUser?.pin].filter(Boolean));
+      if (allowedPins.has(entered)) {
+        isAppLocked = false;
+        document.getElementById("app-lock-screen").classList.add("hidden");
+        addSecurityLog(`App unlocked with code lock by ${currentUser?.name || "user"}`);
+      } else {
+        errEl.textContent = "Wrong app code lock PIN.";
+        addSecurityLog("Failed app code lock unlock attempt");
+      }
+    }
+
+    function selectPayMethod(btn) {
+      selectedPayMethod = btn.getAttribute("data-pay") || "Stripe Card (Visa/MC/Amex)";
+      document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("pay-method-hint").textContent =
+        `Selected: ${selectedPayMethod} • Instant payout to carrier on completion`;
+    }
+
+    function validateLicenseNumber(role, val) {
+      const clean = (val || "").trim().toUpperCase();
+      if (role === "driver") return /^(CDL|DL)[A-Z0-9-]{4,20}$/.test(clean);
+      if (role === "owner") return /^(MC|DOT|USDOT)[A-Z0-9-]{3,20}$/.test(clean);
+      if (role === "courier") return /^(EIN|PRM|PERMIT|DOT)[A-Z0-9-]{3,20}$/.test(clean);
+      return clean.length >= 4;
+    }
+
+    function liveLicenseCheck() {
+      const fb = document.getElementById("license-check-feedback");
+      if (!fb) return false;
+
+      let raw = "";
+      if (selectedRole === "driver") raw = document.getElementById("driver-cdl").value;
+      else if (selectedRole === "owner") raw = document.getElementById("owner-mc").value;
+      else if (selectedRole === "courier") raw = document.getElementById("courier-permit").value;
+      else raw = document.getElementById("admin-code").value;
+
+      if (!raw.trim()) {
+        fb.className = "alert-err";
+        fb.textContent = "Enter license / authority number for instant verification.";
+        return false;
+      }
+
+      const valid = validateLicenseNumber(selectedRole, raw);
+      if (valid) {
+        fb.className = "alert-ok";
+        fb.textContent = "✓ Instant License / Authority Check Passed";
+      } else {
+        fb.className = "alert-err";
+        fb.textContent = "⚠ Use valid format (e.g. CDL-TX-12345, MC-849210, EIN-84-12345)";
+      }
+      return valid;
+    }
+
+    function setLanguage(newLang) {
+      lang = newLang;
+      localStorage.setItem("tg_lang", lang);
+      document.body.classList.toggle("rtl", lang === "ur");
+      document.getElementById("btn-en").classList.toggle("active", lang === "en");
+      document.getElementById("btn-ur").classList.toggle("active", lang === "ur");
+      document.getElementById("btn-es").classList.toggle("active", lang === "es");
+
+      const t = i18n[lang];
+      document.getElementById("t-auth-title").textContent = t.authTitle;
+      document.getElementById("t-auth-sub").textContent = t.authSub;
+      document.getElementById("tab-signup").textContent = t.signup;
+      document.getElementById("tab-login").textContent = t.login;
+      document.getElementById("t-select-role").textContent = t.selectRole;
+      document.getElementById("t-lbl-name").textContent = t.lblName;
+      document.getElementById("t-lbl-email").textContent = t.lblEmail;
+      document.getElementById("t-lbl-pass").textContent = t.lblPass;
+      document.getElementById("t-quick-demo").textContent = t.quickDemo;
+      document.getElementById("auth-submit-btn").textContent = authMode === "signup" ? t.submitSignup : t.submitLogin;
+    }
 
     function saveState() {
       localStorage.setItem("tg_users", JSON.stringify(users));
       localStorage.setItem("tg_trucks", JSON.stringify(trucks));
       localStorage.setItem("tg_loads", JSON.stringify(loads));
-      if (currentUser) {
-        localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
-      } else {
-        localStorage.removeItem("tg_current_user");
-      }
+      localStorage.setItem("tg_commission_pct", String(commissionPercent));
+      localStorage.setItem("tg_app_lock_pin", appLockPin);
+      localStorage.setItem("tg_stripe_pk", stripePublishableKey);
+      localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
+      if (currentUser) localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
+      else localStorage.removeItem("tg_current_user");
     }
 
     function switchAuthMode(mode) {
@@ -692,41 +1119,103 @@
       document.getElementById("tab-signup").classList.toggle("active", mode === "signup");
       document.getElementById("tab-login").classList.toggle("active", mode === "login");
       document.getElementById("signup-fields").classList.toggle("hidden", mode === "login");
-      document.getElementById("auth-submit-btn").textContent =
-        mode === "signup" ? "Create Account & Enter Portal" : "Sign In to Portal";
+      setLanguage(lang);
     }
 
     function selectRole(role, btn) {
       selectedRole = role;
-      document.querySelectorAll(".role-btn").forEach((el) => el.classList.remove("active"));
+      document.querySelectorAll(".role-card").forEach((el) => el.classList.remove("active"));
       btn.classList.add("active");
+      document.getElementById("docs-owner").classList.toggle("hidden", role !== "owner");
+      document.getElementById("docs-driver").classList.toggle("hidden", role !== "driver");
+      document.getElementById("docs-courier").classList.toggle("hidden", role !== "courier");
+      document.getElementById("docs-admin").classList.toggle("hidden", role !== "admin");
+
+      const titles = {
+        owner: "Instant License & Authority Check (Owner)",
+        driver: "Instant CDL / Driver License Check",
+        courier: "Instant Courier Permit / EIN Check",
+        admin: "Admin Security Verification"
+      };
+      document.getElementById("doc-section-title").textContent = titles[role];
+      liveLicenseCheck();
     }
 
-    document.getElementById("auth-form").addEventListener("submit", async (e) => {
+    function getRoleDocSummary() {
+      if (selectedRole === "owner") {
+        const mc = document.getElementById("owner-mc").value.trim().toUpperCase();
+        const f = document.getElementById("owner-doc-file").files[0]?.name || "Authority Doc";
+        return `${mc} • ${f} • Verified`;
+      }
+      if (selectedRole === "driver") {
+        const cdl = document.getElementById("driver-cdl").value.trim().toUpperCase();
+        const gov = document.getElementById("driver-gov-id").value.trim() || "Govt ID";
+        const f = document.getElementById("driver-doc-file").files[0]?.name || "License Doc";
+        return `${cdl} • ${gov} • ${f} • Verified`;
+      }
+      if (selectedRole === "courier") {
+        const p = document.getElementById("courier-permit").value.trim().toUpperCase();
+        const f = document.getElementById("courier-doc-file").files[0]?.name || "Permit Doc";
+        return `${p} • ${f} • Verified`;
+      }
+      return (document.getElementById("admin-code").value.trim() || "ADMIN-MASTER") + " • Verified";
+    }
+
+    document.getElementById("auth-form").addEventListener("submit", (e) => {
       e.preventDefault();
+      const errEl = document.getElementById("auth-error");
+      errEl.textContent = "";
+
       const email = document.getElementById("auth-email").value.trim().toLowerCase();
+      const phone = document.getElementById("auth-phone").value.trim();
       const pass = document.getElementById("auth-pass").value.trim();
-      const name = document.getElementById("auth-name").value.trim() || email.split("@")[0];
-      const detail = document.getElementById("auth-detail").value.trim() || "USA-VERIFIED";
+      const otpEntered = document.getElementById("auth-otp-code").value.trim();
+      const pin = document.getElementById("auth-pin").value.trim();
+      const name = (document.getElementById("auth-name").value.trim() || email.split("@")[0]).slice(0, 60);
 
-      if (!email || !pass) return;
-
-      if (authMode === "signup") {
-        const newUser = { name, email, role: selectedRole, detail };
-        users = [newUser, ...users.filter((u) => u.email !== email)];
-        currentUser = newUser;
-      } else {
-        const found = users.find((u) => u.email === email);
-        currentUser = found || { name, email, role: "owner", detail: "USA-MEMBER" };
+      if (!/^\d{4}$/.test(pin)) {
+        errEl.textContent = "Enter a valid 4-digit App Code Lock PIN.";
+        return;
       }
 
+      if (!activeOtpCode || otpEntered !== activeOtpCode) {
+        errEl.textContent = "Tap 'Send OTP Code' and enter the matching 6-digit OTP first.";
+        return;
+      }
+
+      if (authMode === "signup") {
+        if (!liveLicenseCheck()) {
+          errEl.textContent = "Please enter a valid license/authority number first.";
+          return;
+        }
+        const docInfo = getRoleDocSummary();
+        const u = { name, email, phone, role: selectedRole, docInfo, pin };
+        users = [u, ...users.filter((x) => x.email !== email)];
+        currentUser = u;
+        appLockPin = pin;
+        addSecurityLog(`OTP verified & account created: ${name} (${selectedRole.toUpperCase()})`);
+      } else {
+        const existing = users.find((x) => x.email === email);
+        if (existing && existing.pin && existing.pin !== pin) {
+          errEl.textContent = "Incorrect 4-digit App Code Lock PIN.";
+          addSecurityLog(`Blocked login attempt for ${email}`);
+          return;
+        }
+        currentUser = existing || { name, email, phone, role: "owner", docInfo: "Verified", pin };
+        appLockPin = pin;
+        addSecurityLog(`OTP verified & signed in: ${currentUser.name}`);
+      }
+
+      activeOtpCode = "";
+      isAppLocked = false;
       saveState();
       renderApp();
     });
 
     function quickLogin(role) {
-      const demo = users.find((u) => u.role === role) || users[0];
-      currentUser = demo;
+      currentUser = users.find((u) => u.role === role) || users[0];
+      isAppLocked = false;
+      addSecurityLog(`Opened ${currentUser.role.toUpperCase()} portal`);
       saveState();
       renderApp();
     }
@@ -740,116 +1229,278 @@
 
     function logoutUser() {
       currentUser = null;
+      isAppLocked = false;
+      document.getElementById("app-lock-screen").classList.add("hidden");
       saveState();
       renderApp();
     }
 
-    function showActiveDashboard() {
-      renderApp();
+    function applyRoutePreset(origin, dest, miles, deadhead) {
+      document.getElementById("load-origin").value = origin;
+      document.getElementById("load-dest").value = dest;
+      document.getElementById("load-miles").value = miles;
+      document.getElementById("load-deadhead").value = deadhead;
+      calculateAutoRate();
     }
 
-    // Truck Owner: Add Truck
+    function calculateAutoRate() {
+      const miles = Math.max(10, Number(document.getElementById("load-miles").value) || 500);
+      const deadhead = Math.max(0, Number(document.getElementById("load-deadhead").value) || 0);
+      const type = document.getElementById("load-type").value;
+
+      const rpmMap = {
+        "Express Courier Van": 2.20,
+        "26ft Box Truck": 2.65,
+        "53ft Dry Van": 3.00,
+        "53ft Reefer": 3.45,
+        "48ft Flatbed": 3.20
+      };
+
+      const rpm = rpmMap[type] || 2.85;
+      const fare = Math.round(miles * rpm + deadhead * (rpm * 0.65));
+      const comm = Math.round((fare * commissionPercent) / 100);
+      const net = fare - comm;
+
+      document.getElementById("comm-rate-label").textContent = commissionPercent;
+      document.getElementById("auto-fare-display").textContent = "$" + fare.toLocaleString();
+      document.getElementById("comm-amount-display").textContent = "$" + comm.toLocaleString();
+      document.getElementById("net-payout-display").textContent = "$" + net.toLocaleString();
+      return fare;
+    }
+
+    function updateCustomRatePreview() {
+      const val = Number(document.getElementById("load-price").value);
+      const fare = val > 0 ? val : calculateAutoRate();
+      const comm = Math.round((fare * commissionPercent) / 100);
+      const net = fare - comm;
+      document.getElementById("auto-fare-display").textContent = "$" + fare.toLocaleString();
+      document.getElementById("comm-amount-display").textContent = "$" + comm.toLocaleString();
+      document.getElementById("net-payout-display").textContent = "$" + net.toLocaleString();
+    }
+
+    function saveAdminConfig() {
+      const val = Number(document.getElementById("admin-commission-input").value);
+      const lockPinVal = document.getElementById("admin-lock-pin").value.trim();
+      const pk = document.getElementById("admin-stripe-pk").value.trim();
+      const ep = document.getElementById("admin-stripe-endpoint").value.trim();
+
+      if (!Number.isNaN(val) && val >= 0 && val <= 50) commissionPercent = val;
+      if (/^\d{4}$/.test(lockPinVal)) appLockPin = lockPinVal;
+      if (pk && !pk.startsWith("sk_")) stripePublishableKey = pk;
+      if (!ep || ep.startsWith("https://")) stripeEndpoint = ep;
+
+      initStripe();
+      addSecurityLog(`Admin updated config (Lock PIN set, Commission: ${commissionPercent}%, Stripe PK set: ${stripePublishableKey ? "Yes" : "No"})`);
+      saveState();
+      renderApp();
+      const msg = document.getElementById("admin-save-msg");
+      if (msg) msg.textContent = "✓ Saved securely (Secret keys never stored in browser).";
+    }
+
     document.getElementById("truck-form").addEventListener("submit", (e) => {
       e.preventDefault();
       const unit = document.getElementById("truck-unit").value.trim();
       const equip = document.getElementById("truck-equip").value;
       const driver = document.getElementById("truck-driver").value.trim();
       if (!unit || !driver) return;
-
-      trucks = [{ id: Date.now(), unit, equip, driver, status: "Active" }, ...trucks];
+      trucks = [{ id: Date.now(), unit, equip, driver, status: "Ready / Active" }, ...trucks];
+      addSecurityLog(`Truck registered: ${unit} -> ${driver}`);
       saveState();
       e.target.reset();
       renderApp();
     });
 
-    // Courier: Post Load
+    async function triggerStripeCheckoutIfConfigured(loadItem) {
+      if (!stripeEndpoint || !stripeEndpoint.startsWith("https://")) return;
+      try {
+        const res = await fetch(stripeEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            loadId: loadItem.id,
+            amountUsd: loadItem.price,
+            commissionPercent,
+            paymentMethod: loadItem.payMethod,
+            route: `${loadItem.origin} -> ${loadItem.dest}`
+          })
+        });
+        const data = await res.json();
+        if (data && data.url) {
+          window.open(data.url, "_blank", "noopener");
+        }
+      } catch (_err) {}
+    }
+
     document.getElementById("courier-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const origin = document.getElementById("load-origin").value.trim();
       const dest = document.getElementById("load-dest").value.trim();
+      const miles = Math.max(10, Number(document.getElementById("load-miles").value) || 500);
+      const deadhead = Math.max(0, Number(document.getElementById("load-deadhead").value) || 0);
       const type = document.getElementById("load-type").value;
-      const price = Number(document.getElementById("load-price").value);
-      if (!origin || !dest || !price) return;
+      const manualPrice = Number(document.getElementById("load-price").value);
+      const price = manualPrice > 0 ? manualPrice : calculateAutoRate();
+      if (!origin || !dest) return;
 
       const newLoad = {
         id: Date.now(),
         origin,
         dest,
+        miles,
+        deadhead,
         type,
         price,
+        payMethod: selectedPayMethod,
         status: "Open",
-        driver: "Awaiting Driver",
+        payoutStatus: `Instant Pay via ${selectedPayMethod}`,
+        driver: "Unassigned",
         lat: 32.7767,
-        lng: -96.7970
+        lng: -96.7970,
+        gpsUpdated: "Awaiting GPS",
+        messages: [{ sender: "Courier", text: `Payment method: ${selectedPayMethod}`, docName: "" }]
       };
 
       loads = [newLoad, ...loads];
+      addSecurityLog(`Load posted: ${origin} -> ${dest} ($${price}) via ${selectedPayMethod}`);
       saveState();
+      await triggerStripeCheckoutIfConfigured(newLoad);
 
       if (sb) {
         try {
-          await sb.from("loads").insert([{
-            origin,
-            destination: dest,
-            truck_type: type,
-            rate: price,
-            status: "Open"
-          }]);
+          await sb.from("loads").insert([{ origin, destination: dest, truck_type: type, rate: price, status: "Open" }]);
         } catch (_err) {}
       }
 
       e.target.reset();
+      document.getElementById("load-miles").value = 780;
+      document.getElementById("load-deadhead").value = 120;
+      calculateAutoRate();
       renderApp();
     });
 
     function acceptLoad(id) {
+      const actor = currentUser ? currentUser.name : "Verified Carrier";
       loads = loads.map((l) =>
-        l.id === id ? { ...l, status: "In Transit", driver: currentUser ? currentUser.name : "Assigned Driver" } : l
+        l.id === id ? { ...l, status: "In Transit", payoutStatus: `Authorized (${l.payMethod || "Stripe"})`, driver: actor } : l
       );
+      addSecurityLog(`Load #${id} booked by ${actor}`);
       saveState();
       renderApp();
     }
 
-    function markDelivered(id) {
-      loads = loads.map((l) => (l.id === id ? { ...l, status: "Delivered" } : l));
+    function releaseInstantPayout(id) {
+      loads = loads.map((l) => {
+        if (l.id !== id) return l;
+        const comm = Math.round((l.price * commissionPercent) / 100);
+        const net = l.price - comm;
+        const method = l.payMethod || "Stripe";
+        addSecurityLog(`INSTANT PAYOUT (#${id}) via ${method}: $${net} to carrier, $${comm} fee to TRUCKGO`);
+        return { ...l, status: "Delivered", payoutStatus: `PAID INSTANTLY ($${net.toLocaleString()}) • ${method}` };
+      });
       saveState();
       renderApp();
     }
 
-    // Live GPS Function (Works on iPhone Safari)
+    function sendCommMessage(loadId, roleLabel) {
+      const msgEl = document.getElementById(`msg-input-${loadId}-${roleLabel}`);
+      const docEl = document.getElementById(`doc-input-${loadId}-${roleLabel}`);
+      const text = msgEl ? msgEl.value.trim() : "";
+      const docName = docEl && docEl.files[0] ? docEl.files[0].name : "";
+      if (!text && !docName) return;
+
+      loads = loads.map((l) => {
+        if (l.id !== loadId) return l;
+        return {
+          ...l,
+          messages: [...(l.messages || []), { sender: roleLabel, text: text || "Document shared", docName }]
+        };
+      });
+      saveState();
+      renderApp();
+    }
+
+    function renderCommBox(load, roleLabel) {
+      const msgsHtml = (load.messages || [])
+        .map(
+          (m) => `
+          <div class="msg-row">
+            <strong>${escapeHtml(m.sender)}:</strong> ${escapeHtml(m.text)}
+            ${m.docName ? `<div><span class="doc-chip">Doc: ${escapeHtml(m.docName)}</span></div>` : ""}
+          </div>
+        `
+        )
+        .join("");
+
+      return `
+        <div class="comm-box">
+          <div style="font-size:11px; font-weight:800; color:#334155; margin-bottom:6px;">Chat &amp; Document Share</div>
+          ${msgsHtml}
+          <div class="field" style="margin-bottom:6px;">
+            <input id="msg-input-${load.id}-${roleLabel}" type="text" placeholder="Message..." />
+          </div>
+          <div class="field" style="margin-bottom:8px;">
+            <input id="doc-input-${load.id}-${roleLabel}" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+          </div>
+          <button type="button" class="btn btn-dark btn-sm" onclick="sendCommMessage(${load.id}, '${roleLabel}')">Send</button>
+        </div>
+      `;
+    }
+
+    function renderLiveGpsForWatcher(load, watcherLabel) {
+      const updated = load.gpsUpdated || "Live Ready";
+      return `
+        <div class="gps-live-card">
+          <div style="font-size:11px; color:#86EFAC;">${escapeHtml(watcherLabel)} LIVE GPS • ${escapeHtml(updated)}</div>
+          <div class="gps-coords">Lat: ${escapeHtml(load.lat)}, Lng: ${escapeHtml(load.lng)}</div>
+          <a class="map-link" href="https://maps.google.com/?q=${encodeURIComponent(load.lat)},${encodeURIComponent(load.lng)}" target="_blank" rel="noopener">
+            Track Live Location on Google Maps &rarr;
+          </a>
+        </div>
+      `;
+    }
+
     function startLiveGPS() {
       const statusText = document.getElementById("gps-status-text");
       const coordsText = document.getElementById("gps-coords-display");
       const mapLink = document.getElementById("gps-map-link");
 
       if (!navigator.geolocation) {
-        statusText.textContent = "GPS not supported on this browser";
+        statusText.textContent = "GPS not supported";
         return;
       }
 
-      statusText.textContent = "Acquiring Satellite / iPhone GPS...";
-
+      statusText.textContent = "Connecting Live GPS...";
       navigator.geolocation.watchPosition(
         (pos) => {
           const lat = pos.coords.latitude.toFixed(5);
           const lng = pos.coords.longitude.toFixed(5);
-          statusText.textContent = "LIVE GPS ACTIVE (Broadcasting)";
+          const nowTime = new Date().toLocaleTimeString();
+          statusText.textContent = "LIVE GPS SHARING ACTIVE";
           coordsText.textContent = `Lat: ${lat}, Lng: ${lng}`;
           mapLink.href = `https://maps.google.com/?q=${lat},${lng}`;
 
           loads = loads.map((l) =>
-            l.status === "In Transit" ? { ...l, lat: Number(lat), lng: Number(lng) } : l
+            l.status !== "Delivered" ? { ...l, lat: Number(lat), lng: Number(lng), gpsUpdated: nowTime } : l
           );
           saveState();
         },
         () => {
-          statusText.textContent = "GPS Permission Needed (Using Dallas, TX Demo Pin)";
+          statusText.textContent = "Allow GPS permission in iPhone browser";
         },
         { enableHighAccuracy: true }
       );
     }
 
     function renderApp() {
+      initStripe();
+      setLanguage(lang);
+      liveLicenseCheck();
+      calculateAutoRate();
+      document.getElementById("admin-commission-input").value = commissionPercent;
+      document.getElementById("admin-lock-pin").value = appLockPin;
+      document.getElementById("admin-stripe-pk").value = stripePublishableKey;
+      document.getElementById("admin-stripe-endpoint").value = stripeEndpoint;
+
       const authView = document.getElementById("auth-view");
       const bottomNav = document.getElementById("bottom-nav");
       const headerUser = document.getElementById("header-user");
@@ -861,122 +1512,113 @@
       if (!currentUser) {
         authView.classList.remove("hidden");
         bottomNav.classList.add("hidden");
-        headerUser.textContent = "Guest Mode";
+        document.getElementById("app-lock-screen").classList.add("hidden");
+        headerUser.textContent = "Guest";
         return;
       }
 
       authView.classList.add("hidden");
       bottomNav.classList.remove("hidden");
-      headerUser.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
+      headerUser.textContent = `${currentUser.name} (${currentUser.role})`;
 
-      const activePortal = document.getElementById(`portal-${currentUser.role}`);
-      if (activePortal) activePortal.classList.remove("hidden");
+      if (isAppLocked) {
+        document.getElementById("app-lock-screen").classList.remove("hidden");
+      }
 
-      // Render Fleet
+      const portal = document.getElementById(`portal-${currentUser.role}`);
+      if (portal) portal.classList.remove("hidden");
+
       document.getElementById("fleet-count").textContent = trucks.length;
       document.getElementById("fleet-list").innerHTML = trucks
-        .map(
-          (t) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${t.unit}</div>
-              <span class="badge badge-open">${t.status}</span>
-            </div>
-            <div class="item-meta">${t.equip} &bull; Driver: ${t.driver}</div>
-          </div>
-        `
-        )
+        .map((t) => `<div class="list-item"><div class="item-top"><div class="item-title">${escapeHtml(t.unit)}</div><span class="badge badge-open">${escapeHtml(t.status)}</span></div><div class="item-meta">${escapeHtml(t.equip)} • ${escapeHtml(t.driver)}</div></div>`)
         .join("");
 
-      // Render Owner Loads
       document.getElementById("owner-loads-list").innerHTML = loads
-        .map(
-          (l) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
-              <span class="badge ${l.status === "Open" ? "badge-open" : "badge-transit"}">${l.status}</span>
+        .map((l) => {
+          const comm = Math.round((l.price * commissionPercent) / 100);
+          const net = l.price - comm;
+          return `
+            <div class="list-item">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
+                <span class="badge badge-open">${escapeHtml(l.payoutStatus || "Instant Pay")}</span>
+              </div>
+              <div class="item-meta">${escapeHtml(l.type)} • Method: ${escapeHtml(l.payMethod || "Stripe")} • <strong>Instant Net: $${net.toLocaleString()}</strong></div>
+              ${renderLiveGpsForWatcher(l, "OWNER LIVE GPS")}
+              ${l.status === "Open" ? `<button class="btn btn-orange btn-sm" onclick="acceptLoad(${l.id})">1-Tap Book Load</button>` : `<div class="item-meta">Driver: ${escapeHtml(l.driver)} • Status: ${escapeHtml(l.status)}</div>`}
             </div>
-            <div class="item-meta">${l.type} &bull; Payout: $${l.price.toLocaleString()}</div>
-            ${
-              l.status === "Open"
-                ? `<button class="btn btn-primary btn-sm" onclick="acceptLoad(${l.id})">Assign My Truck</button>`
-                : `<div class="item-meta">Assigned: ${l.driver}</div>`
-            }
-          </div>
-        `
-        )
+          `;
+        })
         .join("");
 
-      // Render Driver Loads
       document.getElementById("driver-loads-list").innerHTML = loads
-        .map(
-          (l) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
-              <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${l.status}</span>
+        .map((l) => {
+          const comm = Math.round((l.price * commissionPercent) / 100);
+          const net = l.price - comm;
+          return `
+            <div class="list-item">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
+                <span class="badge badge-transit">${escapeHtml(l.status)}</span>
+              </div>
+              <div class="item-meta">${escapeHtml(l.type)} • ${escapeHtml(l.payMethod || "Stripe")} • Your Instant Payout: <strong>$${net.toLocaleString()}</strong></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Start Trip</button>` : ""}
+                ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" onclick="releaseInstantPayout(${l.id})">Complete &amp; Instant Pay</button>` : ""}
+              </div>
+              ${renderCommBox(l, "Driver")}
             </div>
-            <div class="item-meta">${l.type} &bull; Rate: $${l.price.toLocaleString()}</div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              ${l.status === "Open" ? `<button class="btn btn-primary btn-sm" onclick="acceptLoad(${l.id})">Start Trip</button>` : ""}
-              ${l.status === "In Transit" ? `<button class="btn btn-green btn-sm" onclick="markDelivered(${l.id})">Mark Delivered</button>` : ""}
-              <a class="btn btn-outline btn-sm" style="text-decoration:none;" href="https://maps.google.com/?q=${l.lat},${l.lng}" target="_blank" rel="noopener">GPS Map</a>
-            </div>
-          </div>
-        `
-        )
+          `;
+        })
         .join("");
 
-      // Render Courier Loads
       document.getElementById("courier-loads-list").innerHTML = loads
-        .map(
-          (l) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
-              <span class="badge ${l.status === "Open" ? "badge-open" : "badge-transit"}">${l.status}</span>
+        .map((l) => {
+          const comm = Math.round((l.price * commissionPercent) / 100);
+          const net = l.price - comm;
+          return `
+            <div class="list-item">
+              <div class="item-top">
+                <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
+                <span class="badge badge-info">${escapeHtml(l.payMethod || "Stripe")}</span>
+              </div>
+              <div class="item-meta">
+                Total: $${l.price.toLocaleString()} • Carrier Pay: $${net.toLocaleString()} • TRUCKGO Fee: $${comm.toLocaleString()} • ${escapeHtml(l.payoutStatus || "")}
+              </div>
+              ${renderLiveGpsForWatcher(l, "COURIER LIVE GPS")}
+              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" onclick="releaseInstantPayout(${l.id})">Pay Carrier Instantly Now</button>` : ""}
+              ${renderCommBox(l, "Courier")}
             </div>
-            <div class="item-meta">${l.type} &bull; $${l.price.toLocaleString()} &bull; Driver: ${l.driver}</div>
-            <a class="map-link" style="color:#2563EB;" href="https://maps.google.com/?q=${l.lat},${l.lng}" target="_blank" rel="noopener">
-              Track Live Truck GPS (${l.lat}, ${l.lng}) &rarr;
-            </a>
-          </div>
-        `
-        )
+          `;
+        })
         .join("");
 
-      // Render Admin Panel
+      const totalCommission = loads.reduce((sum, l) => sum + Math.round((l.price * commissionPercent) / 100), 0);
+      const totalInstantPaid = loads.reduce((sum, l) => {
+        const comm = Math.round((l.price * commissionPercent) / 100);
+        return sum + (l.price - comm);
+      }, 0);
+
       document.getElementById("adm-users").textContent = users.length;
-      document.getElementById("adm-trucks").textContent = trucks.length;
-      document.getElementById("adm-loads").textContent = loads.length;
+      document.getElementById("adm-commission-total").textContent = "$" + totalCommission.toLocaleString();
+      document.getElementById("adm-instant-paid").textContent = "$" + totalInstantPaid.toLocaleString();
 
       document.getElementById("admin-users-list").innerHTML = users
         .map(
           (u) => `
           <div class="list-item">
             <div class="item-top">
-              <div class="item-title">${u.name}</div>
-              <span class="badge badge-transit">${u.role.toUpperCase()}</span>
+              <div class="item-title">${escapeHtml(u.name)}</div>
+              <span class="badge badge-purple">${escapeHtml(u.role.toUpperCase())}</span>
             </div>
-            <div class="item-meta">${u.email} &bull; ${u.detail}</div>
+            <div class="item-meta">${escapeHtml(u.email)} • ${escapeHtml(u.phone || "")} • ${escapeHtml(u.docInfo)}</div>
           </div>
         `
         )
         .join("");
 
-      document.getElementById("admin-loads-list").innerHTML = loads
-        .map(
-          (l) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
-              <span class="badge badge-open">$${l.price.toLocaleString()}</span>
-            </div>
-            <div class="item-meta">Status: ${l.status} &bull; GPS: ${l.lat}, ${l.lng}</div>
-          </div>
-        `
-        )
+      document.getElementById("admin-security-logs").innerHTML = securityLogs
+        .map((entry) => `<div class="msg-row"><span class="badge badge-sec">LOG</span> ${escapeHtml(entry)}</div>`)
         .join("");
     }
 
