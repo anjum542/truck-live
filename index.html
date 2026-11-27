@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – Active Loads, Return Auto-Fare, Cargo & Company Details</title>
+  <title>TRUCKGO USA – Fast Onboarding for Courier, Owner & Driver</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -508,7 +508,7 @@
     <section id="home-view">
       <div class="banner banner-auth">
         <h1 id="t-home-title">TRUCKGO USA – Drivers, Active Loads, Truck Owner &amp; Courier</h1>
-        <p id="t-home-sub">Only active loads appear upfront with trip dates, cargo/truck specs, company name &amp; return auto-fare.</p>
+        <p id="t-home-sub">Fast onboarding for Courier, Truck Owner &amp; Driver with transparent US rate breakdown &amp; private trip GPS.</p>
       </div>
 
       <!-- 4 MAIN HOME BOXES -->
@@ -700,7 +700,7 @@
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
         <h1>Truck Owner – Payout Bank, Fleet &amp; Driver Control</h1>
-        <p>Payout goes to Truck Owner so you pay driver salaries; delivered records stay with you, the driver &amp; courier.</p>
+        <p>Payout goes to Truck Owner after platform commission so you pay driver salaries; trip GPS stays between you, assigned driver &amp; courier.</p>
       </div>
 
       <div class="card">
@@ -743,7 +743,7 @@
       </div>
 
       <div class="card">
-        <h2>Active Load Watch, 3-Way Chat, Driver Control &amp; GPS</h2>
+        <h2>Active Load Watch, 3-Way Chat, Driver Control &amp; Assigned Driver GPS</h2>
         <div id="owner-loads-list"></div>
       </div>
 
@@ -757,7 +757,7 @@
     <section id="portal-driver" class="hidden">
       <div class="banner banner-driver">
         <h1>Driver – Active &amp; Nearby Loads, Cargo/Truck Specs &amp; 3-Way Chat</h1>
-        <p>Check load weight, truck type &amp; company before accepting; delivered loads stay private to you, owner &amp; courier.</p>
+        <p>Your trip location is shared only on your assigned load with that load's owner &amp; courier — not publicly.</p>
       </div>
 
       <div class="card">
@@ -772,9 +772,9 @@
       </div>
 
       <div class="card">
-        <h2>Live GPS (Active Only While Sharing — Not Forever)</h2>
+        <h2>Live GPS (Only For Your Assigned Load — Shared Only With That Load's Owner &amp; Courier)</h2>
         <div class="gps-live-card">
-          <div style="font-size:11px; color:#86EFAC;">OWNER &amp; COURIER LIVE FEED (TRIP / ACTIVE SESSION ONLY)</div>
+          <div style="font-size:11px; color:#86EFAC;">ASSIGNED ORDER PARTIES ONLY (NOT PUBLIC / NOT OTHER DRIVERS)</div>
           <div id="gps-status-text" style="font-weight:800; font-size:15px; margin-top:2px;">GPS Off (Standby)</div>
           <div id="gps-coords-display" class="gps-coords">Lat: 32.77670, Lng: -96.79700</div>
           <a id="gps-map-link" class="map-link" href="https://maps.google.com/?q=32.77670,-96.79700" target="_blank" rel="noopener">
@@ -801,8 +801,8 @@
     <!-- 3. COURIER PORTAL -->
     <section id="portal-courier" class="hidden">
       <div class="banner banner-courier">
-        <h1>Courier – Company, Cargo, Return Load &amp; Both-Way Auto Fare</h1>
-        <p>Specify company name, cargo item &amp; weight, truck type, and optional return route with automatic round-trip fare calculation.</p>
+        <h1>Courier – Company, Cargo, Return Load &amp; Both-Way US Auto Fare</h1>
+        <p>Commission (<span id="courier-banner-comm">10</span>%) is deducted from total rate; remaining payout goes to Truck Owner to pay driver salary.</p>
       </div>
 
       <div class="card">
@@ -865,12 +865,12 @@
               <input id="load-return-dest" type="text" placeholder="e.g. New York, NY (defaults to Pickup)" oninput="calculateAutoRate()" />
             </div>
             <div class="field" style="margin-bottom:0;">
-              <label>Return Cargo / Weight (lbs)</label>
+              <label>Return Cargo Weight (lbs)</label>
               <input id="load-return-weight" type="number" min="0" step="50" value="14000" oninput="calculateAutoRate()" />
             </div>
           </div>
           <div class="field">
-            <label>Outbound Miles (Auto-Calculated — Edit if needed)</label>
+            <label>Outbound Miles (Auto-Calculated US Distance — Edit if needed)</label>
             <input id="load-miles" type="number" min="5" value="1280" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
@@ -907,9 +907,10 @@
 
           <div class="rate-summary">
             <div class="rate-line"><span>Total Distance (Outbound + Return):</span><strong id="auto-miles-label">2,560 miles</strong></div>
-            <div class="rate-line"><span>Auto Total Rent (Both Ways):</span><strong id="auto-fare-display">$8,128</strong></div>
-            <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>%):</span><strong id="comm-amount-display">$813</strong></div>
-            <div class="rate-line rate-total"><span>Owner Payout on Delivery:</span><span id="net-payout-display">$7,315</span></div>
+            <div class="rate-line"><span>Outbound + Return Fare Breakdown:</span><strong id="legs-fare-detail">$4,408 out + $4,040 return</strong></div>
+            <div class="rate-line"><span>US Auto Total Rent:</span><strong id="auto-fare-display">$8,448</strong></div>
+            <div class="rate-line"><span>Platform Commission (<span id="comm-rate-label">10</span>% from Total Rate):</span><strong id="comm-amount-display">$845</strong></div>
+            <div class="rate-line rate-total"><span>Truck Owner Payout (After Commission):</span><span id="net-payout-display">$7,603</span></div>
           </div>
 
           <div class="field">
@@ -922,7 +923,7 @@
       </div>
 
       <div class="card">
-        <h2>My Active Loads, Delivery Payout Release, 3-Way Chat &amp; GPS</h2>
+        <h2>My Active Loads, Delivery Payout Release, 3-Way Chat &amp; Assigned Driver GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
 
@@ -1001,7 +1002,7 @@
           <input id="admin-payout-bank" type="text" placeholder="e.g. Business Bank •••• 9012 / Stripe Payouts" oninput="saveAdminPayoutBank()" />
         </div>
         <div class="rate-summary">
-          <div class="rate-line"><span>Total Earned Commission:</span><strong id="adm-earned-box">$0</strong></div>
+          <div class="rate-line"><span>Total Earned Commission (From Total Load Rates):</span><strong id="adm-earned-box">$0</strong></div>
           <div class="rate-line"><span>Already Withdrawn to Bank:</span><strong id="adm-withdrawn-box">$0</strong></div>
           <div class="rate-line rate-total"><span>Available to Withdraw:</span><span id="adm-available-box">$0</span></div>
         </div>
@@ -1020,7 +1021,7 @@
           <input id="admin-stripe-endpoint" type="text" placeholder="https://your-backend.example.com/create-checkout-session" />
         </div>
         <div class="field">
-          <label>TRUCKGO Commission (%)</label>
+          <label>TRUCKGO Commission (% Deducted From Total Rate)</label>
           <input id="admin-commission-input" type="number" min="0" max="50" step="0.5" value="10" />
         </div>
         <button type="button" class="btn btn-purple" onclick="saveAdminConfig()">Save Settings</button>
@@ -1080,7 +1081,7 @@
     let commissionPercent = Number(localStorage.getItem("tg_commission_pct") || "10");
     let adminWithdrawnTotal = Number(localStorage.getItem("tg_admin_withdrawn") || "0");
     let adminPayoutBank = localStorage.getItem("tg_admin_bank") || "";
-    let currentUser = JSON.parse(localStorage.getItem("tg_current_user_v4") || "null");
+    let currentUser = JSON.parse(localStorage.getItem("tg_current_user_v6") || "null");
 
     let ownerBankAccount = localStorage.getItem("tg_owner_bank") || "";
     let courierBankAccount = localStorage.getItem("tg_courier_bank") || "";
@@ -1096,22 +1097,22 @@
       return d.toISOString().split("T")[0];
     }
 
-    let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs_v4") || "null") || [
-      "TRUCKGO USA active: active loads only, return auto-fare, cargo/truck specs & company name"
+    let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs_v6") || "null") || [
+      "TRUCKGO USA active: fast onboarding for Courier, Truck Owner & Driver with clear rate & private trip GPS"
     ];
 
-    let users = JSON.parse(localStorage.getItem("tg_users_v4") || "null") || [
+    let users = JSON.parse(localStorage.getItem("tg_users_v6") || "null") || [
       { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Operating Authority" },
       { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Driving License & ID" },
       { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Courier Permit" },
       { name: "Ali Raza (Dispatch)", email: "staff@truckgo.us", role: "staff", docInfo: "Office Worker (Dispatch & Loads)" }
     ];
 
-    let trucks = JSON.parse(localStorage.getItem("tg_trucks_v4") || "null") || [
+    let trucks = JSON.parse(localStorage.getItem("tg_trucks_v6") || "null") || [
       { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", ownerName: "Lone Star Trucking", status: "Ready / Active" }
     ];
 
-    let loads = JSON.parse(localStorage.getItem("tg_loads_v4") || "null") || [
+    let loads = JSON.parse(localStorage.getItem("tg_loads_v6") || "null") || [
       {
         id: 981,
         companyName: "SwiftBox Courier USA",
@@ -1128,7 +1129,7 @@
         weight: 18000,
         returnWeight: 14000,
         type: "53ft Dry Van",
-        price: 8128,
+        price: 8448,
         payMethod: "Stripe Apple Pay",
         status: "Open",
         payoutStatus: "HELD UNTIL DELIVERY",
@@ -1142,7 +1143,7 @@
         gpsActive: false,
         gpsUpdated: "Off (Trip Not Started)",
         messages: [
-          { sender: "Courier", text: "Outbound + Return included. Courier, Driver & Truck Owner can chat and share files here.", docName: "" }
+          { sender: "Courier", text: "Outbound + Return included. Only assigned parties share trip location & load chat here.", docName: "" }
         ]
       }
     ];
@@ -1190,7 +1191,7 @@
     const i18n = {
       en: {
         homeTitle: "TRUCKGO USA – Drivers, Active Loads, Truck Owner & Courier",
-        homeSub: "Only active loads appear upfront with trip dates, cargo/truck specs, company name & return auto-fare.",
+        homeSub: "Fast onboarding for Courier, Truck Owner & Driver with transparent US rate breakdown & private trip GPS.",
         signup: "Quick Sign Up",
         login: "Sign In",
         selectRole: "1. Choose Role (Truck Owner, Driver, Courier)",
@@ -1202,7 +1203,7 @@
       },
       ur: {
         homeTitle: "TRUCKGO USA – ڈرائیورز، ایکٹیو لوڈز، ٹرک مالک اور کورئیر",
-        homeSub: "صرف ایکٹیو لوڈز تاریخ، لوڈ/گاڑی کی تفصیل، کمپنی کا نام اور واپسی کے آٹو کرائے کے ساتھ نظر آئیں گے۔",
+        homeSub: "کورئیر، مالک اور ڈرائیور کے لیے تیز آن بورڈنگ، واضح کرایہ بریک ڈاؤن اور پرائیویٹ جی پی ایس۔",
         signup: "فوری سائن اَپ",
         login: "سائن اِن",
         selectRole: "1. اپنا رول چنیں (ٹرک مالک، ڈرائیور، کورئیر)",
@@ -1214,7 +1215,7 @@
       },
       es: {
         homeTitle: "TRUCKGO USA – Conductores, Cargas Activas, Dueño y Courier",
-        homeSub: "Solo las cargas activas aparecen con fechas, carga/camión, empresa y tarifa automática de ida y vuelta.",
+        homeSub: "Registro rápido para Courier, Dueño y Conductor con desglose claro en EE. UU. y GPS privado.",
         signup: "Registro Rápido",
         login: "Iniciar Sesión",
         selectRole: "1. Elegir Rol",
@@ -1237,7 +1238,7 @@
     function addSecurityLog(msg) {
       const stamp = new Date().toLocaleTimeString();
       securityLogs = [`[${stamp}] ${msg}`, ...securityLogs.slice(0, 39)];
-      localStorage.setItem("tg_sec_logs_v4", JSON.stringify(securityLogs));
+      localStorage.setItem("tg_sec_logs_v6", JSON.stringify(securityLogs));
     }
 
     function setLanguage(newLang) {
@@ -1261,9 +1262,9 @@
     }
 
     function saveState() {
-      localStorage.setItem("tg_users_v4", JSON.stringify(users));
-      localStorage.setItem("tg_trucks_v4", JSON.stringify(trucks));
-      localStorage.setItem("tg_loads_v4", JSON.stringify(loads));
+      localStorage.setItem("tg_users_v6", JSON.stringify(users));
+      localStorage.setItem("tg_trucks_v6", JSON.stringify(trucks));
+      localStorage.setItem("tg_loads_v6", JSON.stringify(loads));
       localStorage.setItem("tg_commission_pct", String(commissionPercent));
       localStorage.setItem("tg_admin_withdrawn", String(adminWithdrawnTotal));
       localStorage.setItem("tg_admin_bank", adminPayoutBank);
@@ -1271,8 +1272,8 @@
       localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
       localStorage.setItem("tg_owner_bank", ownerBankAccount);
       localStorage.setItem("tg_courier_bank", courierBankAccount);
-      if (currentUser) localStorage.setItem("tg_current_user_v4", JSON.stringify(currentUser));
-      else localStorage.removeItem("tg_current_user_v4");
+      if (currentUser) localStorage.setItem("tg_current_user_v6", JSON.stringify(currentUser));
+      else localStorage.removeItem("tg_current_user_v6");
     }
 
     function openHomeBox(boxName) {
@@ -1352,7 +1353,7 @@
             Company: <strong>${escapeHtml(foundLoad.companyName || foundLoad.courierName || "Courier Company")}</strong> • Cargo: <strong>${escapeHtml(foundLoad.cargoDesc || foundLoad.type)}</strong> • Truck: <strong>${escapeHtml(foundLoad.type)}</strong><br/>
             Goes on: <strong>${escapeHtml(foundLoad.pickupDate || "Scheduled")}</strong>${foundLoad.hasReturn ? ` • Return: <strong>${escapeHtml(foundLoad.returnDate || "Scheduled")}</strong> (${escapeHtml(foundLoad.returnOrigin || foundLoad.dest)} &rarr; ${escapeHtml(foundLoad.returnDest || foundLoad.origin)})` : ""}<br/>
             Driver: <strong>${escapeHtml(foundLoad.driver)}</strong> • Owner: <strong>${escapeHtml(foundLoad.truckOwner || "Owner")}</strong><br/>
-            Total: $${foundLoad.price.toLocaleString()} • Owner Payout: $${net.toLocaleString()} • Status Note: ${escapeHtml(foundLoad.payoutStatus || "")}
+            Total: $${foundLoad.price.toLocaleString()} • Commission (${commissionPercent}%): $${comm.toLocaleString()} • Owner Payout: $${net.toLocaleString()}
           </div>
           ${chatSummary || `<div class="item-meta">No messages on this load.</div>`}
         </div>
@@ -1549,6 +1550,20 @@
       calculateAutoRate();
     }
 
+    function calculateLegFare(legMiles, legWeight, type) {
+      const rpmMap = {
+        "Express Courier Van": 2.15,
+        "26ft Box Truck": 2.65,
+        "53ft Dry Van": 3.05,
+        "53ft Reefer": 3.50,
+        "48ft Flatbed": 3.25
+      };
+      const rpm = rpmMap[type] || 2.95;
+      const shortHaulBoost = legMiles < 250 ? (250 - legMiles) * 1.15 : 0;
+      const weightSurcharge = (legWeight / 1000) * 28;
+      return Math.round(legMiles * rpm + shortHaulBoost + weightSurcharge);
+    }
+
     function calculateAutoRate() {
       const originEl = document.getElementById("load-origin");
       const destEl = document.getElementById("load-dest");
@@ -1560,7 +1575,7 @@
       const weightEl = document.getElementById("load-weight");
       const retWeightEl = document.getElementById("load-return-weight");
       const typeEl = document.getElementById("load-type");
-      if (!milesEl || !weightEl || !typeEl) return { totalMiles: 1280, fare: 4288 };
+      if (!milesEl || !weightEl || !typeEl) return { totalMiles: 1280, fare: 4408 };
 
       const hasReturn = !incRetEl || incRetEl.value === "yes";
       if (retBoxEl) retBoxEl.classList.toggle("hidden", !hasReturn);
@@ -1577,16 +1592,7 @@
       const outboundWeight = Math.max(50, Number(weightEl.value) || 10000);
       const type = typeEl.value;
 
-      const rpmMap = {
-        "Express Courier Van": 2.10,
-        "26ft Box Truck": 2.55,
-        "53ft Dry Van": 2.95,
-        "53ft Reefer": 3.40,
-        "48ft Flatbed": 3.15
-      };
-
-      const rpm = rpmMap[type] || 2.85;
-      const outboundFare = outboundMiles * rpm + (outboundWeight / 1000) * 28;
+      const outboundFare = calculateLegFare(outboundMiles, outboundWeight, type);
 
       let returnMiles = 0;
       let returnFare = 0;
@@ -1597,17 +1603,25 @@
         const rc2 = lookupCoordsFromAddress(rd);
         returnMiles = rc1 && rc2 ? haversineMiles(rc1[0], rc1[1], rc2[0], rc2[1]) : outboundMiles;
         const returnWeight = Math.max(0, Number(retWeightEl && retWeightEl.value) || 0);
-        returnFare = returnMiles * rpm + (returnWeight / 1000) * 28;
+        returnFare = calculateLegFare(returnMiles, returnWeight, type);
       }
 
       const totalMiles = outboundMiles + returnMiles;
-      const fare = Math.round(outboundFare + returnFare);
+      const fare = outboundFare + returnFare;
       const comm = Math.round((fare * commissionPercent) / 100);
       const net = fare - comm;
 
       document.getElementById("auto-miles-label").textContent =
         totalMiles.toLocaleString() + " miles" + (hasReturn ? ` (${outboundMiles.toLocaleString()} out + ${returnMiles.toLocaleString()} return)` : " (one-way)");
+      const legsDetailEl = document.getElementById("legs-fare-detail");
+      if (legsDetailEl) {
+        legsDetailEl.textContent = hasReturn
+          ? `$${outboundFare.toLocaleString()} out + $${returnFare.toLocaleString()} return`
+          : `$${outboundFare.toLocaleString()} one-way`;
+      }
       document.getElementById("comm-rate-label").textContent = commissionPercent;
+      const bannerCommEl = document.getElementById("courier-banner-comm");
+      if (bannerCommEl) bannerCommEl.textContent = commissionPercent;
       document.getElementById("auto-fare-display").textContent = "$" + fare.toLocaleString();
       document.getElementById("comm-amount-display").textContent = "$" + comm.toLocaleString();
       document.getElementById("net-payout-display").textContent = "$" + net.toLocaleString();
@@ -1812,7 +1826,7 @@
         const comm = Math.round((l.price * commissionPercent) / 100);
         const net = l.price - comm;
         const ownerBankLabel = ownerBankAccount ? `Owner Bank (${ownerBankAccount})` : `${l.truckOwner || "Truck Owner"} Payout Account`;
-        addSecurityLog(`INSTANT PAYOUT ON DELIVERY (#${id}): $${net} to ${ownerBankLabel} (to pay driver salary), $${comm} fee to TRUCKGO`);
+        addSecurityLog(`INSTANT PAYOUT ON DELIVERY (#${id}): $${net} to ${ownerBankLabel} (after $${comm} / ${commissionPercent}% platform fee from $${l.price} total)`);
         return {
           ...l,
           status: "Delivered",
@@ -1849,7 +1863,7 @@
       renderApp();
     }
 
-    function renderLoadSpecsLine(l, netPayout) {
+    function renderLoadSpecsLine(l, netPayout, commAmount) {
       const companyDisplay = l.companyName || l.courierName || "Courier Company";
       const cargoDisplay = l.cargoDesc || "Freight Load";
       const weightDisplay = `${Number(l.weight || 0).toLocaleString()} lbs${l.hasReturn ? ` + ${Number(l.returnWeight || 0).toLocaleString()} lbs return` : ""}`;
@@ -1861,7 +1875,7 @@
         <div class="item-meta">
           Company: <strong>${escapeHtml(companyDisplay)}</strong> • Truck Needed: <strong>${escapeHtml(l.type || "Truck")}</strong><br/>
           Load / Cargo: <strong>${escapeHtml(cargoDisplay)}</strong> • Weight: <strong>${escapeHtml(weightDisplay)}</strong> • Distance: <strong>${Number(l.totalMiles || l.miles || 0).toLocaleString()} mi</strong><br/>
-          Goes on: <strong>${escapeHtml(l.pickupDate || "Scheduled")}</strong> • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Owner Payout: <strong>$${netPayout.toLocaleString()}</strong>${returnLine}
+          Goes on: <strong>${escapeHtml(l.pickupDate || "Scheduled")}</strong> • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Owner Payout: <strong>$${netPayout.toLocaleString()}</strong> (Fee: $${commAmount.toLocaleString()} / ${commissionPercent}%)${returnLine}
         </div>
       `;
     }
@@ -1903,11 +1917,20 @@
       `;
     }
 
-    function renderLiveGpsForWatcher(load, watcherLabel) {
+    function renderAssignedPartyGps(load, watcherLabel) {
+      const hasDriverAssigned = load.status !== "Open" && load.driver && load.driver !== "Available for Driver";
+      if (!hasDriverAssigned) {
+        return `
+          <div class="gps-live-card">
+            <div style="font-size:11px; color:#FDBA74;">${escapeHtml(watcherLabel)} • PRIVATE TO ASSIGNED PARTIES</div>
+            <div class="gps-coords">Trip GPS starts once assigned driver books this order</div>
+          </div>
+        `;
+      }
       const stateText = load.gpsActive ? `LIVE (${escapeHtml(load.gpsUpdated || "Active")})` : `PAUSED / OFF (${escapeHtml(load.gpsUpdated || "Not Forever")})`;
       return `
         <div class="gps-live-card">
-          <div style="font-size:11px; color:#86EFAC;">${escapeHtml(watcherLabel)} • ${stateText}</div>
+          <div style="font-size:11px; color:#86EFAC;">${escapeHtml(watcherLabel)} • Driver: ${escapeHtml(load.driver)} • ${stateText}</div>
           <div class="gps-coords">Lat: ${escapeHtml(load.lat)}, Lng: ${escapeHtml(load.lng)}</div>
           <a class="map-link" href="https://maps.google.com/?q=${encodeURIComponent(load.lat)},${encodeURIComponent(load.lng)}" target="_blank" rel="noopener">
             Open Last / Live Location on Google Maps &rarr;
@@ -1938,21 +1961,26 @@
       }
 
       stopLiveGPS();
-      statusText.textContent = "Connecting Live GPS (Trip Session)...";
+      statusText.textContent = "Connecting Live GPS (Assigned Order Only)...";
       gpsWatchId = navigator.geolocation.watchPosition(
         (pos) => {
           const lat = pos.coords.latitude.toFixed(5);
           const lng = pos.coords.longitude.toFixed(5);
           const nowTime = new Date().toLocaleTimeString();
-          statusText.textContent = "LIVE GPS SHARING (ACTIVE SESSION)";
+          statusText.textContent = "LIVE GPS SHARING (ASSIGNED OWNER & COURIER ONLY)";
           coordsText.textContent = `Lat: ${lat}, Lng: ${lng}`;
           mapLink.href = `https://maps.google.com/?q=${lat},${lng}`;
 
-          loads = loads.map((l) =>
-            l.status !== "Open" && l.status !== "Delivered"
+          const activeDriverName = currentUser && currentUser.role === "driver" ? currentUser.name.toLowerCase() : "";
+          loads = loads.map((l) => {
+            const isAssignedToThisDriver =
+              l.status !== "Open" &&
+              l.status !== "Delivered" &&
+              (!activeDriverName || String(l.driver || "").toLowerCase().includes(activeDriverName));
+            return isAssignedToThisDriver
               ? { ...l, lat: Number(lat), lng: Number(lng), gpsActive: true, gpsUpdated: nowTime }
-              : l
-          );
+              : l;
+          });
           saveState();
         },
         () => {
@@ -2044,7 +2072,7 @@
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge badge-open">Goes on: ${escapeHtml(l.pickupDate || "Scheduled")}</span>
               </div>
-              ${renderLoadSpecsLine(l, net)}
+              ${renderLoadSpecsLine(l, net, comm)}
               ${nearBadge ? `<div style="margin-bottom:8px;">${nearBadge}</div>` : ""}
               ${l.status === "Open" ? `<button type="button" class="btn btn-green btn-sm" onclick="quickLogin('driver'); acceptLoad(${l.id});">Quick Book Load as Driver</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
             </div>
@@ -2158,7 +2186,7 @@
           (t) => `
           <div class="list-item">
             <div class="item-top"><div class="item-title">${escapeHtml(t.unit)}</div><span class="badge badge-open">${escapeHtml(t.status)}</span></div>
-            <div class="item-meta">${escapeHtml(t.equip)} • Driver: <strong>${escapeHtml(t.driver)}</strong></div>
+            <div class="item-meta">${escapeHtml(t.equip)} • Driver: <strong>${escapeHtml(t.driver)}</strong> • Owner: <strong>${escapeHtml(t.ownerName || "Owner")}</strong></div>
             ${t.driver !== "Unassigned" ? `<button type="button" class="btn btn-red btn-sm" onclick="removeTruckDriver(${t.id})">Remove Driver</button>` : ""}
           </div>
         `
@@ -2176,8 +2204,8 @@
                 <div class="item-title">Load #${escapeHtml(l.id)}: ${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge badge-open">Goes on: ${escapeHtml(l.pickupDate || "Scheduled")}</span>
               </div>
-              ${renderLoadSpecsLine(l, net)}
-              ${renderLiveGpsForWatcher(l, "OWNER WATCH GPS")}
+              ${renderLoadSpecsLine(l, net, comm)}
+              ${renderAssignedPartyGps(l, "OWNER & ASSIGNED COURIER ONLY")}
               <div class="item-meta">Driver: <strong>${escapeHtml(l.driver)}</strong> • Owner: <strong>${escapeHtml(l.truckOwner || "Owner")}</strong> • Status: ${escapeHtml(l.status)}</div>
               ${hasAssignedDriver ? `<button type="button" class="btn btn-red btn-sm" onclick="removeLoadDriver(${l.id})">Remove Driver from Load</button>` : ""}
               ${renderThreeWayChatBox(l, "Truck Owner")}
@@ -2213,7 +2241,7 @@
                 <div class="item-title">Load #${escapeHtml(l.id)}: ${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge badge-open">Goes on: ${escapeHtml(l.pickupDate || "Scheduled")}</span>
               </div>
-              ${renderLoadSpecsLine(l, net)}
+              ${renderLoadSpecsLine(l, net, comm)}
               ${nearBadge ? `<div style="margin-bottom:8px;">${nearBadge}</div>` : ""}
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Book / Accept Load (Held Until Delivery)</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
@@ -2242,9 +2270,9 @@
                 <div class="item-title">Load #${escapeHtml(l.id)}: ${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge badge-open">Goes on: ${escapeHtml(l.pickupDate || "Scheduled")}</span>
               </div>
-              ${renderLoadSpecsLine(l, net)}
-              <div class="item-meta">Total Rent: <strong>$${l.price.toLocaleString()}</strong> • Fee: <strong>$${comm.toLocaleString()}</strong></div>
-              ${renderLiveGpsForWatcher(l, "COURIER LIVE GPS")}
+              ${renderLoadSpecsLine(l, net, comm)}
+              <div class="item-meta">Total Rent: <strong>$${l.price.toLocaleString()}</strong> • Platform Fee (${commissionPercent}%): <strong>$${comm.toLocaleString()}</strong> • Owner Payout: <strong>$${net.toLocaleString()}</strong></div>
+              ${renderAssignedPartyGps(l, "COURIER & ASSIGNED OWNER ONLY")}
               <button class="btn btn-green btn-sm" style="margin-bottom:8px;" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "Confirm Delivery & Release Payout to Owner" : "Payment Held Until Pickup & Delivery"}</button>
               ${renderThreeWayChatBox(l, "Courier")}
             </div>
