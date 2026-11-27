@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – App Code Lock, Phone/Email OTP, Stripe, GPS & Commission</title>
+  <title>TRUCKGO USA – Help Center, Team Desk, Instant Pay, US Payments & Live GPS</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -40,7 +40,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Nastaliq Urdu", sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 94px;
+      padding-bottom: 92px;
     }
 
     body.rtl { direction: rtl; }
@@ -101,7 +101,7 @@
       padding: 5px 8px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      max-width: 110px;
+      max-width: 115px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -136,10 +136,10 @@
 
     h2 { font-size: 16px; margin-bottom: 12px; color: var(--navy); }
 
-    .role-grid {
+    .role-grid-3 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       margin-bottom: 14px;
     }
 
@@ -147,7 +147,7 @@
       border: 2px solid var(--border);
       background: #F8FAFC;
       border-radius: 14px;
-      padding: 12px;
+      padding: 10px;
       text-align: start;
       cursor: pointer;
     }
@@ -155,43 +155,26 @@
     .role-card.active[data-role="owner"] { border-color: var(--orange); background: #FFF7ED; }
     .role-card.active[data-role="driver"] { border-color: var(--green); background: #F0FDF4; }
     .role-card.active[data-role="courier"] { border-color: var(--blue); background: #EFF6FF; }
-    .role-card.active[data-role="admin"] { border-color: var(--purple); background: #F5F3FF; }
 
     .role-tag {
       display: inline-block;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
-      padding: 2px 7px;
+      padding: 2px 6px;
       border-radius: 999px;
       background: #E2E8F0;
       color: var(--navy);
       margin-bottom: 4px;
     }
 
-    .role-title { font-weight: 800; font-size: 14px; color: var(--navy); display: block; }
-    .role-desc { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+    .role-title { font-weight: 800; font-size: 13px; color: var(--navy); display: block; }
+    .role-desc { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
 
     .doc-box {
       background: #F8FAFC;
       border: 1px dashed #94A3B8;
       border-radius: 14px;
       padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .sec-box {
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-    }
-
-    .otp-box {
-      background: #F0FDF4;
-      border: 1px solid #BBF7D0;
-      border-radius: 14px;
-      padding: 12px 14px;
       margin-bottom: 12px;
     }
 
@@ -229,6 +212,25 @@
       color: var(--blue);
     }
 
+    .help-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .faq-item {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .faq-item strong { display: block; color: var(--navy); margin-bottom: 2px; }
+
     .field { margin-bottom: 12px; }
     .field label {
       display: block;
@@ -239,7 +241,8 @@
     }
 
     .field input,
-    .field select {
+    .field select,
+    .field textarea {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid var(--border);
@@ -247,6 +250,7 @@
       font-size: 14px;
       background: #FFFFFF;
       color: var(--text);
+      font-family: inherit;
     }
 
     .rate-summary {
@@ -384,45 +388,8 @@
       margin-top: 4px;
     }
 
-    .lock-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--navy);
-      color: #FFFFFF;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .lock-card {
-      width: 100%;
-      max-width: 380px;
-      background: #1E293B;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 18px;
-      padding: 22px;
-      text-align: center;
-    }
-
-    .lock-card input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #475569;
-      background: #0F172A;
-      color: #FFFFFF;
-      font-size: 18px;
-      letter-spacing: 6px;
-      text-align: center;
-      margin: 12px 0;
-    }
-
-    .alert-err { color: #FCA5A5; font-size: 12px; font-weight: 700; margin-top: 8px; }
-    .alert-ok { color: #86EFAC; font-size: 12px; font-weight: 700; margin-top: 8px; }
-    .card .alert-err { color: var(--red); }
-    .card .alert-ok { color: var(--green); }
+    .alert-err { color: var(--red); font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .alert-ok { color: var(--green); font-size: 12px; font-weight: 700; margin-top: 8px; }
     .hidden { display: none !important; }
 
     .bottom-nav {
@@ -469,18 +436,6 @@
 </head>
 <body>
 
-  <!-- APP CODE LOCK SCREEN -->
-  <div id="app-lock-screen" class="lock-screen hidden">
-    <div class="lock-card">
-      <div class="logo-pill" style="display:inline-block; margin-bottom:8px;">TRUCKGO LOCK</div>
-      <h2 style="color:#FFFFFF; margin-bottom:4px;">App Passcode Lock</h2>
-      <p style="font-size:12px; color:#CBD5E1;">Enter your 4-digit app code to unlock</p>
-      <input id="unlock-code-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••" />
-      <button type="button" class="btn btn-orange" onclick="unlockAppWithCode()">Unlock App</button>
-      <div id="unlock-error" class="alert-err"></div>
-    </div>
-  </div>
-
   <header class="app-header">
     <div class="logo-wrap">
       <span class="logo-pill">USA</span>
@@ -496,156 +451,76 @@
 
   <main class="container">
 
-    <!-- AUTH, PHONE/EMAIL OTP & INSTANT LICENSE CHECK VIEW -->
+    <!-- FAST PUBLIC ENTRY (NO REQUIRED CODES OR DOCS TO TEST) -->
     <section id="auth-view">
       <div class="banner banner-auth">
-        <h1 id="t-auth-title">TRUCKGO USA – Code Lock, Phone/Email OTP &amp; Stripe</h1>
-        <p id="t-auth-sub">App passcode lock, OTP via phone or email, instant license check, Stripe &amp; US payments, instant payout &amp; GPS.</p>
+        <h1 id="t-auth-title">TRUCKGO USA – Fast Freight, Instant Pay &amp; Live GPS</h1>
+        <p id="t-auth-sub">Test any portal right now with 1 tap — no code or document required to open.</p>
+      </div>
+
+      <div class="card">
+        <h2 id="t-quick-demo">1-Tap Instant Check (No Code / No Doc Needed)</h2>
+        <div class="role-grid-3">
+          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
+          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
+          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier</button>
+        </div>
+        <div style="margin-top:10px; text-align:center;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="openOwnerAdminAccess()">Admin &amp; Team Desk</button>
+        </div>
       </div>
 
       <div class="card">
         <div class="tabs-row">
-          <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Create Account</button>
+          <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Quick Sign Up</button>
           <button id="tab-login" class="tab-pill" onclick="switchAuthMode('login')">Sign In</button>
         </div>
 
         <form id="auth-form">
           <div id="signup-fields">
-            <label id="t-select-role" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Select Account Role</label>
-            <div class="role-grid">
+            <label id="t-select-role" style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Choose Role</label>
+            <div class="role-grid-3">
               <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
-                <span class="role-tag">MC / USDOT</span>
+                <span class="role-tag">MC / DOT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Instant pay &amp; fleet</span>
+                <span class="role-desc">Loads &amp; instant pay</span>
               </button>
               <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
-                <span class="role-tag">CDL / LICENSE</span>
+                <span class="role-tag">CDL / DL</span>
                 <span class="role-title">Driver</span>
-                <span class="role-desc">License check &amp; GPS</span>
+                <span class="role-desc">Trips &amp; live GPS</span>
               </button>
               <button type="button" class="role-card" data-role="courier" onclick="selectRole('courier', this)">
-                <span class="role-tag">EIN / PERMIT</span>
-                <span class="role-title">Courier / Shipper</span>
-                <span class="role-desc">Stripe + US payments</span>
-              </button>
-              <button type="button" class="role-card" data-role="admin" onclick="selectRole('admin', this)">
-                <span class="role-tag">STRIPE / FEE</span>
-                <span class="role-title">App Admin</span>
-                <span class="role-desc">Commission &amp; security</span>
+                <span class="role-tag">EIN / PRM</span>
+                <span class="role-title">Courier</span>
+                <span class="role-desc">Rates &amp; US pay</span>
               </button>
             </div>
 
             <div class="field">
-              <label for="auth-name" id="t-lbl-name">Full Name / Company Name</label>
-              <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" required />
+              <label for="auth-name" id="t-lbl-name">Name or Company (Optional for quick test)</label>
+              <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" />
             </div>
 
             <div class="doc-box">
-              <div id="doc-section-title" style="font-size:12px; font-weight:800; margin-bottom:8px;">Instant License &amp; Authority Check (Owner)</div>
-
-              <div id="docs-owner">
-                <div class="field">
-                  <label>MC# or USDOT# (e.g. MC-849210 or DOT-3920114)</label>
-                  <input id="owner-mc" type="text" placeholder="MC-849210" oninput="liveLicenseCheck()" />
-                </div>
-                <div class="field" style="margin-bottom:0;">
-                  <label>Upload Authority / Business Document</label>
-                  <input id="owner-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-                </div>
-              </div>
-
-              <div id="docs-driver" class="hidden">
-                <div class="field">
-                  <label>CDL / Driving License # (e.g. CDL-TX-7748291)</label>
-                  <input id="driver-cdl" type="text" placeholder="CDL-TX-7748291" oninput="liveLicenseCheck()" />
-                </div>
-                <div class="field">
-                  <label>Government ID / Medical Card</label>
-                  <input id="driver-gov-id" type="text" placeholder="TX State ID / DOT Med Card" />
-                </div>
-                <div class="field" style="margin-bottom:0;">
-                  <label>Upload Driving License &amp; Govt Document</label>
-                  <input id="driver-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-                </div>
-              </div>
-
-              <div id="docs-courier" class="hidden">
-                <div class="field">
-                  <label>Courier Permit / EIN # (e.g. EIN-84-3920112)</label>
-                  <input id="courier-permit" type="text" placeholder="EIN-84-3920112" oninput="liveLicenseCheck()" />
-                </div>
-                <div class="field" style="margin-bottom:0;">
-                  <label>Upload Courier Permit / Business Doc</label>
-                  <input id="courier-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-                </div>
-              </div>
-
-              <div id="docs-admin" class="hidden">
-                <div class="field" style="margin-bottom:0;">
-                  <label>Admin Master Code</label>
-                  <input id="admin-code" type="text" placeholder="TRUCKGO-ADMIN-USA" />
-                </div>
-              </div>
-
-              <div id="license-check-feedback" class="alert-ok"></div>
+              <div style="font-size:12px; font-weight:800; margin-bottom:6px;">License / Authority (Optional anytime)</div>
+              <input id="license-any-input" type="text" placeholder="MC-849210 / CDL-TX-12345 / EIN-84-12345" />
             </div>
           </div>
 
           <div class="field">
-            <label for="auth-email" id="t-lbl-email">Email Address</label>
-            <input id="auth-email" type="email" placeholder="name@company.com" required />
+            <label for="auth-email" id="t-lbl-email">Email or Phone (Optional for quick test)</label>
+            <input id="auth-email" type="text" placeholder="name@company.com or +1 214 555 0199" />
           </div>
 
           <div class="field">
-            <label for="auth-phone">Phone Number (for SMS OTP)</label>
-            <input id="auth-phone" type="tel" placeholder="+1 214 555 0199" />
+            <label for="auth-pass" id="t-lbl-pass">Password (Optional for quick test)</label>
+            <input id="auth-pass" type="password" placeholder="••••••" />
           </div>
 
-          <div class="field">
-            <label for="auth-pass" id="t-lbl-pass">Password (Min 6 chars)</label>
-            <input id="auth-pass" type="password" minlength="6" placeholder="••••••" required />
-          </div>
-
-          <!-- PHONE OR EMAIL OTP VERIFICATION -->
-          <div class="otp-box">
-            <div style="font-size:12px; font-weight:800; color:#14532D; margin-bottom:8px;">
-              Login OTP Verification (Phone or Email)
-            </div>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-              <button type="button" id="otp-chan-phone" class="pay-chip-btn active" onclick="setOtpChannel('phone')">Phone OTP</button>
-              <button type="button" id="otp-chan-email" class="pay-chip-btn" onclick="setOtpChannel('email')">Email OTP</button>
-            </div>
-            <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
-              <button type="button" class="btn btn-green btn-sm" onclick="sendLoginOtp()">Send OTP Code</button>
-              <span id="otp-sent-status" style="font-size:12px; font-weight:700; color:#166534;"></span>
-            </div>
-            <div class="field" style="margin-bottom:0;">
-              <label for="auth-otp-code">Enter 6-Digit OTP</label>
-              <input id="auth-otp-code" type="text" inputmode="numeric" maxlength="6" placeholder="e.g. 123456" />
-            </div>
-          </div>
-
-          <!-- APP CODE LOCK PIN -->
-          <div class="sec-box">
-            <div class="field" style="margin-bottom:0;">
-              <label for="auth-pin">4-Digit App Code Lock PIN</label>
-              <input id="auth-pin" type="password" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="e.g. 4829" required />
-            </div>
-          </div>
-
-          <button id="auth-submit-btn" type="submit" class="btn btn-orange">Verify OTP &amp; Enter</button>
+          <button id="auth-submit-btn" type="submit" class="btn btn-orange">Enter TRUCKGO Now</button>
           <div id="auth-error" class="alert-err"></div>
         </form>
-      </div>
-
-      <div class="card">
-        <h2 id="t-quick-demo">Instant Portal Preview</h2>
-        <div class="role-grid">
-          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
-          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
-          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier + Stripe</button>
-          <button class="btn btn-purple btn-sm" onclick="quickLogin('admin')">Admin &amp; Stripe</button>
-        </div>
       </div>
     </section>
 
@@ -653,7 +528,7 @@
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
         <h1>Truck Owner – Fast Loads, Instant Pay &amp; GPS</h1>
-        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and app code lock.</p>
+        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and 24/7 help.</p>
       </div>
 
       <div class="card">
@@ -722,7 +597,7 @@
     <section id="portal-courier" class="hidden">
       <div class="banner banner-courier">
         <h1>Courier – Stripe + US Payments, Auto Rate &amp; Live GPS</h1>
-        <p>Stripe Checkout / Cards / Apple Pay / Google Pay / ACH / Wallets — instant carrier payout &amp; only your commission.</p>
+        <p>Cards, Apple Pay, Google Pay, ACH, PayPal/Venmo/Cash App — instant carrier payout &amp; only your commission.</p>
       </div>
 
       <div class="card">
@@ -780,7 +655,7 @@
 
           <div class="rate-summary">
             <div class="rate-line"><span>Total US Rate:</span><strong id="auto-fare-display">$2,580</strong></div>
-            <div class="rate-line"><span>TRUCKGO Fee (<span id="comm-rate-label">10</span>% — Only You):</span><strong id="comm-amount-display">$258</strong></div>
+            <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>% — Only You):</span><strong id="comm-amount-display">$258</strong></div>
             <div class="rate-line rate-total"><span>Instant Pay to Carrier:</span><span id="net-payout-display">$2,322</span></div>
           </div>
 
@@ -789,58 +664,93 @@
             <input id="load-price" type="number" placeholder="Auto US rate" oninput="updateCustomRatePreview()" />
           </div>
 
-          <button type="submit" class="btn btn-blue">Post Load &amp; Authorize Stripe Payment</button>
+          <button type="submit" class="btn btn-blue">Post Load &amp; Enable Instant Pay</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Loads, Stripe / Payment Status &amp; Live GPS</h2>
+        <h2>My Loads, US Payment Method &amp; Live GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- 4. ADMIN PORTAL -->
+    <!-- SHARED USER HELP & SUPPORT SECTION (VISIBLE ON ACTIVE PORTALS) -->
+    <section id="shared-help-section" class="hidden">
+      <div class="card">
+        <h2>TRUCKGO Help &amp; Team Support</h2>
+        <div class="faq-item">
+          <strong>1. How does Instant Pay work?</strong>
+          Carrier gets paid immediately upon delivery completion — no waiting weeks for late payouts.
+        </div>
+        <div class="faq-item">
+          <strong>2. How do I get help from your team?</strong>
+          Send a support ticket below; your dispatch &amp; support team sees it in the Admin Team Desk.
+        </div>
+
+        <form id="support-ticket-form" class="help-box">
+          <div style="font-size:12px; font-weight:800; color:#0F172A; margin-bottom:8px;">Message Our Support / Dispatch Team</div>
+          <div class="field">
+            <label>Topic</label>
+            <select id="ticket-topic">
+              <option value="Instant Payout / Stripe">Instant Payout / Stripe</option>
+              <option value="Live GPS / Tracking">Live GPS / Tracking</option>
+              <option value="License / Load Help">License / Load Help</option>
+              <option value="Other Support">Other Support</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Your Message</label>
+            <textarea id="ticket-message" rows="2" placeholder="Write your issue or question..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-dark btn-sm">Send to Support Team</button>
+          <div id="ticket-sent-msg" class="alert-ok"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4. ADMIN & TEAM DESK PORTAL -->
     <section id="portal-admin" class="hidden">
       <div class="banner banner-admin">
-        <h1>Admin – Code Lock, OTP, Stripe &amp; Your Commission</h1>
-        <p>Keep Stripe Secret Key (sk_...) on server only; publishable key (pk_...) connects client safely.</p>
+        <h1>Admin &amp; Team Desk – Commission, Help Tickets &amp; Logs</h1>
+        <p>Manage user help tickets like an Uber support team, set your commission, and monitor payouts.</p>
       </div>
 
       <div class="card">
-        <h2>App Code Lock, Stripe &amp; Commission Settings</h2>
-        <div class="field">
-          <label>App Code Lock PIN (4 Digits)</label>
-          <input id="admin-lock-pin" type="text" inputmode="numeric" maxlength="4" placeholder="e.g. 4829" />
-        </div>
+        <h2>User Help Tickets (Team Queue)</h2>
+        <div id="admin-tickets-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Your Platform Commission (%) &amp; Stripe Key</h2>
         <div class="field">
           <label>Stripe Publishable Key (pk_test_... or pk_live_...)</label>
           <input id="admin-stripe-pk" type="text" placeholder="pk_test_your_publishable_key_here" />
         </div>
         <div class="field">
-          <label>Stripe Checkout Endpoint URL (Optional Server/Edge Function)</label>
+          <label>Stripe Checkout Endpoint URL (Optional)</label>
           <input id="admin-stripe-endpoint" type="text" placeholder="https://your-backend.example.com/create-checkout-session" />
         </div>
         <div class="field">
           <label>TRUCKGO Commission (%)</label>
           <input id="admin-commission-input" type="number" min="0" max="50" step="0.5" value="10" />
         </div>
-        <button class="btn btn-purple" onclick="saveAdminConfig()">Save Security, Stripe &amp; Commission</button>
+        <button class="btn btn-purple" onclick="saveAdminConfig()">Save Settings</button>
         <div id="admin-save-msg" class="alert-ok"></div>
       </div>
 
       <div class="stats-row">
-        <div class="mini-stat"><strong id="adm-users">0</strong><span>Verified Users</span></div>
+        <div class="mini-stat"><strong id="adm-users">0</strong><span>Users</span></div>
         <div class="mini-stat"><strong id="adm-commission-total">$0</strong><span>Your Commission</span></div>
         <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Instant Paid</span></div>
       </div>
 
       <div class="card">
-        <h2>Verified Accounts &amp; License Checks</h2>
+        <h2>Accounts &amp; License Info</h2>
         <div id="admin-users-list"></div>
       </div>
 
       <div class="card">
-        <h2>OTP, Code Lock, Stripe &amp; Audit Log</h2>
+        <h2>Activity &amp; Payment Log</h2>
         <div id="admin-security-logs"></div>
       </div>
     </section>
@@ -851,8 +761,8 @@
     <button class="nav-btn" onclick="renderApp()">Home</button>
     <button class="nav-btn" onclick="switchRoleQuick('owner')">Owner</button>
     <button class="nav-btn" onclick="switchRoleQuick('driver')">GPS</button>
-    <button class="nav-btn" onclick="lockAppNow()">Lock</button>
-    <button class="nav-btn" onclick="logoutUser()">Logout</button>
+    <button class="nav-btn" onclick="switchRoleQuick('courier')">Courier</button>
+    <button class="nav-btn" onclick="logoutUser()">Exit</button>
   </nav>
 
   <script>
@@ -877,23 +787,23 @@
     let lang = localStorage.getItem("tg_lang") || "en";
     let authMode = "signup";
     let selectedRole = "owner";
-    let otpChannel = "phone";
-    let activeOtpCode = "";
     let selectedPayMethod = "Stripe Card (Visa/MC/Amex)";
     let commissionPercent = Number(localStorage.getItem("tg_commission_pct") || "10");
-    let appLockPin = localStorage.getItem("tg_app_lock_pin") || "4829";
-    let isAppLocked = false;
     let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
+    let supportTickets = JSON.parse(localStorage.getItem("tg_tickets") || "null") || [
+      { id: 101, from: "Marcus Johnson (Driver)", topic: "Live GPS / Tracking", message: "GPS active on I-20 toward Atlanta.", status: "Open" }
+    ];
+
     let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
-      "TRUCKGO USA loaded with App Code Lock, Phone/Email OTP & Stripe"
+      "TRUCKGO USA ready for instant check, help tickets & team dispatch"
     ];
 
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
-      { name: "Lone Star Trucking", email: "owner@truckgo.us", phone: "+1 214 555 0111", role: "owner", docInfo: "MC-849210 • Verified", pin: "1111" },
-      { name: "Marcus Johnson", email: "driver@truckgo.us", phone: "+1 214 555 0122", role: "driver", docInfo: "CDL-TX-7748291 • Verified", pin: "2222" },
-      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", phone: "+1 214 555 0133", role: "courier", docInfo: "EIN-84-3920112 • Verified", pin: "3333" },
-      { name: "Anjum (Admin)", email: "admin@truckgo.us", phone: "+1 214 555 0199", role: "admin", docInfo: "MASTER-ADMIN • Verified", pin: "9999" }
+      { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Active" },
+      { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Active" },
+      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Active" },
+      { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" }
     ];
 
     let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
@@ -922,43 +832,43 @@
 
     const i18n = {
       en: {
-        authTitle: "TRUCKGO USA – Code Lock, Phone/Email OTP & Stripe",
-        authSub: "App passcode lock, OTP via phone or email, instant license check, Stripe & US payments, instant payout & GPS.",
-        signup: "Create Account",
+        authTitle: "TRUCKGO USA – Fast Freight, Instant Pay & Live GPS",
+        authSub: "Test any portal right now with 1 tap — no code or document required to open.",
+        signup: "Quick Sign Up",
         login: "Sign In",
-        selectRole: "1. Select Account Role",
-        lblName: "Full Name / Company Name",
-        lblEmail: "Email Address",
-        lblPass: "Password (Min 6 chars)",
-        submitSignup: "Verify OTP & Enter",
-        submitLogin: "Verify OTP & Sign In",
-        quickDemo: "Instant Portal Preview"
+        selectRole: "1. Choose Role",
+        lblName: "Name or Company (Optional)",
+        lblEmail: "Email or Phone (Optional)",
+        lblPass: "Password (Optional)",
+        submitSignup: "Enter TRUCKGO Now",
+        submitLogin: "Sign In Fast",
+        quickDemo: "1-Tap Instant Check (No Code / No Doc Needed)"
       },
       ur: {
-        authTitle: "TRUCKGO USA – کوڈ لاک، فون/ای میل OTP اور Stripe",
-        authSub: "ایپ کوڈ لاک، فون یا ای میل پر OTP، فوری لائسنس چیک، Stripe اور US ادائیگیاں، فوری پے آؤٹ اور GPS۔",
-        signup: "نیا اکاؤنٹ بنائیں",
-        login: "سائن اِن کریں",
-        selectRole: "1. اپنا کردار چنیں",
-        lblName: "پورا نام / کمپنی کا نام",
-        lblEmail: "ای میل ایڈریس",
-        lblPass: "پاس ورڈ (کم از کم 6 حروف)",
-        submitSignup: "OTP تصدیق کریں اور داخل ہوں",
-        submitLogin: "OTP تصدیق اور سائن اِن",
-        quickDemo: "ہر پورٹل کا فوری پریویو"
+        authTitle: "TRUCKGO USA – تیز فریٹ، فوری ادائیگی اور لائیو GPS",
+        authSub: "کسی کوڈ یا دستاویز کے بغیر ابھی ایک ٹیپ میں کوئی بھی پورٹل کھول کر چیک کریں۔",
+        signup: "فوری سائن اَپ",
+        login: "سائن اِن",
+        selectRole: "1. اپنا رول چنیں",
+        lblName: "نام یا کمپنی کا نام",
+        lblEmail: "ای میل یا فون نمبر",
+        lblPass: "پاس ورڈ",
+        submitSignup: "فوری داخل ہوں",
+        submitLogin: "تیز سائن اِن",
+        quickDemo: "ایک ٹیپ فوری چیک (کوئی کوڈ یا دستاویز ضروری نہیں)"
       },
       es: {
-        authTitle: "TRUCKGO USA – Bloqueo PIN, OTP Teléfono/Correo y Stripe",
-        authSub: "Bloqueo por código, OTP por teléfono o correo, licencia al instante, Stripe, pagos EE. UU., pago rápido y GPS.",
-        signup: "Crear Cuenta",
+        authTitle: "TRUCKGO USA – Carga Rápida, Pago Instantáneo y GPS",
+        authSub: "Prueba cualquier portal ahora con 1 toque — sin código ni documentos obligatorios.",
+        signup: "Registro Rápido",
         login: "Iniciar Sesión",
-        selectRole: "1. Seleccionar Rol",
-        lblName: "Nombre Completo / Empresa",
-        lblEmail: "Correo Electrónico",
-        lblPass: "Contraseña (Mín. 6 caracteres)",
-        submitSignup: "Verificar OTP y Entrar",
-        submitLogin: "Verificar OTP e Iniciar",
-        quickDemo: "Vista Rápida de Portales"
+        selectRole: "1. Elegir Rol",
+        lblName: "Nombre o Empresa",
+        lblEmail: "Correo o Teléfono",
+        lblPass: "Contraseña",
+        submitSignup: "Entrar a TRUCKGO",
+        submitLogin: "Entrar Rápido",
+        quickDemo: "Prueba Instantánea en 1 Toque"
       }
     };
 
@@ -974,111 +884,6 @@
       const stamp = new Date().toLocaleTimeString();
       securityLogs = [`[${stamp}] ${msg}`, ...securityLogs.slice(0, 34)];
       localStorage.setItem("tg_sec_logs", JSON.stringify(securityLogs));
-    }
-
-    function setOtpChannel(ch) {
-      otpChannel = ch;
-      document.getElementById("otp-chan-phone").classList.toggle("active", ch === "phone");
-      document.getElementById("otp-chan-email").classList.toggle("active", ch === "email");
-      document.getElementById("otp-sent-status").textContent = "";
-    }
-
-    async function sendLoginOtp() {
-      const email = document.getElementById("auth-email").value.trim().toLowerCase();
-      const phone = document.getElementById("auth-phone").value.trim();
-      const statusEl = document.getElementById("otp-sent-status");
-
-      if (otpChannel === "phone" && !phone) {
-        statusEl.textContent = "Enter phone number first.";
-        return;
-      }
-      if (otpChannel === "email" && !email) {
-        statusEl.textContent = "Enter email address first.";
-        return;
-      }
-
-      activeOtpCode = String(Math.floor(100000 + Math.random() * 900000));
-      const target = otpChannel === "phone" ? phone : email;
-
-      if (sb && otpChannel === "email" && email) {
-        try {
-          await sb.auth.signInWithOtp({ email });
-        } catch (_err) {}
-      }
-      if (sb && otpChannel === "phone" && phone) {
-        try {
-          await sb.auth.signInWithOtp({ phone });
-        } catch (_err) {}
-      }
-
-      statusEl.textContent = `OTP sent to ${target} (Code: ${activeOtpCode})`;
-      addSecurityLog(`Login OTP sent via ${otpChannel.toUpperCase()} to ${target}`);
-    }
-
-    function lockAppNow() {
-      if (!currentUser) return;
-      isAppLocked = true;
-      document.getElementById("unlock-code-input").value = "";
-      document.getElementById("unlock-error").textContent = "";
-      document.getElementById("app-lock-screen").classList.remove("hidden");
-      addSecurityLog(`App locked via code lock for ${currentUser.name}`);
-    }
-
-    function unlockAppWithCode() {
-      const entered = document.getElementById("unlock-code-input").value.trim();
-      const errEl = document.getElementById("unlock-error");
-      const allowedPins = new Set([appLockPin, currentUser?.pin].filter(Boolean));
-      if (allowedPins.has(entered)) {
-        isAppLocked = false;
-        document.getElementById("app-lock-screen").classList.add("hidden");
-        addSecurityLog(`App unlocked with code lock by ${currentUser?.name || "user"}`);
-      } else {
-        errEl.textContent = "Wrong app code lock PIN.";
-        addSecurityLog("Failed app code lock unlock attempt");
-      }
-    }
-
-    function selectPayMethod(btn) {
-      selectedPayMethod = btn.getAttribute("data-pay") || "Stripe Card (Visa/MC/Amex)";
-      document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById("pay-method-hint").textContent =
-        `Selected: ${selectedPayMethod} • Instant payout to carrier on completion`;
-    }
-
-    function validateLicenseNumber(role, val) {
-      const clean = (val || "").trim().toUpperCase();
-      if (role === "driver") return /^(CDL|DL)[A-Z0-9-]{4,20}$/.test(clean);
-      if (role === "owner") return /^(MC|DOT|USDOT)[A-Z0-9-]{3,20}$/.test(clean);
-      if (role === "courier") return /^(EIN|PRM|PERMIT|DOT)[A-Z0-9-]{3,20}$/.test(clean);
-      return clean.length >= 4;
-    }
-
-    function liveLicenseCheck() {
-      const fb = document.getElementById("license-check-feedback");
-      if (!fb) return false;
-
-      let raw = "";
-      if (selectedRole === "driver") raw = document.getElementById("driver-cdl").value;
-      else if (selectedRole === "owner") raw = document.getElementById("owner-mc").value;
-      else if (selectedRole === "courier") raw = document.getElementById("courier-permit").value;
-      else raw = document.getElementById("admin-code").value;
-
-      if (!raw.trim()) {
-        fb.className = "alert-err";
-        fb.textContent = "Enter license / authority number for instant verification.";
-        return false;
-      }
-
-      const valid = validateLicenseNumber(selectedRole, raw);
-      if (valid) {
-        fb.className = "alert-ok";
-        fb.textContent = "✓ Instant License / Authority Check Passed";
-      } else {
-        fb.className = "alert-err";
-        fb.textContent = "⚠ Use valid format (e.g. CDL-TX-12345, MC-849210, EIN-84-12345)";
-      }
-      return valid;
     }
 
     function setLanguage(newLang) {
@@ -1106,8 +911,8 @@
       localStorage.setItem("tg_users", JSON.stringify(users));
       localStorage.setItem("tg_trucks", JSON.stringify(trucks));
       localStorage.setItem("tg_loads", JSON.stringify(loads));
+      localStorage.setItem("tg_tickets", JSON.stringify(supportTickets));
       localStorage.setItem("tg_commission_pct", String(commissionPercent));
-      localStorage.setItem("tg_app_lock_pin", appLockPin);
       localStorage.setItem("tg_stripe_pk", stripePublishableKey);
       localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
       if (currentUser) localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
@@ -1126,96 +931,37 @@
       selectedRole = role;
       document.querySelectorAll(".role-card").forEach((el) => el.classList.remove("active"));
       btn.classList.add("active");
-      document.getElementById("docs-owner").classList.toggle("hidden", role !== "owner");
-      document.getElementById("docs-driver").classList.toggle("hidden", role !== "driver");
-      document.getElementById("docs-courier").classList.toggle("hidden", role !== "courier");
-      document.getElementById("docs-admin").classList.toggle("hidden", role !== "admin");
-
-      const titles = {
-        owner: "Instant License & Authority Check (Owner)",
-        driver: "Instant CDL / Driver License Check",
-        courier: "Instant Courier Permit / EIN Check",
-        admin: "Admin Security Verification"
-      };
-      document.getElementById("doc-section-title").textContent = titles[role];
-      liveLicenseCheck();
-    }
-
-    function getRoleDocSummary() {
-      if (selectedRole === "owner") {
-        const mc = document.getElementById("owner-mc").value.trim().toUpperCase();
-        const f = document.getElementById("owner-doc-file").files[0]?.name || "Authority Doc";
-        return `${mc} • ${f} • Verified`;
-      }
-      if (selectedRole === "driver") {
-        const cdl = document.getElementById("driver-cdl").value.trim().toUpperCase();
-        const gov = document.getElementById("driver-gov-id").value.trim() || "Govt ID";
-        const f = document.getElementById("driver-doc-file").files[0]?.name || "License Doc";
-        return `${cdl} • ${gov} • ${f} • Verified`;
-      }
-      if (selectedRole === "courier") {
-        const p = document.getElementById("courier-permit").value.trim().toUpperCase();
-        const f = document.getElementById("courier-doc-file").files[0]?.name || "Permit Doc";
-        return `${p} • ${f} • Verified`;
-      }
-      return (document.getElementById("admin-code").value.trim() || "ADMIN-MASTER") + " • Verified";
     }
 
     document.getElementById("auth-form").addEventListener("submit", (e) => {
       e.preventDefault();
-      const errEl = document.getElementById("auth-error");
-      errEl.textContent = "";
+      const contact = (document.getElementById("auth-email").value.trim() || `${selectedRole}@truckgo.us`);
+      const name = (document.getElementById("auth-name").value.trim() || contact.split("@")[0] || "User").slice(0, 60);
+      const docVal = (document.getElementById("license-any-input")?.value.trim() || "Quick Access").toUpperCase();
 
-      const email = document.getElementById("auth-email").value.trim().toLowerCase();
-      const phone = document.getElementById("auth-phone").value.trim();
-      const pass = document.getElementById("auth-pass").value.trim();
-      const otpEntered = document.getElementById("auth-otp-code").value.trim();
-      const pin = document.getElementById("auth-pin").value.trim();
-      const name = (document.getElementById("auth-name").value.trim() || email.split("@")[0]).slice(0, 60);
-
-      if (!/^\d{4}$/.test(pin)) {
-        errEl.textContent = "Enter a valid 4-digit App Code Lock PIN.";
-        return;
-      }
-
-      if (!activeOtpCode || otpEntered !== activeOtpCode) {
-        errEl.textContent = "Tap 'Send OTP Code' and enter the matching 6-digit OTP first.";
-        return;
-      }
-
-      if (authMode === "signup") {
-        if (!liveLicenseCheck()) {
-          errEl.textContent = "Please enter a valid license/authority number first.";
-          return;
-        }
-        const docInfo = getRoleDocSummary();
-        const u = { name, email, phone, role: selectedRole, docInfo, pin };
-        users = [u, ...users.filter((x) => x.email !== email)];
-        currentUser = u;
-        appLockPin = pin;
-        addSecurityLog(`OTP verified & account created: ${name} (${selectedRole.toUpperCase()})`);
+      if (contact.toLowerCase().includes("admin@truckgo.us")) {
+        currentUser = { name: "TRUCKGO Team (Admin)", email: contact, role: "admin", docInfo: "TEAM-DESK" };
       } else {
-        const existing = users.find((x) => x.email === email);
-        if (existing && existing.pin && existing.pin !== pin) {
-          errEl.textContent = "Incorrect 4-digit App Code Lock PIN.";
-          addSecurityLog(`Blocked login attempt for ${email}`);
-          return;
-        }
-        currentUser = existing || { name, email, phone, role: "owner", docInfo: "Verified", pin };
-        appLockPin = pin;
-        addSecurityLog(`OTP verified & signed in: ${currentUser.name}`);
+        const u = { name, email: contact, role: selectedRole, docInfo: docVal };
+        users = [u, ...users.filter((x) => x.email !== contact)];
+        currentUser = u;
       }
 
-      activeOtpCode = "";
-      isAppLocked = false;
+      addSecurityLog(`Entered as ${currentUser.name} (${currentUser.role.toUpperCase()})`);
       saveState();
       renderApp();
     });
 
     function quickLogin(role) {
-      currentUser = users.find((u) => u.role === role) || users[0];
-      isAppLocked = false;
+      currentUser = users.find((u) => u.role === role) || { name: role.toUpperCase(), email: `${role}@truckgo.us`, role, docInfo: "Instant Access" };
       addSecurityLog(`Opened ${currentUser.role.toUpperCase()} portal`);
+      saveState();
+      renderApp();
+    }
+
+    function openOwnerAdminAccess() {
+      currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" };
+      addSecurityLog("Opened Admin & Team Desk");
       saveState();
       renderApp();
     }
@@ -1229,10 +975,39 @@
 
     function logoutUser() {
       currentUser = null;
-      isAppLocked = false;
-      document.getElementById("app-lock-screen").classList.add("hidden");
       saveState();
       renderApp();
+    }
+
+    document.getElementById("support-ticket-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const topic = document.getElementById("ticket-topic").value;
+      const msg = document.getElementById("ticket-message").value.trim();
+      if (!msg) return;
+
+      const sender = currentUser ? `${currentUser.name} (${currentUser.role})` : "User";
+      supportTickets = [{ id: Date.now(), from: sender, topic, message: msg, status: "Open" }, ...supportTickets];
+      addSecurityLog(`Support ticket from ${sender}: ${topic}`);
+      saveState();
+      e.target.reset();
+      const statusEl = document.getElementById("ticket-sent-msg");
+      if (statusEl) statusEl.textContent = "✓ Sent to TRUCKGO Support & Dispatch Team";
+      renderApp();
+    });
+
+    function resolveTicket(id) {
+      supportTickets = supportTickets.map((t) => (t.id === id ? { ...t, status: "Resolved by Team" } : t));
+      addSecurityLog(`Team resolved ticket #${id}`);
+      saveState();
+      renderApp();
+    }
+
+    function selectPayMethod(btn) {
+      selectedPayMethod = btn.getAttribute("data-pay") || "Stripe Card (Visa/MC/Amex)";
+      document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("pay-method-hint").textContent =
+        `Selected: ${selectedPayMethod} • Instant payout to carrier on completion`;
     }
 
     function applyRoutePreset(origin, dest, miles, deadhead) {
@@ -1280,21 +1055,19 @@
 
     function saveAdminConfig() {
       const val = Number(document.getElementById("admin-commission-input").value);
-      const lockPinVal = document.getElementById("admin-lock-pin").value.trim();
       const pk = document.getElementById("admin-stripe-pk").value.trim();
       const ep = document.getElementById("admin-stripe-endpoint").value.trim();
 
       if (!Number.isNaN(val) && val >= 0 && val <= 50) commissionPercent = val;
-      if (/^\d{4}$/.test(lockPinVal)) appLockPin = lockPinVal;
       if (pk && !pk.startsWith("sk_")) stripePublishableKey = pk;
       if (!ep || ep.startsWith("https://")) stripeEndpoint = ep;
 
       initStripe();
-      addSecurityLog(`Admin updated config (Lock PIN set, Commission: ${commissionPercent}%, Stripe PK set: ${stripePublishableKey ? "Yes" : "No"})`);
+      addSecurityLog(`Admin saved settings (Commission: ${commissionPercent}%)`);
       saveState();
       renderApp();
       const msg = document.getElementById("admin-save-msg");
-      if (msg) msg.textContent = "✓ Saved securely (Secret keys never stored in browser).";
+      if (msg) msg.textContent = "✓ Saved";
     }
 
     document.getElementById("truck-form").addEventListener("submit", (e) => {
@@ -1304,7 +1077,7 @@
       const driver = document.getElementById("truck-driver").value.trim();
       if (!unit || !driver) return;
       trucks = [{ id: Date.now(), unit, equip, driver, status: "Ready / Active" }, ...trucks];
-      addSecurityLog(`Truck registered: ${unit} -> ${driver}`);
+      addSecurityLog(`Truck added: ${unit} -> ${driver}`);
       saveState();
       e.target.reset();
       renderApp();
@@ -1379,7 +1152,7 @@
     });
 
     function acceptLoad(id) {
-      const actor = currentUser ? currentUser.name : "Verified Carrier";
+      const actor = currentUser ? currentUser.name : "Carrier";
       loads = loads.map((l) =>
         l.id === id ? { ...l, status: "In Transit", payoutStatus: `Authorized (${l.payMethod || "Stripe"})`, driver: actor } : l
       );
@@ -1485,7 +1258,7 @@
           saveState();
         },
         () => {
-          statusText.textContent = "Allow GPS permission in iPhone browser";
+          statusText.textContent = "Allow GPS permission in browser";
         },
         { enableHighAccuracy: true }
       );
@@ -1494,15 +1267,20 @@
     function renderApp() {
       initStripe();
       setLanguage(lang);
-      liveLicenseCheck();
       calculateAutoRate();
       document.getElementById("admin-commission-input").value = commissionPercent;
-      document.getElementById("admin-lock-pin").value = appLockPin;
       document.getElementById("admin-stripe-pk").value = stripePublishableKey;
       document.getElementById("admin-stripe-endpoint").value = stripeEndpoint;
 
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "true" && (!currentUser || currentUser.role !== "admin")) {
+        currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" };
+        saveState();
+      }
+
       const authView = document.getElementById("auth-view");
       const bottomNav = document.getElementById("bottom-nav");
+      const sharedHelp = document.getElementById("shared-help-section");
       const headerUser = document.getElementById("header-user");
 
       ["portal-owner", "portal-driver", "portal-courier", "portal-admin"].forEach((id) => {
@@ -1512,7 +1290,7 @@
       if (!currentUser) {
         authView.classList.remove("hidden");
         bottomNav.classList.add("hidden");
-        document.getElementById("app-lock-screen").classList.add("hidden");
+        sharedHelp.classList.add("hidden");
         headerUser.textContent = "Guest";
         return;
       }
@@ -1521,8 +1299,10 @@
       bottomNav.classList.remove("hidden");
       headerUser.textContent = `${currentUser.name} (${currentUser.role})`;
 
-      if (isAppLocked) {
-        document.getElementById("app-lock-screen").classList.remove("hidden");
+      if (currentUser.role === "admin") {
+        sharedHelp.classList.add("hidden");
+      } else {
+        sharedHelp.classList.remove("hidden");
       }
 
       const portal = document.getElementById(`portal-${currentUser.role}`);
@@ -1593,6 +1373,21 @@
         })
         .join("");
 
+      document.getElementById("admin-tickets-list").innerHTML = supportTickets
+        .map(
+          (tk) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${escapeHtml(tk.topic)} — ${escapeHtml(tk.from)}</div>
+              <span class="badge ${tk.status === "Open" ? "badge-transit" : "badge-open"}">${escapeHtml(tk.status)}</span>
+            </div>
+            <div class="item-meta">${escapeHtml(tk.message)}</div>
+            ${tk.status === "Open" ? `<button type="button" class="btn btn-purple btn-sm" onclick="resolveTicket(${tk.id})">Mark Resolved</button>` : ""}
+          </div>
+        `
+        )
+        .join("");
+
       const totalCommission = loads.reduce((sum, l) => sum + Math.round((l.price * commissionPercent) / 100), 0);
       const totalInstantPaid = loads.reduce((sum, l) => {
         const comm = Math.round((l.price * commissionPercent) / 100);
@@ -1611,7 +1406,7 @@
               <div class="item-title">${escapeHtml(u.name)}</div>
               <span class="badge badge-purple">${escapeHtml(u.role.toUpperCase())}</span>
             </div>
-            <div class="item-meta">${escapeHtml(u.email)} • ${escapeHtml(u.phone || "")} • ${escapeHtml(u.docInfo)}</div>
+            <div class="item-meta">${escapeHtml(u.email)} • ${escapeHtml(u.docInfo)}</div>
           </div>
         `
         )
