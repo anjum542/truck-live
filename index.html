@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – Direct Chat, Auto Miles & Weight Rent, Live GPS</title>
+  <title>TRUCKGO USA – Owner Payouts, Advance Dates, Staff Control & Direct Chat</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -15,6 +15,7 @@
       --blue: #2563EB;
       --green: #16A34A;
       --purple: #7C3AED;
+      --teal: #0F766E;
       --red: #DC2626;
       --bg: #F1F5F9;
       --card: #FFFFFF;
@@ -26,6 +27,7 @@
       --amber-bg: #FEF3C7;
       --blue-bg: #DBEAFE;
       --purple-bg: #EDE9FE;
+      --teal-bg: #CCFBF1;
       --red-bg: #FEE2E2;
     }
 
@@ -129,6 +131,7 @@
     .banner-owner { background: linear-gradient(135deg, #9A3412, #EA580C); }
     .banner-driver { background: linear-gradient(135deg, #14532D, #16A34A); }
     .banner-courier { background: linear-gradient(135deg, #1E3A8A, #2563EB); }
+    .banner-staff { background: linear-gradient(135deg, #115E59, #0F766E); }
     .banner-admin { background: linear-gradient(135deg, #4C1D95, #7C3AED); }
 
     .banner h1 { font-size: 20px; margin-bottom: 5px; }
@@ -263,10 +266,17 @@
       cursor: pointer;
     }
 
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
     .btn-orange { background: var(--orange); color: #FFFFFF; }
     .btn-green { background: var(--green); color: #FFFFFF; }
     .btn-blue { background: var(--blue); color: #FFFFFF; }
     .btn-purple { background: var(--purple); color: #FFFFFF; }
+    .btn-teal { background: var(--teal); color: #FFFFFF; }
+    .btn-red { background: var(--red); color: #FFFFFF; }
     .btn-dark { background: var(--navy); color: #FFFFFF; }
     .btn-outline { background: #FFFFFF; color: var(--navy); border: 1px solid var(--border); }
     .btn-sm { width: auto; padding: 7px 11px; font-size: 12px; border-radius: 9px; }
@@ -315,6 +325,7 @@
     .badge-transit { background: var(--amber-bg); color: var(--amber); }
     .badge-info { background: var(--blue-bg); color: var(--blue); }
     .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-teal { background: var(--teal-bg); color: var(--teal); }
     .badge-sec { background: var(--red-bg); color: var(--red); }
 
     .gps-live-card {
@@ -431,11 +442,11 @@
 
   <main class="container">
 
-    <!-- PUBLIC ENTRY (SEPARATE DOCS PER ROLE, ADMIN COMPLETELY HIDDEN FROM PUBLIC SCREEN) -->
+    <!-- PUBLIC ENTRY (SEPARATE DOCS PER ROLE, ADMIN & STAFF HIDDEN FROM PUBLIC SIGNUP) -->
     <section id="auth-view">
       <div class="banner banner-auth">
-        <h1 id="t-auth-title">TRUCKGO USA – Direct Driver/Courier Chat, Auto Miles &amp; Rent</h1>
-        <p id="t-auth-sub">Drivers pick loads like Uber, chat directly with couriers, owners monitor live GPS, and auto rent calculates miles + weight.</p>
+        <h1 id="t-auth-title">TRUCKGO USA – Advance Booking, Held Payment &amp; Direct Chat</h1>
+        <p id="t-auth-sub">Book future/return dates ahead, payment held until delivery &amp; instant after, owners watch &amp; manage drivers.</p>
       </div>
 
       <div class="card">
@@ -451,7 +462,7 @@
               <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
                 <span class="role-tag">MC / DOT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Monitor fleet &amp; GPS</span>
+                <span class="role-desc">Watch &amp; manage drivers</span>
               </button>
               <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
                 <span class="role-tag">CDL / DL</span>
@@ -538,11 +549,20 @@
       </div>
     </section>
 
-    <!-- 1. TRUCK OWNER PORTAL (MONITOR / WATCH ONLY) -->
+    <!-- 1. TRUCK OWNER PORTAL -->
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
-        <h1>Truck Owner – Live Fleet &amp; GPS Watch</h1>
-        <p>Monitor your trucks, drivers, live GPS locations, and active loads in real time.</p>
+        <h1>Truck Owner – Live Fleet Watch &amp; Driver Control</h1>
+        <p>Payment stays held until delivery; monitor live GPS &amp; advance loads, and remove a driver anytime.</p>
+      </div>
+
+      <div class="card">
+        <h2>Owner Payout Bank / Account (Like Uber)</h2>
+        <div class="field">
+          <label>Bank Routing / Account or Stripe Payout ID</label>
+          <input id="owner-bank-account" type="text" placeholder="e.g. Chase •••• 8821 or Stripe Express" oninput="saveBankAccounts()" />
+        </div>
+        <div id="owner-bank-status" class="alert-ok">Owner payout bank ready</div>
       </div>
 
       <div class="card">
@@ -576,42 +596,72 @@
       </div>
 
       <div class="card">
-        <h2>Live Load Watch &amp; Driver GPS</h2>
+        <h2>Live Load Watch, Driver Control &amp; GPS</h2>
         <div id="owner-loads-list"></div>
       </div>
     </section>
 
-    <!-- 2. DRIVER PORTAL (SELF-ACCEPT LOADS LIKE UBER + DIRECT CHAT WITH COURIER + GPS) -->
+    <!-- 2. DRIVER PORTAL -->
     <section id="portal-driver" class="hidden">
       <div class="banner banner-driver">
-        <h1>Driver – Available Loads, Direct Chat &amp; Live GPS</h1>
-        <p>Browse loads and accept whichever you want like Uber, chat directly with the courier, and share live GPS.</p>
+        <h1>Driver – Advance &amp; Active Loads, Bank Payout &amp; Chat</h1>
+        <p>See advance &amp; return dates ahead, book early, payment held until delivery &amp; instant after.</p>
       </div>
 
       <div class="card">
-        <h2>Live GPS Broadcaster</h2>
+        <h2>Driver Bank Account / Payout Method (Like Uber)</h2>
+        <div class="field">
+          <label>Payout Method</label>
+          <select id="driver-payout-method" onchange="saveDriverPayoutSettings()">
+            <option value="Bank Account (ACH / Instant Debit)">Bank Account (ACH / Instant Debit)</option>
+            <option value="Stripe Instant Card / Bank">Stripe Instant Card / Bank</option>
+            <option value="PayPal / Venmo">PayPal / Venmo</option>
+            <option value="Cash App">Cash App</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:6px;">
+          <label>Bank Account / Routing or Payout Handle</label>
+          <input id="driver-payout-dest" type="text" placeholder="e.g. Bank •••• 4242 / Routing 021000021" oninput="saveDriverPayoutSettings()" />
+        </div>
+        <div id="driver-payout-summary" class="alert-ok">Payout bank ready for instant payout upon delivery</div>
+      </div>
+
+      <div class="card">
+        <h2>Live GPS (Active Only While Sharing — Not Forever)</h2>
         <div class="gps-live-card">
-          <div style="font-size:11px; color:#86EFAC;">OWNER &amp; COURIER LIVE FEED</div>
-          <div id="gps-status-text" style="font-weight:800; font-size:15px; margin-top:2px;">GPS Standby</div>
+          <div style="font-size:11px; color:#86EFAC;">OWNER &amp; COURIER LIVE FEED (TRIP / ACTIVE SESSION ONLY)</div>
+          <div id="gps-status-text" style="font-weight:800; font-size:15px; margin-top:2px;">GPS Off (Standby)</div>
           <div id="gps-coords-display" class="gps-coords">Lat: 32.77670, Lng: -96.79700</div>
           <a id="gps-map-link" class="map-link" href="https://maps.google.com/?q=32.77670,-96.79700" target="_blank" rel="noopener">
-            Open Live Location on Google Maps &rarr;
+            Open Last / Live Location on Google Maps &rarr;
           </a>
         </div>
-        <button type="button" class="btn btn-green" onclick="startLiveGPS()">Start Live GPS Sharing</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-green btn-sm" onclick="startLiveGPS()">Start GPS Sharing</button>
+          <button type="button" class="btn btn-red btn-sm" onclick="stopLiveGPS()">Stop GPS Sharing</button>
+        </div>
       </div>
 
       <div class="card">
-        <h2>Available &amp; Active Loads (Pick Your Load)</h2>
+        <h2>Available Advance &amp; Active Loads (Pick Your Load)</h2>
         <div id="driver-loads-list"></div>
       </div>
     </section>
 
-    <!-- 3. COURIER PORTAL (CITY/STREET AUTO MILES + WEIGHT & TRUCK AUTO RENT + DIRECT CHAT) -->
+    <!-- 3. COURIER PORTAL -->
     <section id="portal-courier" class="hidden">
       <div class="banner banner-courier">
-        <h1>Courier – City/Street Auto Miles, Weight Rent &amp; Direct Chat</h1>
-        <p>Enter city or street address (e.g. New York to Miami), weight &amp; truck type — miles and rent calculate automatically.</p>
+        <h1>Courier – Bank Account, Advance Dates, Held Payment &amp; Direct Chat</h1>
+        <p>Schedule loads weeks/months ahead or return trips so drivers can pre-book, with payment held until delivery.</p>
+      </div>
+
+      <div class="card">
+        <h2>Courier Bank / Billing Account</h2>
+        <div class="field">
+          <label>Courier Bank Account / ACH / Business Card</label>
+          <input id="courier-bank-account" type="text" placeholder="e.g. Business Bank •••• 5519 / ACH Routing" oninput="saveBankAccounts()" />
+        </div>
+        <div id="courier-bank-status" class="alert-ok">Courier bank account ready</div>
       </div>
 
       <div class="card">
@@ -623,6 +673,17 @@
         </div>
 
         <form id="courier-form">
+          <div class="field">
+            <label>Pickup Date (Schedule Today or Weeks/Month Ahead)</label>
+            <input id="load-pickup-date" type="date" required />
+          </div>
+          <div class="field">
+            <label>Trip Type (Outbound or Return / Backhaul)</label>
+            <select id="load-trip-kind">
+              <option value="Outbound Load">Outbound Load</option>
+              <option value="Return / Backhaul Load">Return / Backhaul Load (Driver Return)</option>
+            </select>
+          </div>
           <div class="field">
             <label>Pickup City / Street Address (e.g. 125 Broadway, New York, NY)</label>
             <input id="load-origin" type="text" placeholder="e.g. New York, NY or 125 Broadway, New York, NY" oninput="calculateAutoRate()" required />
@@ -652,7 +713,7 @@
 
           <div class="pay-box">
             <div style="font-size:12px; font-weight:800; color:#0F172A; margin-bottom:8px;">
-              Stripe &amp; US Payment Method
+              Stripe &amp; US Payment Method (Held Until Delivery)
             </div>
             <div class="pay-methods-grid">
               <button type="button" class="pay-chip-btn active" data-pay="Stripe Card (Visa/MC/Amex)" onclick="selectPayMethod(this)">Stripe Card</button>
@@ -663,7 +724,7 @@
               <button type="button" class="pay-chip-btn" data-pay="Cash App Pay" onclick="selectPayMethod(this)">Cash App Pay</button>
             </div>
             <div id="pay-method-hint" style="font-size:11px; color:#475569;">
-              Selected: Stripe Card (Visa/MC/Amex) • Instant payout to carrier on completion
+              Selected: Stripe Card (Visa/MC/Amex) • Held until delivery, instant payout upon completion
             </div>
           </div>
 
@@ -671,7 +732,7 @@
             <div class="rate-line"><span>Route Distance:</span><strong id="auto-miles-label">1,280 miles</strong></div>
             <div class="rate-line"><span>Auto Rent (Miles + Weight + Truck):</span><strong id="auto-fare-display">$4,288</strong></div>
             <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>%):</span><strong id="comm-amount-display">$429</strong></div>
-            <div class="rate-line rate-total"><span>Driver / Carrier Rent Payout:</span><span id="net-payout-display">$3,859</span></div>
+            <div class="rate-line rate-total"><span>Instant Payout on Delivery:</span><span id="net-payout-display">$3,859</span></div>
           </div>
 
           <div class="field">
@@ -679,21 +740,63 @@
             <input id="load-price" type="number" placeholder="Auto rent calculated above" oninput="updateCustomRatePreview()" />
           </div>
 
-          <button type="submit" class="btn btn-blue">Post Load for Drivers</button>
+          <button type="submit" class="btn btn-blue">Post Advance / Active Load</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Loads, Direct Driver Chat &amp; Live GPS</h2>
+        <h2>My Loads, Delivery Payout Release, Direct Chat &amp; GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- 4. PRIVATE ADMIN PORTAL (ACCESSIBLE ONLY VIA ?admin=true OR ADMIN EMAIL) -->
+    <!-- 4. STAFF / WORKER PORTAL (LIMITED OPERATIONS & AUDIT LOG — CANNOT CHANGE COMMISSION OR WITHDRAW ADMIN FUNDS) -->
+    <section id="portal-staff" class="hidden">
+      <div class="banner banner-staff">
+        <h1>Office / Dispatch Worker – Operations Only</h1>
+        <p>Limited worker access: monitor loads &amp; chats; commission rates, bank keys &amp; admin payouts are locked to Owner/Admin.</p>
+      </div>
+
+      <div class="card">
+        <h2>Worker Dispatch Note (Logged Under Your Name)</h2>
+        <div class="field">
+          <label>Dispatch / Support Update</label>
+          <input id="staff-note-input" type="text" placeholder="e.g. Confirmed pickup schedule with driver" />
+        </div>
+        <button type="button" class="btn btn-teal btn-sm" onclick="logStaffAction()">Save Dispatch Note</button>
+      </div>
+
+      <div class="card">
+        <h2>Loads &amp; Direct Chat Watch</h2>
+        <div id="staff-loads-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Audit Trail (Every Action Recorded)</h2>
+        <div id="staff-audit-logs"></div>
+      </div>
+    </section>
+
+    <!-- 5. PRIVATE ADMIN PORTAL (OWNER OF PLATFORM — COMMISSION WITHDRAWAL + STRIPE + AUDIT) -->
     <section id="portal-admin" class="hidden">
       <div class="banner banner-admin">
-        <h1>Private Admin – Commission, Stripe &amp; Activity</h1>
+        <h1>Private Admin – Your Commission, Bank Payouts &amp; Full Control</h1>
         <p>Hidden from public users; open anytime via ?admin=true or admin@truckgo.us.</p>
+      </div>
+
+      <div class="card">
+        <h2>Your Platform Payout Bank &amp; Withdraw Commission</h2>
+        <div class="field">
+          <label>Your Bank Account / Routing or Stripe Account</label>
+          <input id="admin-payout-bank" type="text" placeholder="e.g. Business Bank •••• 9012 / Stripe Payouts" oninput="saveAdminPayoutBank()" />
+        </div>
+        <div class="rate-summary">
+          <div class="rate-line"><span>Total Earned Commission:</span><strong id="adm-earned-box">$0</strong></div>
+          <div class="rate-line"><span>Already Withdrawn to Bank:</span><strong id="adm-withdrawn-box">$0</strong></div>
+          <div class="rate-line rate-total"><span>Available to Withdraw:</span><span id="adm-available-box">$0</span></div>
+        </div>
+        <button type="button" class="btn btn-green" onclick="withdrawAdminCommission()">Withdraw Available Commission to Your Bank</button>
+        <div id="admin-withdraw-msg" class="alert-ok"></div>
       </div>
 
       <div class="card">
@@ -717,7 +820,7 @@
       <div class="stats-row">
         <div class="mini-stat"><strong id="adm-users">0</strong><span>Users</span></div>
         <div class="mini-stat"><strong id="adm-commission-total">$0</strong><span>Your Commission</span></div>
-        <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Instant Paid</span></div>
+        <div class="mini-stat"><strong id="adm-instant-paid">$0</strong><span>Paid to Drivers</span></div>
       </div>
 
       <div class="card">
@@ -726,7 +829,7 @@
       </div>
 
       <div class="card">
-        <h2>Activity &amp; Payment Log</h2>
+        <h2>Activity, Worker Actions &amp; Payout Log</h2>
         <div id="admin-security-logs"></div>
       </div>
     </section>
@@ -765,16 +868,30 @@
     let selectedRole = "owner";
     let selectedPayMethod = "Stripe Card (Visa/MC/Amex)";
     let commissionPercent = Number(localStorage.getItem("tg_commission_pct") || "10");
+    let adminWithdrawnTotal = Number(localStorage.getItem("tg_admin_withdrawn") || "0");
+    let adminPayoutBank = localStorage.getItem("tg_admin_bank") || "";
     let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
+    let driverPayoutMethod = localStorage.getItem("tg_driver_pay_method") || "Bank Account (ACH / Instant Debit)";
+    let driverPayoutDest = localStorage.getItem("tg_driver_pay_dest") || "";
+    let ownerBankAccount = localStorage.getItem("tg_owner_bank") || "";
+    let courierBankAccount = localStorage.getItem("tg_courier_bank") || "";
+    let gpsWatchId = null;
+
+    function getDefaultPickupDate() {
+      const d = new Date(Date.now() + 7 * 86400000);
+      return d.toISOString().split("T")[0];
+    }
+
     let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
-      "TRUCKGO USA active with direct Driver-Courier chat, Uber-style load picking & auto miles/weight rent"
+      "TRUCKGO USA active with advance dates, return loads, staff audit trail & admin payouts"
     ];
 
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
       { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Operating Authority" },
       { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Driving License & ID" },
-      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Courier Permit" }
+      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Courier Permit" },
+      { name: "Ali Raza (Dispatch)", email: "staff@truckgo.us", role: "staff", docInfo: "Office Worker (Limited Read/Dispatch)" }
     ];
 
     let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
@@ -784,6 +901,8 @@
     let loads = JSON.parse(localStorage.getItem("tg_loads") || "null") || [
       {
         id: 981,
+        pickupDate: getDefaultPickupDate(),
+        tripKind: "Outbound Load",
         origin: "New York, NY",
         dest: "Miami, FL",
         miles: 1280,
@@ -792,12 +911,15 @@
         price: 4288,
         payMethod: "Stripe Apple Pay",
         status: "Open",
-        payoutStatus: "Instant Pay Ready via Stripe Apple Pay",
+        payoutStatus: "HELD UNTIL DELIVERY",
         driver: "Available for Driver",
+        acceptedAt: 0,
+        pickedUp: false,
         lat: 40.7128,
         lng: -74.0060,
-        gpsUpdated: "Live Ready",
-        messages: [{ sender: "Courier", text: "Pickup ready on loading dock 4. Message me anytime.", docName: "RateCon_981.pdf" }]
+        gpsActive: false,
+        gpsUpdated: "Off (Trip Not Started)",
+        messages: [{ sender: "Courier", text: "Advance load posted; payment held until delivery. Chat directly here.", docName: "RateCon_981.pdf" }]
       }
     ];
 
@@ -843,8 +965,8 @@
 
     const i18n = {
       en: {
-        authTitle: "TRUCKGO USA – Direct Driver/Courier Chat, Auto Miles & Rent",
-        authSub: "Drivers pick loads like Uber, chat directly with couriers, owners monitor live GPS, and auto rent calculates miles + weight.",
+        authTitle: "TRUCKGO USA – Advance Booking, Held Payment & Direct Chat",
+        authSub: "Book future/return dates ahead, payment held until delivery & instant after, owners watch & manage drivers.",
         signup: "Quick Sign Up",
         login: "Sign In",
         selectRole: "1. Choose Role",
@@ -856,8 +978,8 @@
         quickDemo: "Quick Preview"
       },
       ur: {
-        authTitle: "TRUCKGO USA – ڈرائیور/کورئیر چیٹ، آٹو میل اور وزن کے مطابق رینٹ",
-        authSub: "ڈرائیور خود لوڈ لیں، کورئیر سے براہِ راست چیٹ کریں، مالک نگرانی کرے، اور شہر/اسٹریٹ + وزن سے رینٹ خود نکلے۔",
+        authTitle: "TRUCKGO USA – ایڈوانس تاریخ، ڈلیوری تک پیمنٹ ہولڈ اور براہِ راست چیٹ",
+        authSub: "آگے کی تاریخ یا واپسی کا لوڈ پہلے لگائیں، ڈلیوری تک پیمنٹ ہولڈ اور بعد میں فوری ادائیگی، مالک نگرانی/ڈرائیور کنٹرول کرے۔",
         signup: "فوری سائن اَپ",
         login: "سائن اِن",
         selectRole: "1. اپنا رول چنیں",
@@ -869,8 +991,8 @@
         quickDemo: "فوری پریویو"
       },
       es: {
-        authTitle: "TRUCKGO USA – Chat Directo, Millas Automáticas y Tarifa por Peso",
-        authSub: "Conductores eligen cargas como Uber, chatean directo con couriers, dueños vigilan GPS y la tarifa calcula millas y peso.",
+        authTitle: "TRUCKGO USA – Reserva Anticipada, Pago Retenido y Chat Directo",
+        authSub: "Programa fechas futuras o retorno, pago retenido hasta la entrega e instantáneo después, dueños vigilan y gestionan.",
         signup: "Registro Rápido",
         login: "Iniciar Sesión",
         selectRole: "1. Elegir Rol",
@@ -893,7 +1015,7 @@
 
     function addSecurityLog(msg) {
       const stamp = new Date().toLocaleTimeString();
-      securityLogs = [`[${stamp}] ${msg}`, ...securityLogs.slice(0, 34)];
+      securityLogs = [`[${stamp}] ${msg}`, ...securityLogs.slice(0, 39)];
       localStorage.setItem("tg_sec_logs", JSON.stringify(securityLogs));
     }
 
@@ -923,10 +1045,81 @@
       localStorage.setItem("tg_trucks", JSON.stringify(trucks));
       localStorage.setItem("tg_loads", JSON.stringify(loads));
       localStorage.setItem("tg_commission_pct", String(commissionPercent));
+      localStorage.setItem("tg_admin_withdrawn", String(adminWithdrawnTotal));
+      localStorage.setItem("tg_admin_bank", adminPayoutBank);
       localStorage.setItem("tg_stripe_pk", stripePublishableKey);
       localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
+      localStorage.setItem("tg_driver_pay_method", driverPayoutMethod);
+      localStorage.setItem("tg_driver_pay_dest", driverPayoutDest);
+      localStorage.setItem("tg_owner_bank", ownerBankAccount);
+      localStorage.setItem("tg_courier_bank", courierBankAccount);
       if (currentUser) localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
       else localStorage.removeItem("tg_current_user");
+    }
+
+    function saveAdminPayoutBank() {
+      const el = document.getElementById("admin-payout-bank");
+      if (el) adminPayoutBank = el.value.trim();
+      saveState();
+    }
+
+    function withdrawAdminCommission() {
+      const earned = loads.reduce((sum, l) => sum + Math.round((l.price * commissionPercent) / 100), 0);
+      const available = Math.max(0, earned - adminWithdrawnTotal);
+      if (available <= 0) {
+        const msg = document.getElementById("admin-withdraw-msg");
+        if (msg) msg.textContent = "No new commission balance available to withdraw right now.";
+        return;
+      }
+      adminWithdrawnTotal += available;
+      const bankLabel = adminPayoutBank || "Admin Bank / Stripe Account";
+      addSecurityLog(`ADMIN PAYOUT: Withdrew $${available.toLocaleString()} commission to ${bankLabel}`);
+      saveState();
+      renderApp();
+      const msg = document.getElementById("admin-withdraw-msg");
+      if (msg) msg.textContent = `✓ Recorded payout of $${available.toLocaleString()} to ${bankLabel}`;
+    }
+
+    function logStaffAction() {
+      const inp = document.getElementById("staff-note-input");
+      const txt = inp ? inp.value.trim() : "";
+      if (!txt) return;
+      const workerName = currentUser ? currentUser.name : "Staff Worker";
+      addSecurityLog(`STAFF (${workerName}): ${txt}`);
+      if (inp) inp.value = "";
+      renderApp();
+    }
+
+    function saveBankAccounts() {
+      const oEl = document.getElementById("owner-bank-account");
+      const cEl = document.getElementById("courier-bank-account");
+      if (oEl) ownerBankAccount = oEl.value.trim();
+      if (cEl) courierBankAccount = cEl.value.trim();
+      saveState();
+      const oStatus = document.getElementById("owner-bank-status");
+      const cStatus = document.getElementById("courier-bank-status");
+      if (oStatus) {
+        oStatus.textContent = ownerBankAccount
+          ? `Owner payout bank saved: ${ownerBankAccount}`
+          : "Owner payout bank ready (add bank/account details anytime)";
+      }
+      if (cStatus) {
+        cStatus.textContent = courierBankAccount
+          ? `Courier bank/billing saved: ${courierBankAccount}`
+          : "Courier bank account ready (add bank/ACH/card details anytime)";
+      }
+    }
+
+    function saveDriverPayoutSettings() {
+      const mEl = document.getElementById("driver-payout-method");
+      const dEl = document.getElementById("driver-payout-dest");
+      if (mEl) driverPayoutMethod = mEl.value;
+      if (dEl) driverPayoutDest = dEl.value.trim();
+      saveState();
+      const sumEl = document.getElementById("driver-payout-summary");
+      if (sumEl) {
+        sumEl.textContent = `Payout bank/method: ${driverPayoutMethod}${driverPayoutDest ? ` (${driverPayoutDest})` : " — attach bank/account for payout"}`;
+      }
     }
 
     function switchAuthMode(mode) {
@@ -977,6 +1170,8 @@
 
       if (contact.toLowerCase().includes("admin@truckgo.us")) {
         currentUser = { name: "TRUCKGO Admin", email: contact, role: "admin", docInfo: "PRIVATE-ADMIN" };
+      } else if (contact.toLowerCase().includes("staff@truckgo.us")) {
+        currentUser = { name: name || "Office Staff", email: contact, role: "staff", docInfo: "STAFF-LIMITED" };
       } else if (authMode === "signup") {
         const docInfo = getRoleDocSummary();
         const u = { name, email: contact, role: selectedRole, docInfo };
@@ -1007,10 +1202,37 @@
     }
 
     function logoutUser() {
+      stopLiveGPS();
       currentUser = null;
       if (window.location.search.includes("admin=true")) {
         window.history.replaceState({}, document.title, window.location.pathname);
       }
+      saveState();
+      renderApp();
+    }
+
+    function removeTruckDriver(truckId) {
+      trucks = trucks.map((t) => (t.id === truckId ? { ...t, driver: "Unassigned", status: "Needs Driver" } : t));
+      addSecurityLog(`Owner removed driver from Truck #${truckId}`);
+      saveState();
+      renderApp();
+    }
+
+    function removeLoadDriver(loadId) {
+      loads = loads.map((l) => {
+        if (l.id !== loadId || l.status === "Delivered") return l;
+        return {
+          ...l,
+          driver: "Available for Driver",
+          status: "Open",
+          pickedUp: false,
+          acceptedAt: 0,
+          payoutStatus: "HELD UNTIL DELIVERY",
+          gpsActive: false,
+          gpsUpdated: "Driver Unassigned"
+        };
+      });
+      addSecurityLog(`Owner removed assigned driver from Load #${loadId}`);
       saveState();
       renderApp();
     }
@@ -1020,7 +1242,7 @@
       document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("pay-method-hint").textContent =
-        `Selected: ${selectedPayMethod} • Instant payout to carrier on completion`;
+        `Selected: ${selectedPayMethod} • Held until delivery, instant payout upon completion`;
     }
 
     function applyRoutePreset(origin, dest, weight) {
@@ -1140,6 +1362,8 @@
 
     document.getElementById("courier-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const pickupDate = document.getElementById("load-pickup-date").value || getDefaultPickupDate();
+      const tripKind = document.getElementById("load-trip-kind").value || "Outbound Load";
       const origin = document.getElementById("load-origin").value.trim();
       const dest = document.getElementById("load-dest").value.trim();
       const miles = Math.max(5, Number(document.getElementById("load-miles").value) || 500);
@@ -1153,6 +1377,8 @@
 
       const newLoad = {
         id: Date.now(),
+        pickupDate,
+        tripKind,
         origin,
         dest,
         miles,
@@ -1161,16 +1387,19 @@
         price,
         payMethod: selectedPayMethod,
         status: "Open",
-        payoutStatus: `Instant Pay via ${selectedPayMethod}`,
+        payoutStatus: "HELD UNTIL DELIVERY",
         driver: "Available for Driver",
+        acceptedAt: 0,
+        pickedUp: false,
         lat: startCoords[0],
         lng: startCoords[1],
-        gpsUpdated: "Awaiting GPS",
-        messages: [{ sender: "Courier", text: `Load posted (${miles} mi, ${weight.toLocaleString()} lbs). Chat directly here.`, docName: "" }]
+        gpsActive: false,
+        gpsUpdated: "Off (Trip Not Started)",
+        messages: [{ sender: "Courier", text: `${tripKind} on ${pickupDate} (${miles} mi, ${weight.toLocaleString()} lbs). Payment held until delivery.`, docName: "" }]
       };
 
       loads = [newLoad, ...loads];
-      addSecurityLog(`Load posted: ${origin} -> ${dest} (${miles} mi, ${weight} lbs, $${price})`);
+      addSecurityLog(`Load posted (${tripKind}, Date: ${pickupDate}): ${origin} -> ${dest} ($${price})`);
       saveState();
       await triggerStripeCheckoutIfConfigured(newLoad);
 
@@ -1181,6 +1410,7 @@
       }
 
       e.target.reset();
+      document.getElementById("load-pickup-date").value = getDefaultPickupDate();
       document.getElementById("load-miles").value = 1280;
       document.getElementById("load-weight").value = 18000;
       calculateAutoRate();
@@ -1190,24 +1420,66 @@
     function acceptLoad(id) {
       const actor = currentUser && currentUser.role === "driver" ? currentUser.name : "Driver";
       loads = loads.map((l) =>
-        l.id === id ? { ...l, status: "In Transit", payoutStatus: `Authorized (${l.payMethod || "Stripe"})`, driver: actor } : l
+        l.id === id
+          ? {
+              ...l,
+              status: "Booked / Pickup Pending",
+              payoutStatus: "HELD UNTIL DELIVERY (LOCKED)",
+              driver: actor,
+              acceptedAt: Date.now(),
+              pickedUp: false,
+              gpsUpdated: "Booked — Confirm Pickup Next"
+            }
+          : l
       );
-      addSecurityLog(`Driver ${actor} picked Load #${id}`);
+      addSecurityLog(`Driver ${actor} booked Load #${id} — delivery payout locked until pickup & delivery`);
+      saveState();
+      renderApp();
+    }
+
+    function confirmPickupStep(id) {
+      loads = loads.map((l) => {
+        if (l.id !== id || l.status === "Delivered") return l;
+        return {
+          ...l,
+          status: "In Transit (Picked Up)",
+          pickedUp: true,
+          payoutStatus: "HELD UNTIL DELIVERY (IN TRANSIT)",
+          gpsUpdated: "In Transit"
+        };
+      });
+      addSecurityLog(`Pickup confirmed for Load #${id} — now in transit toward delivery`);
       saveState();
       renderApp();
     }
 
     function releaseInstantPayout(id) {
+      let blocked = false;
       loads = loads.map((l) => {
         if (l.id !== id) return l;
+        const elapsedSec = l.acceptedAt ? Math.floor((Date.now() - l.acceptedAt) / 1000) : 999;
+        if (!l.pickedUp || elapsedSec < 5) {
+          blocked = true;
+          return l;
+        }
         const comm = Math.round((l.price * commissionPercent) / 100);
         const net = l.price - comm;
-        const method = l.payMethod || "Stripe";
-        addSecurityLog(`INSTANT PAYOUT (#${id}) via ${method}: $${net} to driver/carrier, $${comm} fee to TRUCKGO`);
-        return { ...l, status: "Delivered", payoutStatus: `PAID INSTANTLY ($${net.toLocaleString()}) • ${method}` };
+        const destLabel = driverPayoutDest ? `${driverPayoutMethod} (${driverPayoutDest})` : driverPayoutMethod;
+        addSecurityLog(`INSTANT PAYOUT ON DELIVERY (#${id}): $${net} via ${destLabel}, $${comm} fee to TRUCKGO`);
+        return {
+          ...l,
+          status: "Delivered",
+          gpsActive: false,
+          gpsUpdated: "Stopped (Delivered)",
+          payoutStatus: `PAID INSTANTLY ON DELIVERY $${net.toLocaleString()} • ${destLabel}`
+        };
       });
+      stopLiveGPS();
       saveState();
       renderApp();
+      if (blocked) {
+        alert("Anti-Fraud Lock: Confirm Pickup first and wait at least 5 seconds after accepting before marking Delivered.");
+      }
     }
 
     function sendDirectChat(loadId, roleLabel) {
@@ -1256,16 +1528,27 @@
     }
 
     function renderLiveGpsForWatcher(load, watcherLabel) {
-      const updated = load.gpsUpdated || "Live Ready";
+      const stateText = load.gpsActive ? `LIVE (${escapeHtml(load.gpsUpdated || "Active")})` : `PAUSED / OFF (${escapeHtml(load.gpsUpdated || "Not Forever")})`;
       return `
         <div class="gps-live-card">
-          <div style="font-size:11px; color:#86EFAC;">${escapeHtml(watcherLabel)} LIVE GPS • ${escapeHtml(updated)}</div>
+          <div style="font-size:11px; color:#86EFAC;">${escapeHtml(watcherLabel)} • ${stateText}</div>
           <div class="gps-coords">Lat: ${escapeHtml(load.lat)}, Lng: ${escapeHtml(load.lng)}</div>
           <a class="map-link" href="https://maps.google.com/?q=${encodeURIComponent(load.lat)},${encodeURIComponent(load.lng)}" target="_blank" rel="noopener">
-            Track Live Location on Google Maps &rarr;
+            Open Last / Live Location on Google Maps &rarr;
           </a>
         </div>
       `;
+    }
+
+    function stopLiveGPS() {
+      if (gpsWatchId !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(gpsWatchId);
+        gpsWatchId = null;
+      }
+      loads = loads.map((l) => (l.gpsActive ? { ...l, gpsActive: false, gpsUpdated: "Stopped by Driver" } : l));
+      saveState();
+      const statusText = document.getElementById("gps-status-text");
+      if (statusText) statusText.textContent = "GPS Off (Stopped)";
     }
 
     function startLiveGPS() {
@@ -1278,18 +1561,21 @@
         return;
       }
 
-      statusText.textContent = "Connecting Live GPS...";
-      navigator.geolocation.watchPosition(
+      stopLiveGPS();
+      statusText.textContent = "Connecting Live GPS (Trip Session)...";
+      gpsWatchId = navigator.geolocation.watchPosition(
         (pos) => {
           const lat = pos.coords.latitude.toFixed(5);
           const lng = pos.coords.longitude.toFixed(5);
           const nowTime = new Date().toLocaleTimeString();
-          statusText.textContent = "LIVE GPS SHARING ACTIVE";
+          statusText.textContent = "LIVE GPS SHARING (ACTIVE SESSION)";
           coordsText.textContent = `Lat: ${lat}, Lng: ${lng}`;
           mapLink.href = `https://maps.google.com/?q=${lat},${lng}`;
 
           loads = loads.map((l) =>
-            l.status !== "Delivered" ? { ...l, lat: Number(lat), lng: Number(lng), gpsUpdated: nowTime } : l
+            l.status !== "Open" && l.status !== "Delivered"
+              ? { ...l, lat: Number(lat), lng: Number(lng), gpsActive: true, gpsUpdated: nowTime }
+              : l
           );
           saveState();
         },
@@ -1304,9 +1590,26 @@
       initStripe();
       setLanguage(lang);
       calculateAutoRate();
+
+      const pickupDateEl = document.getElementById("load-pickup-date");
+      if (pickupDateEl && !pickupDateEl.value) pickupDateEl.value = getDefaultPickupDate();
+
       document.getElementById("admin-commission-input").value = commissionPercent;
       document.getElementById("admin-stripe-pk").value = stripePublishableKey;
       document.getElementById("admin-stripe-endpoint").value = stripeEndpoint;
+
+      const admBankEl = document.getElementById("admin-payout-bank");
+      const paySel = document.getElementById("driver-payout-method");
+      const payDest = document.getElementById("driver-payout-dest");
+      const ownerBankEl = document.getElementById("owner-bank-account");
+      const courierBankEl = document.getElementById("courier-bank-account");
+      if (admBankEl) admBankEl.value = adminPayoutBank;
+      if (paySel) paySel.value = driverPayoutMethod;
+      if (payDest) payDest.value = driverPayoutDest;
+      if (ownerBankEl) ownerBankEl.value = ownerBankAccount;
+      if (courierBankEl) courierBankEl.value = courierBankAccount;
+      saveDriverPayoutSettings();
+      saveBankAccounts();
 
       const params = new URLSearchParams(window.location.search);
       if (params.get("admin") === "true" && (!currentUser || currentUser.role !== "admin")) {
@@ -1318,7 +1621,7 @@
       const bottomNav = document.getElementById("bottom-nav");
       const headerUser = document.getElementById("header-user");
 
-      ["portal-owner", "portal-driver", "portal-courier", "portal-admin"].forEach((id) => {
+      ["portal-owner", "portal-driver", "portal-courier", "portal-staff", "portal-admin"].forEach((id) => {
         document.getElementById(id).classList.add("hidden");
       });
 
@@ -1338,22 +1641,32 @@
 
       document.getElementById("fleet-count").textContent = trucks.length;
       document.getElementById("fleet-list").innerHTML = trucks
-        .map((t) => `<div class="list-item"><div class="item-top"><div class="item-title">${escapeHtml(t.unit)}</div><span class="badge badge-open">${escapeHtml(t.status)}</span></div><div class="item-meta">${escapeHtml(t.equip)} • ${escapeHtml(t.driver)}</div></div>`)
+        .map(
+          (t) => `
+          <div class="list-item">
+            <div class="item-top"><div class="item-title">${escapeHtml(t.unit)}</div><span class="badge badge-open">${escapeHtml(t.status)}</span></div>
+            <div class="item-meta">${escapeHtml(t.equip)} • Driver: <strong>${escapeHtml(t.driver)}</strong></div>
+            ${t.driver !== "Unassigned" ? `<button type="button" class="btn btn-red btn-sm" onclick="removeTruckDriver(${t.id})">Remove Driver</button>` : ""}
+          </div>
+        `
+        )
         .join("");
 
       document.getElementById("owner-loads-list").innerHTML = loads
         .map((l) => {
           const comm = Math.round((l.price * commissionPercent) / 100);
           const net = l.price - comm;
+          const hasAssignedDriver = l.status !== "Open" && l.status !== "Delivered";
           return `
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
-                <span class="badge badge-open">${escapeHtml(l.status)}</span>
+                <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
-              <div class="item-meta">${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Rent: <strong>$${net.toLocaleString()}</strong></div>
+              <div class="item-meta">Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • ${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • Rent: <strong>$${net.toLocaleString()}</strong></div>
               ${renderLiveGpsForWatcher(l, "OWNER WATCH GPS")}
-              <div class="item-meta">Assigned Driver: ${escapeHtml(l.driver)} • ${escapeHtml(l.payoutStatus || "")}</div>
+              <div class="item-meta">Driver: <strong>${escapeHtml(l.driver)}</strong> • Status: ${escapeHtml(l.status)}</div>
+              ${hasAssignedDriver ? `<button type="button" class="btn btn-red btn-sm" onclick="removeLoadDriver(${l.id})">Remove Driver from Load</button>` : ""}
             </div>
           `;
         })
@@ -1363,16 +1676,18 @@
         .map((l) => {
           const comm = Math.round((l.price * commissionPercent) / 100);
           const net = l.price - comm;
+          const canDeliver = l.status !== "Open" && l.status !== "Delivered" && l.pickedUp;
           return `
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
-                <span class="badge badge-transit">${escapeHtml(l.status)}</span>
+                <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
-              <div class="item-meta">${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Your Rent: <strong>$${net.toLocaleString()}</strong></div>
+              <div class="item-meta">Pickup Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • <span class="badge badge-info">${escapeHtml(l.tripKind || "Outbound Load")}</span> • ${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • Instant Rent on Delivery: <strong>$${net.toLocaleString()}</strong></div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Accept Load Now</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
-                ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" onclick="releaseInstantPayout(${l.id})">Complete &amp; Instant Pay</button>` : ""}
+                ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Book / Accept Load (Held Until Delivery)</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
+                ${l.status !== "Open" && l.status !== "Delivered" && !l.pickedUp ? `<button class="btn btn-blue btn-sm" onclick="confirmPickupStep(${l.id})">1. Confirm Pickup</button>` : ""}
+                ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "2. Confirm Delivery & Instant Pay" : "Delivery Locked Until Pickup"}</button>` : `<span class="badge badge-open">${escapeHtml(l.payoutStatus || "Delivered")}</span>`}
               </div>
               ${renderDirectChatBox(l, "Driver")}
             </div>
@@ -1384,31 +1699,55 @@
         .map((l) => {
           const comm = Math.round((l.price * commissionPercent) / 100);
           const net = l.price - comm;
+          const canDeliver = l.status !== "Open" && l.status !== "Delivered" && l.pickedUp;
           return `
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
-                <span class="badge badge-info">${escapeHtml(l.status)}</span>
+                <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${escapeHtml(l.payoutStatus || l.status)}</span>
               </div>
               <div class="item-meta">
-                ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Total: $${l.price.toLocaleString()} • Driver Rent: $${net.toLocaleString()} • Fee: $${comm.toLocaleString()}
+                Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Total: $${l.price.toLocaleString()} • Driver Rent: $${net.toLocaleString()} • Fee: $${comm.toLocaleString()}
               </div>
               ${renderLiveGpsForWatcher(l, "COURIER LIVE GPS")}
-              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" onclick="releaseInstantPayout(${l.id})">Pay Driver Instantly Now</button>` : ""}
+              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" ${canDeliver ? "" : "disabled"} onclick="releaseInstantPayout(${l.id})">${canDeliver ? "Confirm Delivery & Release Instant Pay" : "Payment Held Until Pickup & Delivery"}</button>` : `<div class="item-meta"><strong>${escapeHtml(l.payoutStatus || "")}</strong></div>`}
               ${renderDirectChatBox(l, "Courier")}
             </div>
           `;
         })
         .join("");
 
+      document.getElementById("staff-loads-list").innerHTML = loads
+        .map(
+          (l) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
+              <span class="badge badge-teal">${escapeHtml(l.status)}</span>
+            </div>
+            <div class="item-meta">Date: <strong>${escapeHtml(l.pickupDate || "Flexible")}</strong> • ${escapeHtml(l.tripKind || "Outbound Load")} • Driver: <strong>${escapeHtml(l.driver)}</strong> • Payout: ${escapeHtml(l.payoutStatus || "")}</div>
+          </div>
+        `
+        )
+        .join("");
+
+      document.getElementById("staff-audit-logs").innerHTML = securityLogs
+        .map((entry) => `<div class="msg-row"><span class="badge badge-teal">AUDIT</span> ${escapeHtml(entry)}</div>`)
+        .join("");
+
       const totalCommission = loads.reduce((sum, l) => sum + Math.round((l.price * commissionPercent) / 100), 0);
+      const availableAdmin = Math.max(0, totalCommission - adminWithdrawnTotal);
       const totalInstantPaid = loads.reduce((sum, l) => {
+        if (l.status !== "Delivered") return sum;
         const comm = Math.round((l.price * commissionPercent) / 100);
         return sum + (l.price - comm);
       }, 0);
 
       document.getElementById("adm-users").textContent = users.length;
       document.getElementById("adm-commission-total").textContent = "$" + totalCommission.toLocaleString();
+      document.getElementById("adm-earned-box").textContent = "$" + totalCommission.toLocaleString();
+      document.getElementById("adm-withdrawn-box").textContent = "$" + adminWithdrawnTotal.toLocaleString();
+      document.getElementById("adm-available-box").textContent = "$" + availableAdmin.toLocaleString();
       document.getElementById("adm-instant-paid").textContent = "$" + totalInstantPaid.toLocaleString();
 
       document.getElementById("admin-users-list").innerHTML = users
