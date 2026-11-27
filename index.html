@@ -2,170 +2,202 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – National Freight Load Board & Dispatch</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>TRUCKGO USA – Multi-Role Freight & GPS Platform</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --navy: #0F172A;
       --navy-mid: #1E293B;
-      --navy-soft: #334155;
       --orange: #F97316;
-      --orange-hover: #EA580C;
+      --orange-dark: #EA580C;
       --blue: #2563EB;
       --bg: #F1F5F9;
       --card: #FFFFFF;
       --text: #0F172A;
       --muted: #64748B;
       --border: #E2E8F0;
-      --success: #15803D;
-      --success-bg: #DCFCE7;
-      --warning: #B45309;
-      --warning-bg: #FEF3C7;
-      --info: #1D4ED8;
-      --info-bg: #DBEAFE;
+      --green: #16A34A;
+      --green-bg: #DCFCE7;
+      --amber: #D97706;
+      --amber-bg: #FEF3C7;
+      --red: #DC2626;
+      --red-bg: #FEE2E2;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
+      padding-bottom: 84px;
     }
 
-    .topbar {
+    /* Top App Header */
+    .app-header {
       background: var(--navy);
       color: #FFFFFF;
-      padding: 14px 20px;
+      padding: 14px 16px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      align-items: center;
       position: sticky;
       top: 0;
-      z-index: 30;
-      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.2);
+      z-index: 40;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.25);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 19px;
-      letter-spacing: 0.5px;
-    }
-
-    .brand-badge {
-      background: var(--orange);
-      color: #FFFFFF;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-    }
-
-    .top-right {
+    .logo-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: 800;
+      font-size: 18px;
     }
 
-    .status-pill {
-      font-size: 12px;
-      padding: 6px 11px;
-      border-radius: 999px;
-      background: var(--navy-mid);
-      color: #E2E8F0;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      white-space: nowrap;
-    }
-
-    .container {
-      max-width: 1120px;
-      margin: 22px auto;
-      padding: 0 16px 48px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    .logo-pill {
+      background: var(--orange);
       color: #FFFFFF;
-      border-radius: 18px;
-      padding: 26px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
-    }
-
-    .hero-top {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .hero h1 {
-      font-size: 26px;
-      margin-bottom: 6px;
-    }
-
-    .hero p {
-      color: #CBD5E1;
-      font-size: 14px;
-      max-width: 680px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .stat-box {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 12px 14px;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: #94A3B8;
-      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 6px;
       letter-spacing: 0.5px;
     }
 
-    .stat-value {
-      font-size: 22px;
-      font-weight: 800;
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      background: var(--navy-mid);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Cards & Forms */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
       color: #FFFFFF;
+      border: none;
+    }
+
+    .hero-card h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .hero-card p {
+      font-size: 13px;
+      color: #CBD5E1;
+    }
+
+    h2 {
+      font-size: 17px;
+      margin-bottom: 12px;
+      color: var(--navy);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .role-btn {
+      border: 2px solid var(--border);
+      background: #F8FAFC;
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .role-btn.active {
+      border-color: var(--orange);
+      background: #FFF7ED;
+    }
+
+    .role-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--navy);
+      display: block;
+    }
+
+    .role-desc {
+      font-size: 11px;
+      color: var(--muted);
+      display: block;
       margin-top: 2px;
     }
 
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      background: #FFFFFF;
+      color: var(--text);
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+    }
+
     .btn {
+      width: 100%;
+      padding: 13px 16px;
       border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.1s ease;
+      transition: transform 0.1s ease;
     }
 
     .btn:active {
@@ -177,685 +209,778 @@
       color: #FFFFFF;
     }
 
-    .btn-primary:hover {
-      background: var(--orange-hover);
+    .btn-dark {
+      background: var(--navy);
+      color: #FFFFFF;
     }
 
-    .btn-secondary {
-      background: #FFFFFF;
-      color: var(--navy);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: #F8FAFC;
-    }
-
-    .btn-sm {
-      padding: 7px 12px;
-      font-size: 12px;
-      border-radius: 8px;
+    .btn-green {
+      background: var(--green);
+      color: #FFFFFF;
     }
 
     .btn-outline {
-      background: transparent;
+      background: #FFFFFF;
       color: var(--navy);
       border: 1px solid var(--border);
     }
 
-    .btn-outline:hover {
-      background: #F1F5F9;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    @media (max-width: 860px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .card h2 {
-      font-size: 17px;
-      color: var(--navy);
-    }
-
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      display: block;
+    .btn-sm {
+      width: auto;
+      padding: 8px 12px;
       font-size: 12px;
-      font-weight: 700;
-      color: var(--navy-soft);
-      margin-bottom: 4px;
+      border-radius: 9px;
     }
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 14px;
-      color: var(--text);
-      background: #FFFFFF;
-      font-family: inherit;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      outline: 2px solid rgba(249, 115, 22, 0.25);
-      border-color: var(--orange);
-    }
-
-    .filter-bar {
-      display: grid;
-      grid-template-columns: 1fr 160px 140px;
-      gap: 10px;
+    .tabs-row {
+      display: flex;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
-    @media (max-width: 640px) {
-      .filter-bar {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .filter-bar input,
-    .filter-bar select {
-      width: 100%;
-      padding: 9px 12px;
+    .tab-pill {
+      flex: 1;
+      padding: 10px;
       border-radius: 10px;
       border: 1px solid var(--border);
-      font-size: 13px;
-      background: #F8FAFC;
-    }
-
-    .load-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .load-item {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
       background: #FFFFFF;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
     }
 
-    .load-item:hover {
-      border-color: #CBD5E1;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    .tab-pill.active {
+      background: var(--navy);
+      color: #FFFFFF;
+      border-color: var(--navy);
     }
 
-    .load-top {
+    .list-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #FFFFFF;
+    }
+
+    .item-top {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
-    .load-route {
+    .item-title {
       font-weight: 800;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--navy);
     }
 
-    .load-sub {
+    .item-meta {
       font-size: 12px;
       color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .load-rate-box {
-      text-align: right;
-    }
-
-    .load-rate {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--navy);
-    }
-
-    .load-rpm {
-      font-size: 12px;
-      color: var(--success);
-      font-weight: 700;
-    }
-
-    .load-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .tag {
-      font-size: 12px;
-      background: #F1F5F9;
-      color: var(--navy-soft);
-      padding: 4px 9px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-    .load-footer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #F1F5F9;
+      margin-bottom: 8px;
     }
 
     .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .badge-open { background: var(--green-bg); color: var(--green); }
+    .badge-transit { background: var(--amber-bg); color: var(--amber); }
+    .badge-danger { background: var(--red-bg); color: var(--red); }
+
+    .gps-box {
+      background: #0F172A;
+      color: #F8FAFC;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .gps-coords {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      color: #38BDF8;
+      margin: 6px 0 10px;
+    }
+
+    .map-link {
+      display: inline-block;
+      color: #FDBA74;
       font-size: 12px;
       font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 999px;
+      text-decoration: underline;
     }
 
-    .badge-open {
-      background: var(--success-bg);
-      color: var(--success);
-    }
-
-    .badge-assigned {
-      background: var(--warning-bg);
-      color: var(--warning);
-    }
-
-    .badge-transit {
-      background: var(--info-bg);
-      color: var(--info);
-    }
-
-    .load-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .hidden {
+      display: none !important;
     }
 
     .notice {
-      margin-top: 10px;
       font-size: 13px;
-      color: var(--muted);
-      min-height: 18px;
+      margin-top: 10px;
+      color: var(--green);
+      font-weight: 600;
+      text-align: center;
     }
 
-    footer {
-      text-align: center;
+    /* Mobile Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+      z-index: 50;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--muted);
-      font-size: 12px;
-      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .nav-btn.active {
+      color: var(--orange);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .mini-stat {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 18px;
+      color: var(--navy);
+    }
+
+    .mini-stat span {
+      font-size: 11px;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-badge">USA LIVE</span>
+
+  <!-- Top Header -->
+  <header class="app-header">
+    <div class="logo-wrap">
+      <span class="logo-pill">USA</span>
       <span>TRUCKGO</span>
     </div>
-    <div class="top-right">
-      <div id="supabase-status" class="status-pill">Connecting...</div>
-    </div>
+    <div id="header-user" class="user-chip">Guest Mode</div>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <h1>TRUCKGO USA Freight Board</h1>
-          <p>
-            Direct US freight load board for shippers, brokers, and owner-operators across all 48 continental states. Post loads, calculate rate-per-mile, and dispatch carriers in real time.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <button class="btn btn-primary" type="button" onclick="document.getElementById('origin').focus()">
-            + Post US Load
-          </button>
-          <button class="btn btn-secondary" type="button" onclick="syncFromSupabase()">
-            Sync Board
-          </button>
-        </div>
+
+    <!-- AUTH SECTION: Account Creation & Login -->
+    <section id="auth-view">
+      <div class="card hero-card">
+        <h1>TRUCKGO Multi-Role App</h1>
+        <p>Select your portal below: Truck Owner, Driver, Courier/Shipper, or Admin Account.</p>
       </div>
 
-      <div class="stats-bar">
-        <div class="stat-box">
-          <div class="stat-label">Active Loads</div>
-          <div id="stat-total" class="stat-value">0</div>
+      <div class="card">
+        <div class="tabs-row">
+          <button id="tab-signup" class="tab-pill active" onclick="switchAuthMode('signup')">Create New Account</button>
+          <button id="tab-login" class="tab-pill" onclick="switchAuthMode('login')">Sign In</button>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Open Freight</div>
-          <div id="stat-open" class="stat-value">0</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Total Freight Value</div>
-          <div id="stat-value" class="stat-value">$0</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Avg Rate / Mile</div>
-          <div id="stat-rpm" class="stat-value">$0.00</div>
+
+        <form id="auth-form">
+          <div id="signup-fields">
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">1. Select Account Role</label>
+            <div class="role-grid">
+              <button type="button" class="role-btn active" data-role="owner" onclick="selectRole('owner', this)">
+                <span class="role-title">Truck Owner</span>
+                <span class="role-desc">Manage trucks &amp; fleet</span>
+              </button>
+              <button type="button" class="role-btn" data-role="driver" onclick="selectRole('driver', this)">
+                <span class="role-title">Driver</span>
+                <span class="role-desc">Live GPS &amp; deliveries</span>
+              </button>
+              <button type="button" class="role-btn" data-role="courier" onclick="selectRole('courier', this)">
+                <span class="role-title">Courier / Shipper</span>
+                <span class="role-desc">Post &amp; track freight</span>
+              </button>
+              <button type="button" class="role-btn" data-role="admin" onclick="selectRole('admin', this)">
+                <span class="role-title">App Admin</span>
+                <span class="role-desc">Full system control</span>
+              </button>
+            </div>
+
+            <div class="field">
+              <label for="auth-name">Full Name / Company Name</label>
+              <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" />
+            </div>
+
+            <div class="field">
+              <label for="auth-detail">USDOT / MC# / CDL Number</label>
+              <input id="auth-detail" type="text" placeholder="e.g. MC-894120 or CDL-TX-4421" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="auth-email">Email Address</label>
+            <input id="auth-email" type="email" placeholder="name@company.com" required />
+          </div>
+
+          <div class="field">
+            <label for="auth-pass">Password</label>
+            <input id="auth-pass" type="password" placeholder="Enter password" required />
+          </div>
+
+          <button id="auth-submit-btn" type="submit" class="btn btn-primary">Create Account &amp; Enter Portal</button>
+          <div id="auth-notice" class="notice"></div>
+        </form>
+      </div>
+
+      <!-- Quick Demo Logins for Testing -->
+      <div class="card">
+        <h2>Quick Demo Access (1-Tap Test)</h2>
+        <div class="role-grid">
+          <button class="btn btn-outline btn-sm" onclick="quickLogin('owner')">Demo Truck Owner</button>
+          <button class="btn btn-outline btn-sm" onclick="quickLogin('driver')">Demo Driver + GPS</button>
+          <button class="btn btn-outline btn-sm" onclick="quickLogin('courier')">Demo Courier</button>
+          <button class="btn btn-dark btn-sm" onclick="quickLogin('admin')">Demo Admin Panel</button>
         </div>
       </div>
     </section>
 
-    <div class="main-grid">
-      <section class="card">
-        <div class="card-header">
-          <h2>Post a US Freight Load</h2>
-        </div>
-        <form id="load-form">
+    <!-- 1. TRUCK OWNER PORTAL -->
+    <section id="portal-owner" class="hidden">
+      <div class="card hero-card">
+        <h1>Truck Owner Portal</h1>
+        <p>Add your US trucks, assign drivers, and book high-paying freight loads.</p>
+      </div>
+
+      <div class="card">
+        <h2>Register New Truck to Fleet</h2>
+        <form id="truck-form">
           <div class="field">
-            <label for="origin">Pickup City & State</label>
-            <input id="origin" type="text" placeholder="e.g. Dallas, TX" required />
-          </div>
-          <div class="field">
-            <label for="destination">Delivery City & State</label>
-            <input id="destination" type="text" placeholder="e.g. Atlanta, GA" required />
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="truck-type">Equipment Type</label>
-              <select id="truck-type">
-                <option value="53ft Dry Van">53ft Dry Van</option>
-                <option value="53ft Reefer">53ft Reefer</option>
-                <option value="48ft Flatbed">48ft Flatbed</option>
-                <option value="Step Deck">Step Deck</option>
-                <option value="26ft Box Truck">26ft Box Truck</option>
-                <option value="Hotshot Gooseneck">Hotshot Gooseneck</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="miles">Distance (Miles)</label>
-              <input id="miles" type="number" min="1" placeholder="e.g. 780" required />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="weight">Weight (lbs)</label>
-              <input id="weight" type="number" min="100" placeholder="e.g. 42000" required />
-            </div>
-            <div class="field">
-              <label for="rate">Linehaul Rate ($ USD)</label>
-              <input id="rate" type="number" min="50" placeholder="e.g. 2250" required />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="pickup-date">Pickup Date</label>
-              <input id="pickup-date" type="date" required />
-            </div>
-            <div class="field">
-              <label for="broker-mc">Broker / Shipper MC#</label>
-              <input id="broker-mc" type="text" placeholder="e.g. MC-849210" />
-            </div>
+            <label>Truck Unit # &amp; Model</label>
+            <input id="truck-unit" type="text" placeholder="e.g. Unit #104 – Freightliner Cascadia" required />
           </div>
           <div class="field">
-            <label for="commodity">Commodity / Notes</label>
-            <input id="commodity" type="text" placeholder="e.g. Palletized Retail Goods - No Touch" />
+            <label>Trailer / Equipment Type</label>
+            <select id="truck-equip">
+              <option value="53ft Dry Van">53ft Dry Van</option>
+              <option value="53ft Reefer">53ft Reefer</option>
+              <option value="48ft Flatbed">48ft Flatbed</option>
+              <option value="26ft Box Truck">26ft Box Truck</option>
+            </select>
           </div>
-          <button class="btn btn-primary" style="width: 100%;" type="submit">
-            Publish Load to US Board
-          </button>
-          <div id="form-notice" class="notice"></div>
+          <div class="field">
+            <label>Assigned Driver Name</label>
+            <input id="truck-driver" type="text" placeholder="e.g. Marcus Johnson" required />
+          </div>
+          <button type="submit" class="btn btn-primary">+ Add Truck to Fleet</button>
         </form>
-      </section>
+      </div>
 
-      <section class="card">
-        <div class="card-header">
-          <h2>Live US Load Board</h2>
-          <span id="visible-count" class="load-sub">Showing all loads</span>
+      <div class="card">
+        <h2>My Active Fleet (<span id="fleet-count">0</span>)</h2>
+        <div id="fleet-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Available Courier Loads to Accept</h2>
+        <div id="owner-loads-list"></div>
+      </div>
+    </section>
+
+    <!-- 2. DRIVER PORTAL + LIVE GPS -->
+    <section id="portal-driver" class="hidden">
+      <div class="card hero-card">
+        <h1>Driver &amp; Live GPS Portal</h1>
+        <p>Share real-time iPhone GPS location with shippers and update trip status.</p>
+      </div>
+
+      <div class="card">
+        <h2>Live GPS Location Tracker</h2>
+        <div class="gps-box">
+          <div style="font-size:12px; color:#94A3B8;">SATELLITE / IPHONE GPS STATUS</div>
+          <div id="gps-status-text" style="font-weight:800; font-size:15px; margin-top:2px;">GPS Standby</div>
+          <div id="gps-coords-display" class="gps-coords">Lat: 32.7767° N, Lng: 96.7970° W (Dallas, TX)</div>
+          <a id="gps-map-link" class="map-link" href="https://maps.google.com/?q=32.7767,-96.7970" target="_blank" rel="noopener">
+            Open Live Pin in Google Maps &rarr;
+          </a>
         </div>
+        <button type="button" class="btn btn-green" onclick="startLiveGPS()">
+          Share My Live iPhone GPS Now
+        </button>
+      </div>
 
-        <div class="filter-bar">
-          <input id="search-input" type="text" placeholder="Search city, state, MC#, or commodity..." oninput="renderLoads()" />
-          <select id="equipment-filter" onchange="renderLoads()">
-            <option value="ALL">All Equipment</option>
-            <option value="53ft Dry Van">53ft Dry Van</option>
-            <option value="53ft Reefer">53ft Reefer</option>
-            <option value="48ft Flatbed">48ft Flatbed</option>
-            <option value="Step Deck">Step Deck</option>
-            <option value="26ft Box Truck">26ft Box Truck</option>
-            <option value="Hotshot Gooseneck">Hotshot Gooseneck</option>
-          </select>
-          <select id="status-filter" onchange="renderLoads()">
-            <option value="ALL">All Statuses</option>
-            <option value="Open">Open</option>
-            <option value="Assigned">Assigned</option>
-            <option value="In Transit">In Transit</option>
-          </select>
+      <div class="card">
+        <h2>Assigned Trips &amp; Load Status</h2>
+        <div id="driver-loads-list"></div>
+      </div>
+    </section>
+
+    <!-- 3. COURIER / SHIPPER PORTAL -->
+    <section id="portal-courier" class="hidden">
+      <div class="card hero-card">
+        <h1>Courier &amp; Shipper Portal</h1>
+        <p>Dispatch parcels or full truckloads across the USA and track live GPS.</p>
+      </div>
+
+      <div class="card">
+        <h2>Post New Courier / Freight Shipment</h2>
+        <form id="courier-form">
+          <div class="field">
+            <label>Pickup City, State</label>
+            <input id="load-origin" type="text" placeholder="e.g. Dallas, TX" required />
+          </div>
+          <div class="field">
+            <label>Drop-off City, State</label>
+            <input id="load-dest" type="text" placeholder="e.g. Atlanta, GA" required />
+          </div>
+          <div class="field">
+            <label>Shipment Type</label>
+            <select id="load-type">
+              <option value="Express Courier Van">Express Courier Van</option>
+              <option value="26ft Box Truck">26ft Box Truck</option>
+              <option value="53ft Dry Van">53ft Dry Van</option>
+              <option value="53ft Reefer">53ft Reefer</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Offer Price ($ USD)</label>
+            <input id="load-price" type="number" placeholder="e.g. 1850" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Dispatch Shipment Now</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>My Shipments &amp; Live GPS Tracking</h2>
+        <div id="courier-loads-list"></div>
+      </div>
+    </section>
+
+    <!-- 4. ADMIN / APP OWNER PORTAL -->
+    <section id="portal-admin" class="hidden">
+      <div class="card hero-card">
+        <h1>TRUCKGO Admin Control</h1>
+        <p>Master overview of all registered accounts, trucks, shipments, and live GPS.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="mini-stat">
+          <strong id="adm-users">0</strong>
+          <span>Accounts</span>
         </div>
+        <div class="mini-stat">
+          <strong id="adm-trucks">0</strong>
+          <span>Trucks</span>
+        </div>
+        <div class="mini-stat">
+          <strong id="adm-loads">0</strong>
+          <span>Shipments</span>
+        </div>
+      </div>
 
-        <div id="loads-container" class="load-list"></div>
-      </section>
-    </div>
+      <div class="card">
+        <h2>Registered Accounts (Owners, Drivers, Couriers)</h2>
+        <div id="admin-users-list"></div>
+      </div>
 
-    <footer>
-      TRUCKGO USA Logistics Network &bull; USDOT &amp; MC Compliant Freight Marketplace &bull; Project: bqrnznmxlctzxcrkxcpd
-    </footer>
+      <div class="card">
+        <h2>All Live Shipments &amp; GPS Pins</h2>
+        <div id="admin-loads-list"></div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- Bottom Navigation -->
+  <nav id="bottom-nav" class="bottom-nav hidden">
+    <button class="nav-btn active" onclick="showActiveDashboard()">Dashboard</button>
+    <button class="nav-btn" onclick="switchRoleQuick('owner')">Owner</button>
+    <button class="nav-btn" onclick="switchRoleQuick('driver')">Driver GPS</button>
+    <button class="nav-btn" onclick="switchRoleQuick('courier')">Courier</button>
+    <button class="nav-btn" onclick="logoutUser()">Logout</button>
+  </nav>
 
   <script>
     const SUPABASE_URL = "https://bqrnznmxlctzxcrkxcpd.supabase.co";
     const SUPABASE_ANON_KEY = "Sb_publishable_kaNhCrmaMyq4fkDWTH6HkQ_v-ujcd6C";
+    const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    const statusEl = document.getElementById("supabase-status");
-    const loadsContainer = document.getElementById("loads-container");
-    const loadForm = document.getElementById("load-form");
-    const formNotice = document.getElementById("form-notice");
+    let authMode = "signup";
+    let selectedRole = "owner";
+    let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
-    document.getElementById("pickup-date").valueAsDate = new Date();
+    let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
+      { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", detail: "MC-841920" },
+      { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", detail: "CDL-TX-9912" },
+      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", detail: "USDOT-331092" },
+      { name: "Anjum (App Owner)", email: "admin@truckgo.us", role: "admin", detail: "MASTER-ADMIN" }
+    ];
 
-    let sbClient = null;
-    let loads = [
+    let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
+      { id: 1, unit: "Unit #101 – Kenworth T680", equip: "53ft Dry Van", driver: "Marcus Johnson", status: "Active" },
+      { id: 2, unit: "Unit #205 – Ford Transit 350", equip: "Express Courier Van", driver: "Elena Alvarez", status: "Active" }
+    ];
+
+    let loads = JSON.parse(localStorage.getItem("tg_loads") || "null") || [
       {
-        id: 101,
+        id: 501,
+        origin: "Dallas, TX",
+        dest: "Atlanta, GA",
+        type: "53ft Dry Van",
+        price: 2100,
+        status: "In Transit",
+        driver: "Marcus Johnson",
+        lat: 32.7767,
+        lng: -96.7970
+      },
+      {
+        id: 502,
         origin: "Los Angeles, CA",
-        destination: "Phoenix, AZ",
-        truck_type: "53ft Dry Van",
-        miles: 373,
-        weight: 38500,
-        rate: 1350,
-        pickup_date: "2026-11-28",
-        broker_mc: "MC-712490",
-        commodity: "Consumer Electronics - Drop & Hook",
-        status: "Open"
-      },
-      {
-        id: 102,
-        origin: "Houston, TX",
-        destination: "Chicago, IL",
-        truck_type: "53ft Reefer",
-        miles: 1082,
-        weight: 43000,
-        rate: 3150,
-        pickup_date: "2026-11-28",
-        broker_mc: "MC-904318",
-        commodity: "Fresh Produce (34°F Continuous)",
-        status: "Open"
-      },
-      {
-        id: 103,
-        origin: "Savannah, GA",
-        destination: "Nashville, TN",
-        truck_type: "48ft Flatbed",
-        miles: 492,
-        weight: 44800,
-        rate: 1680,
-        pickup_date: "2026-11-29",
-        broker_mc: "MC-635102",
-        commodity: "Steel Coils & Construction Materials",
-        status: "Assigned"
-      },
-      {
-        id: 104,
-        origin: "Newark, NJ",
-        destination: "Columbus, OH",
-        truck_type: "26ft Box Truck",
-        miles: 536,
-        weight: 14200,
-        rate: 1490,
-        pickup_date: "2026-11-29",
-        broker_mc: "MC-518944",
-        commodity: "Commercial Packaging Supplies",
-        status: "In Transit"
+        dest: "Phoenix, AZ",
+        type: "Express Courier Van",
+        price: 890,
+        status: "Open",
+        driver: "Unassigned",
+        lat: 34.0522,
+        lng: -118.2437
       }
     ];
 
-    function initSupabase() {
-      if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
-        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        statusEl.textContent = "Supabase Connected (USA)";
+    function saveState() {
+      localStorage.setItem("tg_users", JSON.stringify(users));
+      localStorage.setItem("tg_trucks", JSON.stringify(trucks));
+      localStorage.setItem("tg_loads", JSON.stringify(loads));
+      if (currentUser) {
+        localStorage.setItem("tg_current_user", JSON.stringify(currentUser));
       } else {
-        statusEl.textContent = "Local Board Mode";
+        localStorage.removeItem("tg_current_user");
       }
     }
 
-    async function syncFromSupabase() {
-      renderLoads();
-      if (!sbClient) {
-        formNotice.textContent = "Board refreshed.";
-        return;
-      }
-      try {
-        const { data, error } = await sbClient
-          .from("loads")
-          .select("*")
-          .order("id", { ascending: false });
-
-        if (!error && Array.isArray(data) && data.length > 0) {
-          loads = data.map((row, index) => ({
-            id: row.id || Date.now() + index,
-            origin: row.origin || "Dallas, TX",
-            destination: row.destination || "Atlanta, GA",
-            truck_type: row.truck_type || "53ft Dry Van",
-            miles: Number(row.miles) || 500,
-            weight: Number(row.weight) || 40000,
-            rate: Number(row.rate) || 1500,
-            pickup_date: row.pickup_date || "2026-11-28",
-            broker_mc: row.broker_mc || "MC-800120",
-            commodity: row.commodity || "General Freight",
-            status: row.status || "Open"
-          }));
-          renderLoads();
-          formNotice.textContent = "Synced with Supabase database.";
-        } else {
-          formNotice.textContent = "US load board is up to date.";
-        }
-      } catch (_err) {
-        formNotice.textContent = "US load board synced.";
-      }
+    function switchAuthMode(mode) {
+      authMode = mode;
+      document.getElementById("tab-signup").classList.toggle("active", mode === "signup");
+      document.getElementById("tab-login").classList.toggle("active", mode === "login");
+      document.getElementById("signup-fields").classList.toggle("hidden", mode === "login");
+      document.getElementById("auth-submit-btn").textContent =
+        mode === "signup" ? "Create Account & Enter Portal" : "Sign In to Portal";
     }
 
-    function updateStats() {
-      const total = loads.length;
-      const openCount = loads.filter((l) => l.status === "Open").length;
-      const totalValue = loads.reduce((sum, l) => sum + Number(l.rate || 0), 0);
-      const totalMiles = loads.reduce((sum, l) => sum + Number(l.miles || 0), 0);
-      const avgRpm = totalMiles > 0 ? (totalValue / totalMiles).toFixed(2) : "0.00";
-
-      document.getElementById("stat-total").textContent = total;
-      document.getElementById("stat-open").textContent = openCount;
-      document.getElementById("stat-value").textContent = "$" + totalValue.toLocaleString();
-      document.getElementById("stat-rpm").textContent = "$" + avgRpm;
+    function selectRole(role, btn) {
+      selectedRole = role;
+      document.querySelectorAll(".role-btn").forEach((el) => el.classList.remove("active"));
+      btn.classList.add("active");
     }
 
-    function cycleStatus(id) {
-      const order = ["Open", "Assigned", "In Transit"];
-      loads = loads.map((item) => {
-        if (item.id !== id) return item;
-        const nextIdx = (order.indexOf(item.status) + 1) % order.length;
-        return { ...item, status: order[nextIdx] };
-      });
-      renderLoads();
-    }
+    document.getElementById("auth-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value.trim().toLowerCase();
+      const pass = document.getElementById("auth-pass").value.trim();
+      const name = document.getElementById("auth-name").value.trim() || email.split("@")[0];
+      const detail = document.getElementById("auth-detail").value.trim() || "USA-VERIFIED";
 
-    function removeLoad(id) {
-      loads = loads.filter((item) => item.id !== id);
-      renderLoads();
-    }
+      if (!email || !pass) return;
 
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function renderLoads() {
-      updateStats();
-
-      const query = document.getElementById("search-input").value.trim().toLowerCase();
-      const equipFilter = document.getElementById("equipment-filter").value;
-      const statusFilter = document.getElementById("status-filter").value;
-
-      const filtered = loads.filter((item) => {
-        const matchesQuery =
-          !query ||
-          item.origin.toLowerCase().includes(query) ||
-          item.destination.toLowerCase().includes(query) ||
-          (item.broker_mc && item.broker_mc.toLowerCase().includes(query)) ||
-          (item.commodity && item.commodity.toLowerCase().includes(query));
-        const matchesEquip = equipFilter === "ALL" || item.truck_type === equipFilter;
-        const matchesStatus = statusFilter === "ALL" || item.status === statusFilter;
-        return matchesQuery && matchesEquip && matchesStatus;
-      });
-
-      document.getElementById("visible-count").textContent =
-        `Showing ${filtered.length} of ${loads.length} US loads`;
-
-      if (!filtered.length) {
-        loadsContainer.innerHTML =
-          '<div class="load-sub" style="padding: 14px 0;">No matching US freight loads found.</div>';
-        return;
+      if (authMode === "signup") {
+        const newUser = { name, email, role: selectedRole, detail };
+        users = [newUser, ...users.filter((u) => u.email !== email)];
+        currentUser = newUser;
+      } else {
+        const found = users.find((u) => u.email === email);
+        currentUser = found || { name, email, role: "owner", detail: "USA-MEMBER" };
       }
 
-      loadsContainer.innerHTML = filtered
-        .map((item) => {
-          const miles = Number(item.miles) || 1;
-          const rate = Number(item.rate) || 0;
-          const rpm = (rate / miles).toFixed(2);
-          const badgeClass =
-            item.status === "Open"
-              ? "badge-open"
-              : item.status === "Assigned"
-              ? "badge-assigned"
-              : "badge-transit";
+      saveState();
+      renderApp();
+    });
 
-          return `
-            <div class="load-item">
-              <div class="load-top">
-                <div>
-                  <div class="load-route">${escapeHtml(item.origin)} &rarr; ${escapeHtml(item.destination)}</div>
-                  <div class="load-sub">
-                    Pickup: ${escapeHtml(item.pickup_date || "Today")} &bull; ${escapeHtml(item.broker_mc || "MC-Verified")} &bull; ${escapeHtml(item.commodity || "General Freight")}
-                  </div>
-                </div>
-                <div class="load-rate-box">
-                  <div class="load-rate">$${rate.toLocaleString()}</div>
-                  <div class="load-rpm">$${rpm} / mi (${miles.toLocaleString()} mi)</div>
-                </div>
-              </div>
-
-              <div class="load-tags">
-                <span class="tag">${escapeHtml(item.truck_type)}</span>
-                <span class="tag">${Number(item.weight || 0).toLocaleString()} lbs</span>
-                <span class="tag">${miles.toLocaleString()} miles</span>
-              </div>
-
-              <div class="load-footer">
-                <span class="badge ${badgeClass}">${escapeHtml(item.status)}</span>
-                <div class="load-actions">
-                  <button class="btn btn-outline btn-sm" type="button" onclick="cycleStatus(${item.id})">
-                    Update Status
-                  </button>
-                  <button class="btn btn-outline btn-sm" type="button" onclick="removeLoad(${item.id})">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          `;
-        })
-        .join("");
+    function quickLogin(role) {
+      const demo = users.find((u) => u.role === role) || users[0];
+      currentUser = demo;
+      saveState();
+      renderApp();
     }
 
-    loadForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    function switchRoleQuick(role) {
+      if (!currentUser) return;
+      currentUser = { ...currentUser, role };
+      saveState();
+      renderApp();
+    }
 
-      const origin = document.getElementById("origin").value.trim();
-      const destination = document.getElementById("destination").value.trim();
-      const truckType = document.getElementById("truck-type").value;
-      const miles = Number(document.getElementById("miles").value);
-      const weight = Number(document.getElementById("weight").value);
-      const rate = Number(document.getElementById("rate").value);
-      const pickupDate = document.getElementById("pickup-date").value;
-      const brokerMc = document.getElementById("broker-mc").value.trim() || "MC-842910";
-      const commodity = document.getElementById("commodity").value.trim() || "Palletized Freight";
+    function logoutUser() {
+      currentUser = null;
+      saveState();
+      renderApp();
+    }
 
-      if (!origin || !destination || !rate || !miles) return;
+    function showActiveDashboard() {
+      renderApp();
+    }
+
+    // Truck Owner: Add Truck
+    document.getElementById("truck-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const unit = document.getElementById("truck-unit").value.trim();
+      const equip = document.getElementById("truck-equip").value;
+      const driver = document.getElementById("truck-driver").value.trim();
+      if (!unit || !driver) return;
+
+      trucks = [{ id: Date.now(), unit, equip, driver, status: "Active" }, ...trucks];
+      saveState();
+      e.target.reset();
+      renderApp();
+    });
+
+    // Courier: Post Load
+    document.getElementById("courier-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const origin = document.getElementById("load-origin").value.trim();
+      const dest = document.getElementById("load-dest").value.trim();
+      const type = document.getElementById("load-type").value;
+      const price = Number(document.getElementById("load-price").value);
+      if (!origin || !dest || !price) return;
 
       const newLoad = {
         id: Date.now(),
         origin,
-        destination,
-        truck_type: truckType,
-        miles,
-        weight,
-        rate,
-        pickup_date: pickupDate,
-        broker_mc: brokerMc,
-        commodity,
-        status: "Open"
+        dest,
+        type,
+        price,
+        status: "Open",
+        driver: "Awaiting Driver",
+        lat: 32.7767,
+        lng: -96.7970
       };
 
       loads = [newLoad, ...loads];
-      renderLoads();
+      saveState();
 
-      if (sbClient) {
+      if (sb) {
         try {
-          await sbClient.from("loads").insert([
-            {
-              origin: newLoad.origin,
-              destination: newLoad.destination,
-              truck_type: newLoad.truck_type,
-              rate: newLoad.rate,
-              status: newLoad.status
-            }
-          ]);
-          formNotice.textContent = "US load published to live board & Supabase.";
-        } catch (_err) {
-          formNotice.textContent = "US load added to live board.";
-        }
-      } else {
-        formNotice.textContent = "US load added to live board.";
+          await sb.from("loads").insert([{
+            origin,
+            destination: dest,
+            truck_type: type,
+            rate: price,
+            status: "Open"
+          }]);
+        } catch (_err) {}
       }
 
-      loadForm.reset();
-      document.getElementById("pickup-date").valueAsDate = new Date();
+      e.target.reset();
+      renderApp();
     });
 
-    initSupabase();
-    renderLoads();
+    function acceptLoad(id) {
+      loads = loads.map((l) =>
+        l.id === id ? { ...l, status: "In Transit", driver: currentUser ? currentUser.name : "Assigned Driver" } : l
+      );
+      saveState();
+      renderApp();
+    }
+
+    function markDelivered(id) {
+      loads = loads.map((l) => (l.id === id ? { ...l, status: "Delivered" } : l));
+      saveState();
+      renderApp();
+    }
+
+    // Live GPS Function (Works on iPhone Safari)
+    function startLiveGPS() {
+      const statusText = document.getElementById("gps-status-text");
+      const coordsText = document.getElementById("gps-coords-display");
+      const mapLink = document.getElementById("gps-map-link");
+
+      if (!navigator.geolocation) {
+        statusText.textContent = "GPS not supported on this browser";
+        return;
+      }
+
+      statusText.textContent = "Acquiring Satellite / iPhone GPS...";
+
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          const lat = pos.coords.latitude.toFixed(5);
+          const lng = pos.coords.longitude.toFixed(5);
+          statusText.textContent = "LIVE GPS ACTIVE (Broadcasting)";
+          coordsText.textContent = `Lat: ${lat}, Lng: ${lng}`;
+          mapLink.href = `https://maps.google.com/?q=${lat},${lng}`;
+
+          loads = loads.map((l) =>
+            l.status === "In Transit" ? { ...l, lat: Number(lat), lng: Number(lng) } : l
+          );
+          saveState();
+        },
+        () => {
+          statusText.textContent = "GPS Permission Needed (Using Dallas, TX Demo Pin)";
+        },
+        { enableHighAccuracy: true }
+      );
+    }
+
+    function renderApp() {
+      const authView = document.getElementById("auth-view");
+      const bottomNav = document.getElementById("bottom-nav");
+      const headerUser = document.getElementById("header-user");
+
+      ["portal-owner", "portal-driver", "portal-courier", "portal-admin"].forEach((id) => {
+        document.getElementById(id).classList.add("hidden");
+      });
+
+      if (!currentUser) {
+        authView.classList.remove("hidden");
+        bottomNav.classList.add("hidden");
+        headerUser.textContent = "Guest Mode";
+        return;
+      }
+
+      authView.classList.add("hidden");
+      bottomNav.classList.remove("hidden");
+      headerUser.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
+
+      const activePortal = document.getElementById(`portal-${currentUser.role}`);
+      if (activePortal) activePortal.classList.remove("hidden");
+
+      // Render Fleet
+      document.getElementById("fleet-count").textContent = trucks.length;
+      document.getElementById("fleet-list").innerHTML = trucks
+        .map(
+          (t) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${t.unit}</div>
+              <span class="badge badge-open">${t.status}</span>
+            </div>
+            <div class="item-meta">${t.equip} &bull; Driver: ${t.driver}</div>
+          </div>
+        `
+        )
+        .join("");
+
+      // Render Owner Loads
+      document.getElementById("owner-loads-list").innerHTML = loads
+        .map(
+          (l) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
+              <span class="badge ${l.status === "Open" ? "badge-open" : "badge-transit"}">${l.status}</span>
+            </div>
+            <div class="item-meta">${l.type} &bull; Payout: $${l.price.toLocaleString()}</div>
+            ${
+              l.status === "Open"
+                ? `<button class="btn btn-primary btn-sm" onclick="acceptLoad(${l.id})">Assign My Truck</button>`
+                : `<div class="item-meta">Assigned: ${l.driver}</div>`
+            }
+          </div>
+        `
+        )
+        .join("");
+
+      // Render Driver Loads
+      document.getElementById("driver-loads-list").innerHTML = loads
+        .map(
+          (l) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
+              <span class="badge ${l.status === "Delivered" ? "badge-open" : "badge-transit"}">${l.status}</span>
+            </div>
+            <div class="item-meta">${l.type} &bull; Rate: $${l.price.toLocaleString()}</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              ${l.status === "Open" ? `<button class="btn btn-primary btn-sm" onclick="acceptLoad(${l.id})">Start Trip</button>` : ""}
+              ${l.status === "In Transit" ? `<button class="btn btn-green btn-sm" onclick="markDelivered(${l.id})">Mark Delivered</button>` : ""}
+              <a class="btn btn-outline btn-sm" style="text-decoration:none;" href="https://maps.google.com/?q=${l.lat},${l.lng}" target="_blank" rel="noopener">GPS Map</a>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+
+      // Render Courier Loads
+      document.getElementById("courier-loads-list").innerHTML = loads
+        .map(
+          (l) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
+              <span class="badge ${l.status === "Open" ? "badge-open" : "badge-transit"}">${l.status}</span>
+            </div>
+            <div class="item-meta">${l.type} &bull; $${l.price.toLocaleString()} &bull; Driver: ${l.driver}</div>
+            <a class="map-link" style="color:#2563EB;" href="https://maps.google.com/?q=${l.lat},${l.lng}" target="_blank" rel="noopener">
+              Track Live Truck GPS (${l.lat}, ${l.lng}) &rarr;
+            </a>
+          </div>
+        `
+        )
+        .join("");
+
+      // Render Admin Panel
+      document.getElementById("adm-users").textContent = users.length;
+      document.getElementById("adm-trucks").textContent = trucks.length;
+      document.getElementById("adm-loads").textContent = loads.length;
+
+      document.getElementById("admin-users-list").innerHTML = users
+        .map(
+          (u) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${u.name}</div>
+              <span class="badge badge-transit">${u.role.toUpperCase()}</span>
+            </div>
+            <div class="item-meta">${u.email} &bull; ${u.detail}</div>
+          </div>
+        `
+        )
+        .join("");
+
+      document.getElementById("admin-loads-list").innerHTML = loads
+        .map(
+          (l) => `
+          <div class="list-item">
+            <div class="item-top">
+              <div class="item-title">${l.origin} &rarr; ${l.dest}</div>
+              <span class="badge badge-open">$${l.price.toLocaleString()}</span>
+            </div>
+            <div class="item-meta">Status: ${l.status} &bull; GPS: ${l.lat}, ${l.lng}</div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    renderApp();
   </script>
 </body>
 </html>
