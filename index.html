@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – Help Center, Team Desk, Instant Pay, US Payments & Live GPS</title>
+  <title>TRUCKGO USA – Fast Freight, Instant Pay, US Payments & Live GPS</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -451,23 +451,11 @@
 
   <main class="container">
 
-    <!-- FAST PUBLIC ENTRY (NO REQUIRED CODES OR DOCS TO TEST) -->
+    <!-- PUBLIC ENTRY (SEPARATE DOCS PER ROLE, ADMIN COMPLETELY HIDDEN FROM PUBLIC SCREEN) -->
     <section id="auth-view">
       <div class="banner banner-auth">
         <h1 id="t-auth-title">TRUCKGO USA – Fast Freight, Instant Pay &amp; Live GPS</h1>
-        <p id="t-auth-sub">Test any portal right now with 1 tap — no code or document required to open.</p>
-      </div>
-
-      <div class="card">
-        <h2 id="t-quick-demo">1-Tap Instant Check (No Code / No Doc Needed)</h2>
-        <div class="role-grid-3">
-          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
-          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
-          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier</button>
-        </div>
-        <div style="margin-top:10px; text-align:center;">
-          <button type="button" class="btn btn-outline btn-sm" onclick="openOwnerAdminAccess()">Admin &amp; Team Desk</button>
-        </div>
+        <p id="t-auth-sub">Select your role below — separate documents for Owner, Driver &amp; Courier, auto rates, live chat &amp; GPS.</p>
       </div>
 
       <div class="card">
@@ -483,38 +471,75 @@
               <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
                 <span class="role-tag">MC / DOT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Loads &amp; instant pay</span>
+                <span class="role-desc">Authority &amp; fleet</span>
               </button>
               <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
                 <span class="role-tag">CDL / DL</span>
                 <span class="role-title">Driver</span>
-                <span class="role-desc">Trips &amp; live GPS</span>
+                <span class="role-desc">Driving license &amp; GPS</span>
               </button>
               <button type="button" class="role-card" data-role="courier" onclick="selectRole('courier', this)">
                 <span class="role-tag">EIN / PRM</span>
                 <span class="role-title">Courier</span>
-                <span class="role-desc">Rates &amp; US pay</span>
+                <span class="role-desc">Business permit &amp; rates</span>
               </button>
             </div>
 
             <div class="field">
-              <label for="auth-name" id="t-lbl-name">Name or Company (Optional for quick test)</label>
+              <label for="auth-name" id="t-lbl-name">Name or Company</label>
               <input id="auth-name" type="text" placeholder="e.g. Lone Star Freight LLC" />
             </div>
 
+            <!-- SEPARATE DOCUMENTS PER ROLE -->
             <div class="doc-box">
-              <div style="font-size:12px; font-weight:800; margin-bottom:6px;">License / Authority (Optional anytime)</div>
-              <input id="license-any-input" type="text" placeholder="MC-849210 / CDL-TX-12345 / EIN-84-12345" />
+              <div id="doc-section-title" style="font-size:12px; font-weight:800; margin-bottom:8px;">Truck Owner Documents (MC# / USDOT# &amp; Authority)</div>
+
+              <div id="docs-owner">
+                <div class="field">
+                  <label>MC# or USDOT# (Owner Authority)</label>
+                  <input id="owner-mc" type="text" placeholder="e.g. MC-849210 or DOT-3920114" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Operating Authority / Insurance Doc</label>
+                  <input id="owner-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              <div id="docs-driver" class="hidden">
+                <div class="field">
+                  <label>CDL / Driving License # (Driver Only)</label>
+                  <input id="driver-cdl" type="text" placeholder="e.g. CDL-TX-7748291" />
+                </div>
+                <div class="field">
+                  <label>Government ID / DOT Medical Card</label>
+                  <input id="driver-gov-id" type="text" placeholder="e.g. TX State ID / Med Card" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Driving License &amp; Govt ID</label>
+                  <input id="driver-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
+
+              <div id="docs-courier" class="hidden">
+                <div class="field">
+                  <label>Business EIN # or Courier Permit # (Courier Only)</label>
+                  <input id="courier-permit" type="text" placeholder="e.g. EIN-84-3920112 or PRM-4410" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label>Upload Business Registration / Courier Permit</label>
+                  <input id="courier-doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="field">
-            <label for="auth-email" id="t-lbl-email">Email or Phone (Optional for quick test)</label>
+            <label for="auth-email" id="t-lbl-email">Email or Phone</label>
             <input id="auth-email" type="text" placeholder="name@company.com or +1 214 555 0199" />
           </div>
 
           <div class="field">
-            <label for="auth-pass" id="t-lbl-pass">Password (Optional for quick test)</label>
+            <label for="auth-pass" id="t-lbl-pass">Password</label>
             <input id="auth-pass" type="password" placeholder="••••••" />
           </div>
 
@@ -522,13 +547,22 @@
           <div id="auth-error" class="alert-err"></div>
         </form>
       </div>
+
+      <div class="card">
+        <h2 id="t-quick-demo">Quick Preview</h2>
+        <div class="role-grid-3">
+          <button class="btn btn-orange btn-sm" onclick="quickLogin('owner')">Truck Owner</button>
+          <button class="btn btn-green btn-sm" onclick="quickLogin('driver')">Driver + GPS</button>
+          <button class="btn btn-blue btn-sm" onclick="quickLogin('courier')">Courier</button>
+        </div>
+      </div>
     </section>
 
     <!-- 1. TRUCK OWNER PORTAL -->
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
         <h1>Truck Owner – Fast Loads, Instant Pay &amp; GPS</h1>
-        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and 24/7 help.</p>
+        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and chat.</p>
       </div>
 
       <div class="card">
@@ -588,7 +622,7 @@
       </div>
 
       <div class="card">
-        <h2>Trips, Instant Payout &amp; Docs</h2>
+        <h2>Trips, Instant Payout, Chat &amp; Docs</h2>
         <div id="driver-loads-list"></div>
       </div>
     </section>
@@ -669,12 +703,12 @@
       </div>
 
       <div class="card">
-        <h2>My Loads, US Payment Method &amp; Live GPS</h2>
+        <h2>My Loads, Chat, Docs &amp; Live GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- SHARED USER HELP & SUPPORT SECTION (VISIBLE ON ACTIVE PORTALS) -->
+    <!-- SHARED USER HELP & SUPPORT SECTION -->
     <section id="shared-help-section" class="hidden">
       <div class="card">
         <h2>TRUCKGO Help &amp; Team Support</h2>
@@ -684,7 +718,7 @@
         </div>
         <div class="faq-item">
           <strong>2. How do I get help from your team?</strong>
-          Send a support ticket below; your dispatch &amp; support team sees it in the Admin Team Desk.
+          Send a support ticket below; your dispatch &amp; support team receives it immediately.
         </div>
 
         <form id="support-ticket-form" class="help-box">
@@ -694,7 +728,7 @@
             <select id="ticket-topic">
               <option value="Instant Payout / Stripe">Instant Payout / Stripe</option>
               <option value="Live GPS / Tracking">Live GPS / Tracking</option>
-              <option value="License / Load Help">License / Load Help</option>
+              <option value="Documents / Load Help">Documents / Load Help</option>
               <option value="Other Support">Other Support</option>
             </select>
           </div>
@@ -708,11 +742,11 @@
       </div>
     </section>
 
-    <!-- 4. ADMIN & TEAM DESK PORTAL -->
+    <!-- 4. PRIVATE ADMIN & TEAM DESK PORTAL (ACCESSIBLE ONLY VIA ?admin=true OR ADMIN EMAIL) -->
     <section id="portal-admin" class="hidden">
       <div class="banner banner-admin">
-        <h1>Admin &amp; Team Desk – Commission, Help Tickets &amp; Logs</h1>
-        <p>Manage user help tickets like an Uber support team, set your commission, and monitor payouts.</p>
+        <h1>Private Admin &amp; Team Desk – Commission, Help Tickets &amp; Logs</h1>
+        <p>Hidden from public users; open anytime via ?admin=true or admin@truckgo.us.</p>
       </div>
 
       <div class="card">
@@ -745,7 +779,7 @@
       </div>
 
       <div class="card">
-        <h2>Accounts &amp; License Info</h2>
+        <h2>Accounts &amp; Role Documents</h2>
         <div id="admin-users-list"></div>
       </div>
 
@@ -796,14 +830,13 @@
     ];
 
     let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
-      "TRUCKGO USA ready for instant check, help tickets & team dispatch"
+      "TRUCKGO USA loaded with role-specific documents & hidden private admin"
     ];
 
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
-      { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Active" },
-      { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Active" },
-      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Active" },
-      { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" }
+      { name: "Lone Star Trucking", email: "owner@truckgo.us", role: "owner", docInfo: "MC-849210 • Operating Authority" },
+      { name: "Marcus Johnson", email: "driver@truckgo.us", role: "driver", docInfo: "CDL-TX-7748291 • Driving License & ID" },
+      { name: "SwiftBox Courier USA", email: "courier@truckgo.us", role: "courier", docInfo: "EIN-84-3920112 • Courier Permit" }
     ];
 
     let trucks = JSON.parse(localStorage.getItem("tg_trucks") || "null") || [
@@ -833,20 +866,20 @@
     const i18n = {
       en: {
         authTitle: "TRUCKGO USA – Fast Freight, Instant Pay & Live GPS",
-        authSub: "Test any portal right now with 1 tap — no code or document required to open.",
+        authSub: "Select your role below — separate documents for Owner, Driver & Courier, auto rates, live chat & GPS.",
         signup: "Quick Sign Up",
         login: "Sign In",
         selectRole: "1. Choose Role",
-        lblName: "Name or Company (Optional)",
-        lblEmail: "Email or Phone (Optional)",
-        lblPass: "Password (Optional)",
+        lblName: "Name or Company",
+        lblEmail: "Email or Phone",
+        lblPass: "Password",
         submitSignup: "Enter TRUCKGO Now",
         submitLogin: "Sign In Fast",
-        quickDemo: "1-Tap Instant Check (No Code / No Doc Needed)"
+        quickDemo: "Quick Preview"
       },
       ur: {
         authTitle: "TRUCKGO USA – تیز فریٹ، فوری ادائیگی اور لائیو GPS",
-        authSub: "کسی کوڈ یا دستاویز کے بغیر ابھی ایک ٹیپ میں کوئی بھی پورٹل کھول کر چیک کریں۔",
+        authSub: "اپنا رول چنیں — مالک، ڈرائیور اور کورئیر کے لیے الگ الگ دستاویزات، آٹو ریٹ، چیٹ اور لائیو GPS۔",
         signup: "فوری سائن اَپ",
         login: "سائن اِن",
         selectRole: "1. اپنا رول چنیں",
@@ -855,11 +888,11 @@
         lblPass: "پاس ورڈ",
         submitSignup: "فوری داخل ہوں",
         submitLogin: "تیز سائن اِن",
-        quickDemo: "ایک ٹیپ فوری چیک (کوئی کوڈ یا دستاویز ضروری نہیں)"
+        quickDemo: "فوری پریویو"
       },
       es: {
         authTitle: "TRUCKGO USA – Carga Rápida, Pago Instantáneo y GPS",
-        authSub: "Prueba cualquier portal ahora con 1 toque — sin código ni documentos obligatorios.",
+        authSub: "Elige tu rol — documentos separados para Dueño, Conductor y Courier, tarifas automáticas, chat y GPS.",
         signup: "Registro Rápido",
         login: "Iniciar Sesión",
         selectRole: "1. Elegir Rol",
@@ -868,7 +901,7 @@
         lblPass: "Contraseña",
         submitSignup: "Entrar a TRUCKGO",
         submitLogin: "Entrar Rápido",
-        quickDemo: "Prueba Instantánea en 1 Toque"
+        quickDemo: "Vista Rápida"
       }
     };
 
@@ -931,20 +964,50 @@
       selectedRole = role;
       document.querySelectorAll(".role-card").forEach((el) => el.classList.remove("active"));
       btn.classList.add("active");
+      document.getElementById("docs-owner").classList.toggle("hidden", role !== "owner");
+      document.getElementById("docs-driver").classList.toggle("hidden", role !== "driver");
+      document.getElementById("docs-courier").classList.toggle("hidden", role !== "courier");
+
+      const titles = {
+        owner: "Truck Owner Documents (MC# / USDOT# & Authority)",
+        driver: "Driver Documents (CDL / Driving License & Govt ID)",
+        courier: "Courier Documents (Business EIN / Permit)"
+      };
+      document.getElementById("doc-section-title").textContent = titles[role] || "Role Documents";
+    }
+
+    function getRoleDocSummary() {
+      if (selectedRole === "owner") {
+        const mc = (document.getElementById("owner-mc").value.trim() || "Owner Authority").toUpperCase();
+        const f = document.getElementById("owner-doc-file").files[0]?.name || "Authority Doc";
+        return `${mc} • ${f}`;
+      }
+      if (selectedRole === "driver") {
+        const cdl = (document.getElementById("driver-cdl").value.trim() || "Driver CDL").toUpperCase();
+        const gov = document.getElementById("driver-gov-id").value.trim() || "Govt ID";
+        const f = document.getElementById("driver-doc-file").files[0]?.name || "License Doc";
+        return `${cdl} • ${gov} • ${f}`;
+      }
+      const p = (document.getElementById("courier-permit").value.trim() || "Courier Permit").toUpperCase();
+      const f = document.getElementById("courier-doc-file").files[0]?.name || "Permit Doc";
+      return `${p} • ${f}`;
     }
 
     document.getElementById("auth-form").addEventListener("submit", (e) => {
       e.preventDefault();
       const contact = (document.getElementById("auth-email").value.trim() || `${selectedRole}@truckgo.us`);
       const name = (document.getElementById("auth-name").value.trim() || contact.split("@")[0] || "User").slice(0, 60);
-      const docVal = (document.getElementById("license-any-input")?.value.trim() || "Quick Access").toUpperCase();
 
       if (contact.toLowerCase().includes("admin@truckgo.us")) {
-        currentUser = { name: "TRUCKGO Team (Admin)", email: contact, role: "admin", docInfo: "TEAM-DESK" };
-      } else {
-        const u = { name, email: contact, role: selectedRole, docInfo: docVal };
+        currentUser = { name: "TRUCKGO Team (Admin)", email: contact, role: "admin", docInfo: "PRIVATE-ADMIN" };
+      } else if (authMode === "signup") {
+        const docInfo = getRoleDocSummary();
+        const u = { name, email: contact, role: selectedRole, docInfo };
         users = [u, ...users.filter((x) => x.email !== contact)];
         currentUser = u;
+      } else {
+        const existing = users.find((x) => x.email === contact);
+        currentUser = existing || { name, email: contact, role: selectedRole, docInfo: "Active" };
       }
 
       addSecurityLog(`Entered as ${currentUser.name} (${currentUser.role.toUpperCase()})`);
@@ -953,15 +1016,8 @@
     });
 
     function quickLogin(role) {
-      currentUser = users.find((u) => u.role === role) || { name: role.toUpperCase(), email: `${role}@truckgo.us`, role, docInfo: "Instant Access" };
+      currentUser = users.find((u) => u.role === role) || { name: role.toUpperCase(), email: `${role}@truckgo.us`, role, docInfo: "Active" };
       addSecurityLog(`Opened ${currentUser.role.toUpperCase()} portal`);
-      saveState();
-      renderApp();
-    }
-
-    function openOwnerAdminAccess() {
-      currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" };
-      addSecurityLog("Opened Admin & Team Desk");
       saveState();
       renderApp();
     }
@@ -975,6 +1031,9 @@
 
     function logoutUser() {
       currentUser = null;
+      if (window.location.search.includes("admin=true")) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       saveState();
       renderApp();
     }
@@ -1274,7 +1333,7 @@
 
       const params = new URLSearchParams(window.location.search);
       if (params.get("admin") === "true" && (!currentUser || currentUser.role !== "admin")) {
-        currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "TEAM-DESK" };
+        currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "PRIVATE-ADMIN" };
         saveState();
       }
 
