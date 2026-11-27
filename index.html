@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0F172A" />
-  <title>TRUCKGO USA – Fast Freight, Instant Pay, US Payments & Live GPS</title>
+  <title>TRUCKGO USA – Direct Chat, Auto Miles & Weight Rent, Live GPS</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -212,25 +212,6 @@
       color: var(--blue);
     }
 
-    .help-box {
-      background: #F8FAFC;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 10px;
-    }
-
-    .faq-item {
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      font-size: 12px;
-    }
-
-    .faq-item strong { display: block; color: var(--navy); margin-bottom: 2px; }
-
     .field { margin-bottom: 12px; }
     .field label {
       display: block;
@@ -241,8 +222,7 @@
     }
 
     .field input,
-    .field select,
-    .field textarea {
+    .field select {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid var(--border);
@@ -454,8 +434,8 @@
     <!-- PUBLIC ENTRY (SEPARATE DOCS PER ROLE, ADMIN COMPLETELY HIDDEN FROM PUBLIC SCREEN) -->
     <section id="auth-view">
       <div class="banner banner-auth">
-        <h1 id="t-auth-title">TRUCKGO USA – Fast Freight, Instant Pay &amp; Live GPS</h1>
-        <p id="t-auth-sub">Select your role below — separate documents for Owner, Driver &amp; Courier, auto rates, live chat &amp; GPS.</p>
+        <h1 id="t-auth-title">TRUCKGO USA – Direct Driver/Courier Chat, Auto Miles &amp; Rent</h1>
+        <p id="t-auth-sub">Drivers pick loads like Uber, chat directly with couriers, owners monitor live GPS, and auto rent calculates miles + weight.</p>
       </div>
 
       <div class="card">
@@ -471,17 +451,17 @@
               <button type="button" class="role-card active" data-role="owner" onclick="selectRole('owner', this)">
                 <span class="role-tag">MC / DOT</span>
                 <span class="role-title">Truck Owner</span>
-                <span class="role-desc">Authority &amp; fleet</span>
+                <span class="role-desc">Monitor fleet &amp; GPS</span>
               </button>
               <button type="button" class="role-card" data-role="driver" onclick="selectRole('driver', this)">
                 <span class="role-tag">CDL / DL</span>
                 <span class="role-title">Driver</span>
-                <span class="role-desc">Driving license &amp; GPS</span>
+                <span class="role-desc">Pick loads &amp; chat</span>
               </button>
               <button type="button" class="role-card" data-role="courier" onclick="selectRole('courier', this)">
                 <span class="role-tag">EIN / PRM</span>
                 <span class="role-title">Courier</span>
-                <span class="role-desc">Business permit &amp; rates</span>
+                <span class="role-desc">Post loads &amp; chat</span>
               </button>
             </div>
 
@@ -558,11 +538,11 @@
       </div>
     </section>
 
-    <!-- 1. TRUCK OWNER PORTAL -->
+    <!-- 1. TRUCK OWNER PORTAL (MONITOR / WATCH ONLY) -->
     <section id="portal-owner" class="hidden">
       <div class="banner banner-owner">
-        <h1>Truck Owner – Fast Loads, Instant Pay &amp; GPS</h1>
-        <p>Instant payout on delivery, zero late pay wait, live driver GPS, and chat.</p>
+        <h1>Truck Owner – Live Fleet &amp; GPS Watch</h1>
+        <p>Monitor your trucks, drivers, live GPS locations, and active loads in real time.</p>
       </div>
 
       <div class="card">
@@ -586,7 +566,7 @@
             <label>Driver Name</label>
             <input id="truck-driver" type="text" placeholder="e.g. Carlos Mendez" required />
           </div>
-          <button type="submit" class="btn btn-orange">+ Add Truck Fast</button>
+          <button type="submit" class="btn btn-orange">+ Add Truck</button>
         </form>
       </div>
 
@@ -596,16 +576,16 @@
       </div>
 
       <div class="card">
-        <h2>US Loads, Instant Payout &amp; Live Driver GPS</h2>
+        <h2>Live Load Watch &amp; Driver GPS</h2>
         <div id="owner-loads-list"></div>
       </div>
     </section>
 
-    <!-- 2. DRIVER PORTAL -->
+    <!-- 2. DRIVER PORTAL (SELF-ACCEPT LOADS LIKE UBER + DIRECT CHAT WITH COURIER + GPS) -->
     <section id="portal-driver" class="hidden">
       <div class="banner banner-driver">
-        <h1>Driver – Live GPS, Instant Pay &amp; BOL Share</h1>
-        <p>Share live GPS, complete load for instant payout, and share BOL/documents with courier.</p>
+        <h1>Driver – Available Loads, Direct Chat &amp; Live GPS</h1>
+        <p>Browse loads and accept whichever you want like Uber, chat directly with the courier, and share live GPS.</p>
       </div>
 
       <div class="card">
@@ -622,45 +602,45 @@
       </div>
 
       <div class="card">
-        <h2>Trips, Instant Payout, Chat &amp; Docs</h2>
+        <h2>Available &amp; Active Loads (Pick Your Load)</h2>
         <div id="driver-loads-list"></div>
       </div>
     </section>
 
-    <!-- 3. COURIER PORTAL -->
+    <!-- 3. COURIER PORTAL (CITY/STREET AUTO MILES + WEIGHT & TRUCK AUTO RENT + DIRECT CHAT) -->
     <section id="portal-courier" class="hidden">
       <div class="banner banner-courier">
-        <h1>Courier – Stripe + US Payments, Auto Rate &amp; Live GPS</h1>
-        <p>Cards, Apple Pay, Google Pay, ACH, PayPal/Venmo/Cash App — instant carrier payout &amp; only your commission.</p>
+        <h1>Courier – City/Street Auto Miles, Weight Rent &amp; Direct Chat</h1>
+        <p>Enter city or street address (e.g. New York to Miami), weight &amp; truck type — miles and rent calculate automatically.</p>
       </div>
 
       <div class="card">
         <h2>Fast US Route Presets</h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Houston, TX', 'Dallas, TX', 240, 50)">Houston → Dallas</button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Dallas, TX', 'Atlanta, GA', 780, 120)">Dallas → Atlanta</button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Chicago, IL', 'Nashville, TN', 472, 85)">Chicago → Nashville</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('125 Broadway, New York, NY', '701 Brickell Ave, Miami, FL', 18500)">New York → Miami</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Houston, TX', 'Dallas, TX', 14000)">Houston → Dallas</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyRoutePreset('Chicago, IL', 'Atlanta, GA', 24000)">Chicago → Atlanta</button>
         </div>
 
         <form id="courier-form">
           <div class="field">
-            <label>Pickup (City, State)</label>
-            <input id="load-origin" type="text" placeholder="e.g. Dallas, TX" oninput="calculateAutoRate()" required />
+            <label>Pickup City / Street Address (e.g. 125 Broadway, New York, NY)</label>
+            <input id="load-origin" type="text" placeholder="e.g. New York, NY or 125 Broadway, New York, NY" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Drop-off (City, State)</label>
-            <input id="load-dest" type="text" placeholder="e.g. Atlanta, GA" oninput="calculateAutoRate()" required />
+            <label>Drop-off City / Street Address (e.g. 701 Brickell Ave, Miami, FL)</label>
+            <input id="load-dest" type="text" placeholder="e.g. Miami, FL or 701 Brickell Ave, Miami, FL" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Loaded Miles</label>
-            <input id="load-miles" type="number" min="10" value="780" oninput="calculateAutoRate()" required />
+            <label>Auto-Calculated Miles (Edit if needed)</label>
+            <input id="load-miles" type="number" min="5" value="1280" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Deadhead / Empty Miles</label>
-            <input id="load-deadhead" type="number" min="0" value="120" oninput="calculateAutoRate()" />
+            <label>Cargo Weight (lbs)</label>
+            <input id="load-weight" type="number" min="50" step="50" value="18000" oninput="calculateAutoRate()" required />
           </div>
           <div class="field">
-            <label>Equipment Type</label>
+            <label>Truck / Equipment Type</label>
             <select id="load-type" onchange="calculateAutoRate()">
               <option value="Express Courier Van">Express Courier Van</option>
               <option value="26ft Box Truck">26ft Box Truck</option>
@@ -688,70 +668,32 @@
           </div>
 
           <div class="rate-summary">
-            <div class="rate-line"><span>Total US Rate:</span><strong id="auto-fare-display">$2,580</strong></div>
-            <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>% — Only You):</span><strong id="comm-amount-display">$258</strong></div>
-            <div class="rate-line rate-total"><span>Instant Pay to Carrier:</span><span id="net-payout-display">$2,322</span></div>
+            <div class="rate-line"><span>Route Distance:</span><strong id="auto-miles-label">1,280 miles</strong></div>
+            <div class="rate-line"><span>Auto Rent (Miles + Weight + Truck):</span><strong id="auto-fare-display">$4,288</strong></div>
+            <div class="rate-line"><span>TRUCKGO Commission (<span id="comm-rate-label">10</span>%):</span><strong id="comm-amount-display">$429</strong></div>
+            <div class="rate-line rate-total"><span>Driver / Carrier Rent Payout:</span><span id="net-payout-display">$3,859</span></div>
           </div>
 
           <div class="field">
-            <label>Custom Rate Override ($ Optional)</label>
-            <input id="load-price" type="number" placeholder="Auto US rate" oninput="updateCustomRatePreview()" />
+            <label>Custom Rent Override ($ Optional)</label>
+            <input id="load-price" type="number" placeholder="Auto rent calculated above" oninput="updateCustomRatePreview()" />
           </div>
 
-          <button type="submit" class="btn btn-blue">Post Load &amp; Enable Instant Pay</button>
+          <button type="submit" class="btn btn-blue">Post Load for Drivers</button>
         </form>
       </div>
 
       <div class="card">
-        <h2>My Loads, Chat, Docs &amp; Live GPS</h2>
+        <h2>My Loads, Direct Driver Chat &amp; Live GPS</h2>
         <div id="courier-loads-list"></div>
       </div>
     </section>
 
-    <!-- SHARED USER HELP & SUPPORT SECTION -->
-    <section id="shared-help-section" class="hidden">
-      <div class="card">
-        <h2>TRUCKGO Help &amp; Team Support</h2>
-        <div class="faq-item">
-          <strong>1. How does Instant Pay work?</strong>
-          Carrier gets paid immediately upon delivery completion — no waiting weeks for late payouts.
-        </div>
-        <div class="faq-item">
-          <strong>2. How do I get help from your team?</strong>
-          Send a support ticket below; your dispatch &amp; support team receives it immediately.
-        </div>
-
-        <form id="support-ticket-form" class="help-box">
-          <div style="font-size:12px; font-weight:800; color:#0F172A; margin-bottom:8px;">Message Our Support / Dispatch Team</div>
-          <div class="field">
-            <label>Topic</label>
-            <select id="ticket-topic">
-              <option value="Instant Payout / Stripe">Instant Payout / Stripe</option>
-              <option value="Live GPS / Tracking">Live GPS / Tracking</option>
-              <option value="Documents / Load Help">Documents / Load Help</option>
-              <option value="Other Support">Other Support</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Your Message</label>
-            <textarea id="ticket-message" rows="2" placeholder="Write your issue or question..." required></textarea>
-          </div>
-          <button type="submit" class="btn btn-dark btn-sm">Send to Support Team</button>
-          <div id="ticket-sent-msg" class="alert-ok"></div>
-        </form>
-      </div>
-    </section>
-
-    <!-- 4. PRIVATE ADMIN & TEAM DESK PORTAL (ACCESSIBLE ONLY VIA ?admin=true OR ADMIN EMAIL) -->
+    <!-- 4. PRIVATE ADMIN PORTAL (ACCESSIBLE ONLY VIA ?admin=true OR ADMIN EMAIL) -->
     <section id="portal-admin" class="hidden">
       <div class="banner banner-admin">
-        <h1>Private Admin &amp; Team Desk – Commission, Help Tickets &amp; Logs</h1>
+        <h1>Private Admin – Commission, Stripe &amp; Activity</h1>
         <p>Hidden from public users; open anytime via ?admin=true or admin@truckgo.us.</p>
-      </div>
-
-      <div class="card">
-        <h2>User Help Tickets (Team Queue)</h2>
-        <div id="admin-tickets-list"></div>
       </div>
 
       <div class="card">
@@ -794,7 +736,7 @@
   <nav id="bottom-nav" class="bottom-nav hidden">
     <button class="nav-btn" onclick="renderApp()">Home</button>
     <button class="nav-btn" onclick="switchRoleQuick('owner')">Owner</button>
-    <button class="nav-btn" onclick="switchRoleQuick('driver')">GPS</button>
+    <button class="nav-btn" onclick="switchRoleQuick('driver')">Driver</button>
     <button class="nav-btn" onclick="switchRoleQuick('courier')">Courier</button>
     <button class="nav-btn" onclick="logoutUser()">Exit</button>
   </nav>
@@ -825,12 +767,8 @@
     let commissionPercent = Number(localStorage.getItem("tg_commission_pct") || "10");
     let currentUser = JSON.parse(localStorage.getItem("tg_current_user") || "null");
 
-    let supportTickets = JSON.parse(localStorage.getItem("tg_tickets") || "null") || [
-      { id: 101, from: "Marcus Johnson (Driver)", topic: "Live GPS / Tracking", message: "GPS active on I-20 toward Atlanta.", status: "Open" }
-    ];
-
     let securityLogs = JSON.parse(localStorage.getItem("tg_sec_logs") || "null") || [
-      "TRUCKGO USA loaded with role-specific documents & hidden private admin"
+      "TRUCKGO USA active with direct Driver-Courier chat, Uber-style load picking & auto miles/weight rent"
     ];
 
     let users = JSON.parse(localStorage.getItem("tg_users") || "null") || [
@@ -846,27 +784,67 @@
     let loads = JSON.parse(localStorage.getItem("tg_loads") || "null") || [
       {
         id: 981,
-        origin: "Dallas, TX",
-        dest: "Atlanta, GA",
-        miles: 780,
-        deadhead: 120,
+        origin: "New York, NY",
+        dest: "Miami, FL",
+        miles: 1280,
+        weight: 18000,
         type: "53ft Dry Van",
-        price: 2580,
+        price: 4288,
         payMethod: "Stripe Apple Pay",
-        status: "In Transit",
+        status: "Open",
         payoutStatus: "Instant Pay Ready via Stripe Apple Pay",
-        driver: "Marcus Johnson",
-        lat: 32.7767,
-        lng: -96.7970,
+        driver: "Available for Driver",
+        lat: 40.7128,
+        lng: -74.0060,
         gpsUpdated: "Live Ready",
-        messages: [{ sender: "Driver", text: "Loaded & rolling. BOL shared.", docName: "BOL_981.pdf" }]
+        messages: [{ sender: "Courier", text: "Pickup ready on loading dock 4. Message me anytime.", docName: "RateCon_981.pdf" }]
       }
     ];
 
+    const CITY_COORDS = {
+      "new york": [40.7128, -74.0060],
+      "nyc": [40.7128, -74.0060],
+      "miami": [25.7617, -80.1918],
+      "florida": [27.9944, -81.7603],
+      "dallas": [32.7767, -96.7970],
+      "houston": [29.7604, -95.3698],
+      "atlanta": [33.7490, -84.3880],
+      "chicago": [41.8781, -87.6298],
+      "los angeles": [34.0522, -118.2437],
+      "nashville": [36.1627, -86.7816],
+      "charlotte": [35.2271, -80.8431],
+      "orlando": [28.5383, -81.3792]
+    };
+
+    function haversineMiles(lat1, lon1, lat2, lon2) {
+      const toRad = (d) => (d * Math.PI) / 180;
+      const R = 3958.8;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.max(15, Math.round(R * c * 1.18));
+    }
+
+    function lookupCoordsFromAddress(text) {
+      const low = String(text || "").toLowerCase();
+      for (const key of Object.keys(CITY_COORDS)) {
+        if (low.includes(key)) return CITY_COORDS[key];
+      }
+      if (!low.trim()) return null;
+      let hash = 0;
+      for (let i = 0; i < low.length; i++) hash = (hash * 31 + low.charCodeAt(i)) % 100000;
+      const lat = 26 + (hash % 1800) / 100;
+      const lng = -118 + ((hash * 7) % 4500) / 100;
+      return [lat, lng];
+    }
+
     const i18n = {
       en: {
-        authTitle: "TRUCKGO USA – Fast Freight, Instant Pay & Live GPS",
-        authSub: "Select your role below — separate documents for Owner, Driver & Courier, auto rates, live chat & GPS.",
+        authTitle: "TRUCKGO USA – Direct Driver/Courier Chat, Auto Miles & Rent",
+        authSub: "Drivers pick loads like Uber, chat directly with couriers, owners monitor live GPS, and auto rent calculates miles + weight.",
         signup: "Quick Sign Up",
         login: "Sign In",
         selectRole: "1. Choose Role",
@@ -878,8 +856,8 @@
         quickDemo: "Quick Preview"
       },
       ur: {
-        authTitle: "TRUCKGO USA – تیز فریٹ، فوری ادائیگی اور لائیو GPS",
-        authSub: "اپنا رول چنیں — مالک، ڈرائیور اور کورئیر کے لیے الگ الگ دستاویزات، آٹو ریٹ، چیٹ اور لائیو GPS۔",
+        authTitle: "TRUCKGO USA – ڈرائیور/کورئیر چیٹ، آٹو میل اور وزن کے مطابق رینٹ",
+        authSub: "ڈرائیور خود لوڈ لیں، کورئیر سے براہِ راست چیٹ کریں، مالک نگرانی کرے، اور شہر/اسٹریٹ + وزن سے رینٹ خود نکلے۔",
         signup: "فوری سائن اَپ",
         login: "سائن اِن",
         selectRole: "1. اپنا رول چنیں",
@@ -891,8 +869,8 @@
         quickDemo: "فوری پریویو"
       },
       es: {
-        authTitle: "TRUCKGO USA – Carga Rápida, Pago Instantáneo y GPS",
-        authSub: "Elige tu rol — documentos separados para Dueño, Conductor y Courier, tarifas automáticas, chat y GPS.",
+        authTitle: "TRUCKGO USA – Chat Directo, Millas Automáticas y Tarifa por Peso",
+        authSub: "Conductores eligen cargas como Uber, chatean directo con couriers, dueños vigilan GPS y la tarifa calcula millas y peso.",
         signup: "Registro Rápido",
         login: "Iniciar Sesión",
         selectRole: "1. Elegir Rol",
@@ -944,7 +922,6 @@
       localStorage.setItem("tg_users", JSON.stringify(users));
       localStorage.setItem("tg_trucks", JSON.stringify(trucks));
       localStorage.setItem("tg_loads", JSON.stringify(loads));
-      localStorage.setItem("tg_tickets", JSON.stringify(supportTickets));
       localStorage.setItem("tg_commission_pct", String(commissionPercent));
       localStorage.setItem("tg_stripe_pk", stripePublishableKey);
       localStorage.setItem("tg_stripe_endpoint", stripeEndpoint);
@@ -999,7 +976,7 @@
       const name = (document.getElementById("auth-name").value.trim() || contact.split("@")[0] || "User").slice(0, 60);
 
       if (contact.toLowerCase().includes("admin@truckgo.us")) {
-        currentUser = { name: "TRUCKGO Team (Admin)", email: contact, role: "admin", docInfo: "PRIVATE-ADMIN" };
+        currentUser = { name: "TRUCKGO Admin", email: contact, role: "admin", docInfo: "PRIVATE-ADMIN" };
       } else if (authMode === "signup") {
         const docInfo = getRoleDocSummary();
         const u = { name, email: contact, role: selectedRole, docInfo };
@@ -1038,29 +1015,6 @@
       renderApp();
     }
 
-    document.getElementById("support-ticket-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const topic = document.getElementById("ticket-topic").value;
-      const msg = document.getElementById("ticket-message").value.trim();
-      if (!msg) return;
-
-      const sender = currentUser ? `${currentUser.name} (${currentUser.role})` : "User";
-      supportTickets = [{ id: Date.now(), from: sender, topic, message: msg, status: "Open" }, ...supportTickets];
-      addSecurityLog(`Support ticket from ${sender}: ${topic}`);
-      saveState();
-      e.target.reset();
-      const statusEl = document.getElementById("ticket-sent-msg");
-      if (statusEl) statusEl.textContent = "✓ Sent to TRUCKGO Support & Dispatch Team";
-      renderApp();
-    });
-
-    function resolveTicket(id) {
-      supportTickets = supportTickets.map((t) => (t.id === id ? { ...t, status: "Resolved by Team" } : t));
-      addSecurityLog(`Team resolved ticket #${id}`);
-      saveState();
-      renderApp();
-    }
-
     function selectPayMethod(btn) {
       selectedPayMethod = btn.getAttribute("data-pay") || "Stripe Card (Visa/MC/Amex)";
       document.querySelectorAll(".pay-chip-btn").forEach((el) => el.classList.remove("active"));
@@ -1069,32 +1023,53 @@
         `Selected: ${selectedPayMethod} • Instant payout to carrier on completion`;
     }
 
-    function applyRoutePreset(origin, dest, miles, deadhead) {
+    function applyRoutePreset(origin, dest, weight) {
       document.getElementById("load-origin").value = origin;
       document.getElementById("load-dest").value = dest;
-      document.getElementById("load-miles").value = miles;
-      document.getElementById("load-deadhead").value = deadhead;
+      document.getElementById("load-weight").value = weight;
+      const c1 = lookupCoordsFromAddress(origin);
+      const c2 = lookupCoordsFromAddress(dest);
+      if (c1 && c2) {
+        document.getElementById("load-miles").value = haversineMiles(c1[0], c1[1], c2[0], c2[1]);
+      }
       calculateAutoRate();
     }
 
     function calculateAutoRate() {
-      const miles = Math.max(10, Number(document.getElementById("load-miles").value) || 500);
-      const deadhead = Math.max(0, Number(document.getElementById("load-deadhead").value) || 0);
-      const type = document.getElementById("load-type").value;
+      const originEl = document.getElementById("load-origin");
+      const destEl = document.getElementById("load-dest");
+      const milesEl = document.getElementById("load-miles");
+      const weightEl = document.getElementById("load-weight");
+      const typeEl = document.getElementById("load-type");
+      if (!milesEl || !weightEl || !typeEl) return 0;
+
+      const c1 = lookupCoordsFromAddress(originEl ? originEl.value : "");
+      const c2 = lookupCoordsFromAddress(destEl ? destEl.value : "");
+      if (c1 && c2 && originEl && destEl && originEl.value.trim() && destEl.value.trim()) {
+        if (document.activeElement !== milesEl) {
+          milesEl.value = haversineMiles(c1[0], c1[1], c2[0], c2[1]);
+        }
+      }
+
+      const miles = Math.max(5, Number(milesEl.value) || 500);
+      const weight = Math.max(50, Number(weightEl.value) || 10000);
+      const type = typeEl.value;
 
       const rpmMap = {
-        "Express Courier Van": 2.20,
-        "26ft Box Truck": 2.65,
-        "53ft Dry Van": 3.00,
-        "53ft Reefer": 3.45,
-        "48ft Flatbed": 3.20
+        "Express Courier Van": 2.10,
+        "26ft Box Truck": 2.55,
+        "53ft Dry Van": 2.95,
+        "53ft Reefer": 3.40,
+        "48ft Flatbed": 3.15
       };
 
       const rpm = rpmMap[type] || 2.85;
-      const fare = Math.round(miles * rpm + deadhead * (rpm * 0.65));
+      const weightSurcharge = Math.round((weight / 1000) * 28);
+      const fare = Math.round(miles * rpm + weightSurcharge);
       const comm = Math.round((fare * commissionPercent) / 100);
       const net = fare - comm;
 
+      document.getElementById("auto-miles-label").textContent = miles.toLocaleString() + " miles";
       document.getElementById("comm-rate-label").textContent = commissionPercent;
       document.getElementById("auto-fare-display").textContent = "$" + fare.toLocaleString();
       document.getElementById("comm-amount-display").textContent = "$" + comm.toLocaleString();
@@ -1167,33 +1142,35 @@
       e.preventDefault();
       const origin = document.getElementById("load-origin").value.trim();
       const dest = document.getElementById("load-dest").value.trim();
-      const miles = Math.max(10, Number(document.getElementById("load-miles").value) || 500);
-      const deadhead = Math.max(0, Number(document.getElementById("load-deadhead").value) || 0);
+      const miles = Math.max(5, Number(document.getElementById("load-miles").value) || 500);
+      const weight = Math.max(50, Number(document.getElementById("load-weight").value) || 10000);
       const type = document.getElementById("load-type").value;
       const manualPrice = Number(document.getElementById("load-price").value);
       const price = manualPrice > 0 ? manualPrice : calculateAutoRate();
       if (!origin || !dest) return;
+
+      const startCoords = lookupCoordsFromAddress(origin) || [32.7767, -96.7970];
 
       const newLoad = {
         id: Date.now(),
         origin,
         dest,
         miles,
-        deadhead,
+        weight,
         type,
         price,
         payMethod: selectedPayMethod,
         status: "Open",
         payoutStatus: `Instant Pay via ${selectedPayMethod}`,
-        driver: "Unassigned",
-        lat: 32.7767,
-        lng: -96.7970,
+        driver: "Available for Driver",
+        lat: startCoords[0],
+        lng: startCoords[1],
         gpsUpdated: "Awaiting GPS",
-        messages: [{ sender: "Courier", text: `Payment method: ${selectedPayMethod}`, docName: "" }]
+        messages: [{ sender: "Courier", text: `Load posted (${miles} mi, ${weight.toLocaleString()} lbs). Chat directly here.`, docName: "" }]
       };
 
       loads = [newLoad, ...loads];
-      addSecurityLog(`Load posted: ${origin} -> ${dest} ($${price}) via ${selectedPayMethod}`);
+      addSecurityLog(`Load posted: ${origin} -> ${dest} (${miles} mi, ${weight} lbs, $${price})`);
       saveState();
       await triggerStripeCheckoutIfConfigured(newLoad);
 
@@ -1204,18 +1181,18 @@
       }
 
       e.target.reset();
-      document.getElementById("load-miles").value = 780;
-      document.getElementById("load-deadhead").value = 120;
+      document.getElementById("load-miles").value = 1280;
+      document.getElementById("load-weight").value = 18000;
       calculateAutoRate();
       renderApp();
     });
 
     function acceptLoad(id) {
-      const actor = currentUser ? currentUser.name : "Carrier";
+      const actor = currentUser && currentUser.role === "driver" ? currentUser.name : "Driver";
       loads = loads.map((l) =>
         l.id === id ? { ...l, status: "In Transit", payoutStatus: `Authorized (${l.payMethod || "Stripe"})`, driver: actor } : l
       );
-      addSecurityLog(`Load #${id} booked by ${actor}`);
+      addSecurityLog(`Driver ${actor} picked Load #${id}`);
       saveState();
       renderApp();
     }
@@ -1226,14 +1203,14 @@
         const comm = Math.round((l.price * commissionPercent) / 100);
         const net = l.price - comm;
         const method = l.payMethod || "Stripe";
-        addSecurityLog(`INSTANT PAYOUT (#${id}) via ${method}: $${net} to carrier, $${comm} fee to TRUCKGO`);
+        addSecurityLog(`INSTANT PAYOUT (#${id}) via ${method}: $${net} to driver/carrier, $${comm} fee to TRUCKGO`);
         return { ...l, status: "Delivered", payoutStatus: `PAID INSTANTLY ($${net.toLocaleString()}) • ${method}` };
       });
       saveState();
       renderApp();
     }
 
-    function sendCommMessage(loadId, roleLabel) {
+    function sendDirectChat(loadId, roleLabel) {
       const msgEl = document.getElementById(`msg-input-${loadId}-${roleLabel}`);
       const docEl = document.getElementById(`doc-input-${loadId}-${roleLabel}`);
       const text = msgEl ? msgEl.value.trim() : "";
@@ -1251,7 +1228,7 @@
       renderApp();
     }
 
-    function renderCommBox(load, roleLabel) {
+    function renderDirectChatBox(load, roleLabel) {
       const msgsHtml = (load.messages || [])
         .map(
           (m) => `
@@ -1265,15 +1242,15 @@
 
       return `
         <div class="comm-box">
-          <div style="font-size:11px; font-weight:800; color:#334155; margin-bottom:6px;">Chat &amp; Document Share</div>
+          <div style="font-size:11px; font-weight:800; color:#334155; margin-bottom:6px;">Direct Driver ↔ Courier Chat &amp; Docs</div>
           ${msgsHtml}
           <div class="field" style="margin-bottom:6px;">
-            <input id="msg-input-${load.id}-${roleLabel}" type="text" placeholder="Message..." />
+            <input id="msg-input-${load.id}-${roleLabel}" type="text" placeholder="Message directly..." />
           </div>
           <div class="field" style="margin-bottom:8px;">
             <input id="doc-input-${load.id}-${roleLabel}" type="file" accept=".pdf,.jpg,.jpeg,.png" />
           </div>
-          <button type="button" class="btn btn-dark btn-sm" onclick="sendCommMessage(${load.id}, '${roleLabel}')">Send</button>
+          <button type="button" class="btn btn-dark btn-sm" onclick="sendDirectChat(${load.id}, '${roleLabel}')">Send</button>
         </div>
       `;
     }
@@ -1333,13 +1310,12 @@
 
       const params = new URLSearchParams(window.location.search);
       if (params.get("admin") === "true" && (!currentUser || currentUser.role !== "admin")) {
-        currentUser = { name: "TRUCKGO Team (Admin)", email: "admin@truckgo.us", role: "admin", docInfo: "PRIVATE-ADMIN" };
+        currentUser = { name: "TRUCKGO Admin", email: "admin@truckgo.us", role: "admin", docInfo: "PRIVATE-ADMIN" };
         saveState();
       }
 
       const authView = document.getElementById("auth-view");
       const bottomNav = document.getElementById("bottom-nav");
-      const sharedHelp = document.getElementById("shared-help-section");
       const headerUser = document.getElementById("header-user");
 
       ["portal-owner", "portal-driver", "portal-courier", "portal-admin"].forEach((id) => {
@@ -1349,7 +1325,6 @@
       if (!currentUser) {
         authView.classList.remove("hidden");
         bottomNav.classList.add("hidden");
-        sharedHelp.classList.add("hidden");
         headerUser.textContent = "Guest";
         return;
       }
@@ -1357,12 +1332,6 @@
       authView.classList.add("hidden");
       bottomNav.classList.remove("hidden");
       headerUser.textContent = `${currentUser.name} (${currentUser.role})`;
-
-      if (currentUser.role === "admin") {
-        sharedHelp.classList.add("hidden");
-      } else {
-        sharedHelp.classList.remove("hidden");
-      }
 
       const portal = document.getElementById(`portal-${currentUser.role}`);
       if (portal) portal.classList.remove("hidden");
@@ -1380,11 +1349,11 @@
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
-                <span class="badge badge-open">${escapeHtml(l.payoutStatus || "Instant Pay")}</span>
+                <span class="badge badge-open">${escapeHtml(l.status)}</span>
               </div>
-              <div class="item-meta">${escapeHtml(l.type)} • Method: ${escapeHtml(l.payMethod || "Stripe")} • <strong>Instant Net: $${net.toLocaleString()}</strong></div>
-              ${renderLiveGpsForWatcher(l, "OWNER LIVE GPS")}
-              ${l.status === "Open" ? `<button class="btn btn-orange btn-sm" onclick="acceptLoad(${l.id})">1-Tap Book Load</button>` : `<div class="item-meta">Driver: ${escapeHtml(l.driver)} • Status: ${escapeHtml(l.status)}</div>`}
+              <div class="item-meta">${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Rent: <strong>$${net.toLocaleString()}</strong></div>
+              ${renderLiveGpsForWatcher(l, "OWNER WATCH GPS")}
+              <div class="item-meta">Assigned Driver: ${escapeHtml(l.driver)} • ${escapeHtml(l.payoutStatus || "")}</div>
             </div>
           `;
         })
@@ -1400,12 +1369,12 @@
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
                 <span class="badge badge-transit">${escapeHtml(l.status)}</span>
               </div>
-              <div class="item-meta">${escapeHtml(l.type)} • ${escapeHtml(l.payMethod || "Stripe")} • Your Instant Payout: <strong>$${net.toLocaleString()}</strong></div>
+              <div class="item-meta">${escapeHtml(l.type)} • ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Your Rent: <strong>$${net.toLocaleString()}</strong></div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Start Trip</button>` : ""}
+                ${l.status === "Open" ? `<button class="btn btn-green btn-sm" onclick="acceptLoad(${l.id})">Accept Load Now</button>` : `<span class="badge badge-info">Driver: ${escapeHtml(l.driver)}</span>`}
                 ${l.status !== "Delivered" ? `<button class="btn btn-dark btn-sm" onclick="releaseInstantPayout(${l.id})">Complete &amp; Instant Pay</button>` : ""}
               </div>
-              ${renderCommBox(l, "Driver")}
+              ${renderDirectChatBox(l, "Driver")}
             </div>
           `;
         })
@@ -1419,32 +1388,17 @@
             <div class="list-item">
               <div class="item-top">
                 <div class="item-title">${escapeHtml(l.origin)} &rarr; ${escapeHtml(l.dest)}</div>
-                <span class="badge badge-info">${escapeHtml(l.payMethod || "Stripe")}</span>
+                <span class="badge badge-info">${escapeHtml(l.status)}</span>
               </div>
               <div class="item-meta">
-                Total: $${l.price.toLocaleString()} • Carrier Pay: $${net.toLocaleString()} • TRUCKGO Fee: $${comm.toLocaleString()} • ${escapeHtml(l.payoutStatus || "")}
+                ${Number(l.miles || 0).toLocaleString()} mi • ${Number(l.weight || 0).toLocaleString()} lbs • Total: $${l.price.toLocaleString()} • Driver Rent: $${net.toLocaleString()} • Fee: $${comm.toLocaleString()}
               </div>
               ${renderLiveGpsForWatcher(l, "COURIER LIVE GPS")}
-              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" onclick="releaseInstantPayout(${l.id})">Pay Carrier Instantly Now</button>` : ""}
-              ${renderCommBox(l, "Courier")}
+              ${l.status !== "Delivered" ? `<button class="btn btn-green btn-sm" style="margin-bottom:8px;" onclick="releaseInstantPayout(${l.id})">Pay Driver Instantly Now</button>` : ""}
+              ${renderDirectChatBox(l, "Courier")}
             </div>
           `;
         })
-        .join("");
-
-      document.getElementById("admin-tickets-list").innerHTML = supportTickets
-        .map(
-          (tk) => `
-          <div class="list-item">
-            <div class="item-top">
-              <div class="item-title">${escapeHtml(tk.topic)} — ${escapeHtml(tk.from)}</div>
-              <span class="badge ${tk.status === "Open" ? "badge-transit" : "badge-open"}">${escapeHtml(tk.status)}</span>
-            </div>
-            <div class="item-meta">${escapeHtml(tk.message)}</div>
-            ${tk.status === "Open" ? `<button type="button" class="btn btn-purple btn-sm" onclick="resolveTicket(${tk.id})">Mark Resolved</button>` : ""}
-          </div>
-        `
-        )
         .join("");
 
       const totalCommission = loads.reduce((sum, l) => sum + Math.round((l.price * commissionPercent) / 100), 0);
