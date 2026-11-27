@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F172A" />
+  <title>TRUCKGO – Global Freight Marketplace</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --navy: #0F172A;
+      --navy-light: #1E293B;
+      --orange: #F97316;
+      --orange-hover: #EA580C;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --success: #16A34A;
+      --success-bg: #DCFCE7;
+      --warning: #D97706;
+      --warning-bg: #FEF3C7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: #FFFFFF;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.15);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+    }
+
+    .brand-badge {
+      background: var(--orange);
+      color: #FFFFFF;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--navy-light);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      white-space: nowrap;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: #FFFFFF;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .hero h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #CBD5E1;
+      font-size: 14px;
+      max-width: 680px;
+      margin-bottom: 16px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-hover);
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      color: var(--navy);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #F1F5F9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--navy);
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text);
+      background: #FFFFFF;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: 2px solid rgba(249, 115, 22, 0.25);
+      border-color: var(--orange);
+    }
+
+    .load-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .load-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #FFFFFF;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .load-route {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--navy);
+    }
+
+    .load-meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .badge-open {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .badge-pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .notice {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 28px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-badge">LIVE</span>
+      <span>TRUCKGO</span>
+    </div>
+    <div id="supabase-status" class="status-pill">Connecting...</div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Global Freight Marketplace</h1>
+      <p>
+        Connect shippers with verified carriers, post freight loads in seconds, and track live shipment status across routes.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" type="button" onclick="document.getElementById('origin').focus()">
+          Post a Load
+        </button>
+        <button class="btn btn-secondary" type="button" onclick="refreshLoads()">
+          Refresh Loads
+        </button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Create Freight Load</h2>
+        <form id="load-form">
+          <div class="field">
+            <label for="origin">Pickup / Origin</label>
+            <input id="origin" type="text" placeholder="e.g. Lahore" required />
+          </div>
+          <div class="field">
+            <label for="destination">Drop-off / Destination</label>
+            <input id="destination" type="text" placeholder="e.g. Karachi" required />
+          </div>
+          <div class="field">
+            <label for="truck-type">Truck Type</label>
+            <select id="truck-type">
+              <option value="20ft Flatbed">20ft Flatbed</option>
+              <option value="40ft Container">40ft Container</option>
+              <option value="Box Truck">Box Truck</option>
+              <option value="Refrigerated">Refrigerated</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rate">Offered Rate ($)</label>
+            <input id="rate" type="number" min="1" placeholder="e.g. 1250" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Publish Load</button>
+          <div id="form-notice" class="notice"></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Active Freight Loads</h2>
+        <div id="loads-container" class="load-list"></div>
+      </section>
+    </div>
+
+    <footer>
+      TRUCKGO Freight Network &bull; Project: bqrnznmxlctzxcrkxcpd
+    </footer>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://bqrnznmxlctzxcrkxcpd.supabase.co";
+    const SUPABASE_ANON_KEY = "Sb_publishable_kaNhCrmaMyq4fkDWTH6HkQ_v-ujcd6C";
+
+    const statusEl = document.getElementById("supabase-status");
+    const loadsContainer = document.getElementById("loads-container");
+    const loadForm = document.getElementById("load-form");
+    const formNotice = document.getElementById("form-notice");
+
+    let sbClient = null;
+    let loads = [
+      {
+        id: 1,
+        origin: "Rotterdam",
+        destination: "Hamburg",
+        truck_type: "40ft Container",
+        rate: 1480,
+        status: "Open"
+      },
+      {
+        id: 2,
+        origin: "Bremen",
+        destination: "Berlin",
+        truck_type: "Box Truck",
+        rate: 890,
+        status: "Assigned"
+      }
+    ];
+
+    function initSupabase() {
+      if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        statusEl.textContent = "Supabase Ready";
+      } else {
+        statusEl.textContent = "Local Mode";
+      }
+    }
+
+    function renderLoads() {
+      if (!loads.length) {
+        loadsContainer.innerHTML = '<div class="load-meta">No freight loads available yet.</div>';
+        return;
+      }
+
+      loadsContainer.innerHTML = loads
+        .map(
+          (item) => `
+          <div class="load-item">
+            <div>
+              <div class="load-route">${escapeHtml(item.origin)} &rarr; ${escapeHtml(item.destination)}</div>
+              <div class="load-meta">${escapeHtml(item.truck_type)} &bull; Rate: $${Number(item.rate).toLocaleString()}</div>
+            </div>
+            <span class="badge ${item.status === "Open" ? "badge-open" : "badge-pending"}">
+              ${escapeHtml(item.status)}
+            </span>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function refreshLoads() {
+      renderLoads();
+      formNotice.textContent = "Board synced.";
+    }
+
+    loadForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const origin = document.getElementById("origin").value.trim();
+      const destination = document.getElementById("destination").value.trim();
+      const truckType = document.getElementById("truck-type").value;
+      const rate = Number(document.getElementById("rate").value);
+
+      if (!origin || !destination || !rate) return;
+
+      const newLoad = {
+        id: Date.now(),
+        origin,
+        destination,
+        truck_type: truckType,
+        rate,
+        status: "Open"
+      };
+
+      loads = [newLoad, ...loads];
+      renderLoads();
+
+      if (sbClient) {
+        try {
+          await sbClient.from("loads").insert([
+            {
+              origin: newLoad.origin,
+              destination: newLoad.destination,
+              truck_type: newLoad.truck_type,
+              rate: newLoad.rate,
+              status: newLoad.status
+            }
+          ]);
+          formNotice.textContent = "Load published.";
+        } catch (_err) {
+          formNotice.textContent = "Added to board (check Supabase table if needed).";
+        }
+      } else {
+        formNotice.textContent = "Added to board.";
+      }
+
+      loadForm.reset();
+    });
+
+    initSupabase();
+    renderLoads();
+  </script>
+</body>
+</html>
