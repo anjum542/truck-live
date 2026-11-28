@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  DRIVER
+  CARRIER
+  SHIPPER
+  COMPANY_ADMIN
+  GENERAL_MANAGER
+  OPERATIONS_MANAGER
+  FLEET_MANAGER
+  HR_MANAGER
+  ACCOUNTANT
+  CUSTOMER_SUPPORT
+  FREIGHT_FORWARDER
+  COURIER
+}
+
+enum LoadStatus {
+  OPEN
+  MATCHED
+  ACCEPTED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum CompanyRole {
+  OWNER
+  GENERAL_MANAGER
+  OPERATIONS_MANAGER
+  FLEET_MANAGER
+  HR_MANAGER
+  ACCOUNTANT
+  CUSTOMER_SUPPORT
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  role          UserRole @default(DRIVER)
+  phone         String?
+  country       String?
+  verified      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  trucks        Truck[]
+  postedLoads   Load[]   @relation("PostedLoads")
+  acceptedLoads Load[]   @relation("AcceptedLoads")
+  memberships   CompanyMember[]
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  country     String?
+  createdAt   DateTime @default(now())
+
+  members     CompanyMember[]
+}
+
+model CompanyMember {
+  id        String      @id @default(cuid())
+  userId    String
+  companyId String
+  role      CompanyRole
+  createdAt DateTime    @default(now())
+
+  user      User        @relation(fields: [userId], references: [id])
+  company   Company     @relation(fields: [companyId], references: [id])
+
+  @@unique([userId, companyId])
+}
+
+model Truck {
+  id                 String   @id @default(cuid())
+  ownerId            String
+  registrationNumber String   @unique
+  truckType          String
+  capacityKg         Float?
+  country            String?
+  currentCity        String?
+  available          Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  owner              User     @relation(fields: [ownerId], references: [id])
+}
+
+model Load {
+  id              String     @id @default(cuid())
+  shipperId       String
+  driverId        String?
+  pickupCountry   String
+  pickupCity      String
+  deliveryCountry String
+  deliveryCity    String
+  cargoType       String
+  weightKg        Float?
+  price           Float?
+  currency        String     @default("EUR")
+  status          LoadStatus @default(OPEN)
+  pickupDate      DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  shipper         User       @relation("PostedLoads", fields: [shipperId], references: [id])
+  driver          User?      @relation("AcceptedLoads", fields: [driverId], references: [id])
+}
+
+model PlatformEarning {
+  id             String   @id @default(cuid())
+  loadId         String   @unique
+  commission     Float
+  currency       String
+  paymentStatus  String   @default("PENDING")
+  stripePaymentId String?
+  createdAt      DateTime @default(now())
+}
