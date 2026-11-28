@@ -1,0 +1,278 @@
+/* TRUCKGO GLOBAL MARKETPLACE */
+
+:root {
+    --primary: #ff8c00;
+    --dark: #101820;
+    --light: #f5f7fa;
+    --white: #ffffff;
+    --text: #333333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* HEADER */
+
+.header {
+    background: var(--dark);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+.navigation {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.navigation a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.navigation a:hover {
+    color: var(--primary);
+}
+
+/* HERO */
+
+.hero {
+    background: linear-gradient(120deg, #101820, #263b4d);
+    color: var(--white);
+    padding: 110px 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(35px, 6vw, 65px);
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero h1 span {
+    color: var(--primary);
+}
+
+.hero p {
+    font-size: 19px;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* BUTTONS */
+
+.btn {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--white);
+    padding: 13px 25px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #e87900;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+}
+
+/* SECTIONS */
+
+.section {
+    padding: 75px 0;
+}
+
+.section h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 35px;
+    color: var(--dark);
+}
+
+.dark-section {
+    background: var(--dark);
+    color: var(--white);
+}
+
+.dark-section h2 {
+    color: var(--white);
+}
+
+.dark-section > .container > p {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* GRID AND CARDS */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.card {
+    background: var(--white);
+    padding: 28px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    color: var(--text);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    color: var(--dark);
+    margin-bottom: 12px;
+}
+
+/* FORMS */
+
+form {
+    max-width: 550px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background: var(--white);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--primary);
+    border-color: var(--primary);
+}
+
+form .btn {
+    width: 100%;
+}
+
+/* MESSAGES */
+
+#load-message,
+#login-message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* FOOTER */
+
+.footer {
+    background: #080d12;
+    color: var(--white);
+    text-align: center;
+    padding: 35px 0;
+}
+
+.footer h3 {
+    color: var(--primary);
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+/* MOBILE DESIGN */
+
+@media (max-width: 768px) {
+
+    .nav-container {
+        flex-direction: column;
+    }
+
+    .navigation {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .navigation a {
+        font-size: 13px;
+    }
+
+    .hero {
+        padding: 75px 0;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 55px 0;
+    }
+
+    .section h2 {
+        font-size: 27px;
+    }
+}
