@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TruckGo - Global Trucking Marketplace</title>
+
+    <meta name="description"
+        content="TruckGo Global Trucking and Logistics Marketplace">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container nav-container">
+
+        <a href="#" class="logo">
+            <span>🚛</span>
+            TruckGo
+        </a>
+
+        <nav class="navigation">
+            <a href="#home">Home</a>
+            <a href="#loads">Find Loads</a>
+            <a href="#services">Services</a>
+            <a href="#company">Company</a>
+            <a href="#login">Login</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+<section class="hero" id="home">
+
+    <div class="container">
+
+        <h1>
+            The Future of
+            <span>Global Trucking</span>
+        </h1>
+
+        <p>
+            One Marketplace.
+            Thousands of Trucks.
+            Endless Opportunities.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#loads" class="btn">Find Loads</a>
+            <a href="#post-load" class="btn btn-outline">
+                Post a Load
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section" id="services">
+
+    <div class="container">
+
+        <h2>TruckGo Services</h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🚛 Truck Marketplace</h3>
+                <p>Find available trucks and drivers.</p>
+            </div>
+
+            <div class="card">
+                <h3>📦 Cargo Shipping</h3>
+                <p>Connect shippers with transport companies.</p>
+            </div>
+
+            <div class="card">
+                <h3>🔄 Return Loads</h3>
+                <p>Find loads for your return journey.</p>
+            </div>
+
+            <div class="card">
+                <h3>⚓ Container Transport</h3>
+                <p>Manage port and container transportation.</p>
+            </div>
+
+            <div class="card">
+                <h3>📍 Smart Matching</h3>
+                <p>Match suitable loads with eligible drivers.</p>
+            </div>
+
+            <div class="card">
+                <h3>🚚 Courier Services</h3>
+                <p>Connect courier companies and customers.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section dark-section" id="loads">
+
+    <div class="container">
+
+        <h2>Available Loads</h2>
+
+        <p>
+            Discover national and international transport opportunities.
+        </p>
+
+        <div id="load-list" class="grid">
+
+            <div class="card">
+                <h3>Germany → France</h3>
+                <p>General Cargo</p>
+                <p>Status: Demo Load</p>
+            </div>
+
+            <div class="card">
+                <h3>Portugal → Spain</h3>
+                <p>Container Transport</p>
+                <p>Status: Demo Load</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section" id="post-load">
+
+    <div class="container">
+
+        <h2>Post a Load</h2>
+
+        <form id="load-form">
+
+            <input
+                type="text"
+                id="pickup"
+                placeholder="Pickup City"
+                required
+            >
+
+            <input
+                type="text"
+                id="delivery"
+                placeholder="Delivery City"
+                required
+            >
+
+            <input
+                type="text"
+                id="cargo"
+                placeholder="Cargo Type"
+                required
+            >
+
+            <input
+                type="number"
+                id="weight"
+                placeholder="Cargo Weight (KG)"
+                min="1"
+                required
+            >
+
+            <button type="submit" class="btn">
+                Submit Load
+            </button>
+
+        </form>
+
+        <p id="load-message"></p>
+
+    </div>
+
+</section>
+
+
+<section class="section dark-section" id="company">
+
+    <div class="container">
+
+        <h2>TruckGo Company Management</h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>Company Owner</h3>
+                <p>Manage company and fleet.</p>
+            </div>
+
+            <div class="card">
+                <h3>General Manager</h3>
+                <p>Manage company operations.</p>
+            </div>
+
+            <div class="card">
+                <h3>Fleet Manager</h3>
+                <p>Manage trucks and drivers.</p>
+            </div>
+
+            <div class="card">
+                <h3>Accountant</h3>
+                <p>Manage authorized accounts.</p>
+            </div>
+
+            <div class="card">
+                <h3>Operations Manager</h3>
+                <p>Manage daily operations.</p>
+            </div>
+
+            <div class="card">
+                <h3>Automatic Dispatch</h3>
+                <p>Smart matching with driver approval.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section" id="login">
+
+    <div class="container">
+
+        <h2>TruckGo Account</h2>
+
+        <form id="login-form">
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Email Address"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit" class="btn">
+                Login
+            </button>
+
+        </form>
+
+        <p id="login-message"></p>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container">
+
+        <h3>TruckGo</h3>
+
+        <p>
+            Global Trucking & Logistics Marketplace
+        </p>
+
+        <p>
+            © <span id="currentYear"></span> TruckGo.
+            All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
